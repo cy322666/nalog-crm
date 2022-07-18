@@ -180,10 +180,6 @@ return [
         \App\Providers\CrmServiceProvider::class,
 
         \App\Providers\NotificationProvider::class,
-
-        //TODO dont work?
-        //https://github.com/3x1io/filament-menus/blob/main/src/FilamentMenusProvider.php
-        \io3x1\FilamentMenus\FilamentMenusProvider::class,
     ],
 
     /*

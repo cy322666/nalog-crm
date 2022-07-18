@@ -11,6 +11,10 @@ class ListTasks extends ListRecords
 {
     protected static string $resource = TaskResource::class;
 
+    protected static ?string $navigationGroup = 'Продажи';
+
+    protected ?string $maxContentWidth = 'full';
+
     protected function getTitle(): string
     {
         return 'Задачи';

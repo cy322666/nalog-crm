@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 class EditShop extends EditRecord
 {
     protected static string $resource = ShopResource::class;
-
+//cog icon TODO
     protected function getActions(): array
     {
         return [

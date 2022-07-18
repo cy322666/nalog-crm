@@ -24,9 +24,7 @@ RUN docker-php-ext-enable mbstring xml gd iconv zip swoole pcov pcntl sockets bc
 
 RUN docker-php-ext-install exif
 
-#
-RUN #apt-get install -y zlib1g-dev g++ git libicu-dev zip libzip-dev zip \
-    && docker-php-ext-install intl opcache pdo pdo_mysql \
+RUN docker-php-ext-install intl opcache pdo pdo_mysql \
     && pecl install apcu \
     && docker-php-ext-enable apcu \
     && docker-php-ext-configure zip \

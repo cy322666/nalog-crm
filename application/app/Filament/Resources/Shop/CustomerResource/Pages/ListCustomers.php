@@ -10,6 +10,8 @@ class ListCustomers extends ListRecords
 {
     protected static string $resource = CustomerResource::class;
 
+    protected static ?string $navigationGroup = 'Продажи';
+
     protected function getDeleteBulkAction(): Tables\Actions\BulkAction
     {
         return parent::getDeleteBulkAction()

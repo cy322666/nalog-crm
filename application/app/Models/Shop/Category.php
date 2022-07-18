@@ -25,7 +25,7 @@ class Category extends Model implements HasMedia
      */
     protected $fillable = [
         'name',
-        'slug',
+        'shop_id',
         'description',
         'category_id',
     ];

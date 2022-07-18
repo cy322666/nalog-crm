@@ -5,6 +5,9 @@ namespace App\Http\Livewire;
 use App\Modules\Notification\Concerns\HasActions;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Notifications\DatabaseNotification;
 use App\Modules\Notification\Actions\Concerns\HasAction;
 use Illuminate\Support\Facades\Auth;
@@ -81,7 +84,7 @@ class Notification extends Component implements Forms\Contracts\HasForms
     }
 
     /**
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @return Application|Factory|View
      */
     public function render()
     {

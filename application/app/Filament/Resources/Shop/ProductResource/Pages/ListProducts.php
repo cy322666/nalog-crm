@@ -10,9 +10,13 @@ class ListProducts extends ListRecords
 {
     protected static string $resource = ProductResource::class;
 
+//    protected int|string|array $columnSpan = 'full';
+
+//    protected ?string $maxContentWidth = 'full';
+
     protected function getTitle(): string
     {
-        return 'Продукты';
+        return 'Товары';
     }
 
     protected function getDeleteBulkAction(): Tables\Actions\BulkAction
@@ -27,5 +31,10 @@ class ListProducts extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return ProductResource::getWidgets();
+    }
+
+    protected function getTableRecordsPerPageSelectOptions(): array
+    {
+        return [25, 50, 100, 150];
     }
 }

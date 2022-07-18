@@ -30,6 +30,8 @@ class TaskResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clock';
 
+    protected static ?string $navigationLabel = 'Задачи';
+
     public static function getEloquentQuery(): Builder
     {
         return Task::query()

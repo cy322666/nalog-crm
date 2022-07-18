@@ -18,7 +18,8 @@ class Shop extends Model
 
     public function statuses(): HasMany
     {
-        return $this->hasMany(OrderStatus::class, 'shop_id', 'id');
+        return $this->hasMany(OrderStatus::class, 'shop_id', 'id')
+            ->orWhere('shop_id', 0);
     }
 
     public function tariff(): HasOne

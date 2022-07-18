@@ -6,8 +6,9 @@ use App\Filament\Resources\Shop\ProductResource\Pages;
 use App\Filament\Resources\Shop\ProductResource\RelationManagers;
 use App\Filament\Resources\Shop\ProductResource\Widgets\ProductStats;
 use App\Models\Shop\Product;
+use App\Services\CacheService;
 use Filament\Forms;
-//use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -15,7 +16,6 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use Livewire\Component;
 
 class ProductResource extends Resource
 {
@@ -25,9 +25,11 @@ class ProductResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static ?string $navigationGroup = 'Shop';
+    protected static ?string $navigationLabel = 'Товары';
 
-    protected static ?string $navigationIcon = 'heroicon-o-lightning-bolt';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
+
+    protected static ?string $modelLabel = 'Товар';
 
     protected static ?int $navigationSort = 0;
 
@@ -45,8 +47,9 @@ class ProductResource extends Resource
     {
         return $table
             ->columns(static::getTableColumns())
+            ->actions([])
             ->filters([
-                //
+                //TODO
             ]);
     }
 
@@ -67,27 +70,30 @@ class ProductResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListProducts::route('/'),
+            'index'  => Pages\ListProducts::route('/'),
             'create' => Pages\CreateProduct::route('/create'),
-            'edit' => Pages\EditProduct::route('/{record}/edit'),
+            'edit'   => Pages\EditProduct::route('/{record}/edit'),
         ];
     }
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['name', 'sku', 'brand.name'];
+        return ['name', 'sku'];
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
     {
-        return [
-            'Brand' => optional($record->brand)->name,
-        ];
+        return [];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccountId());
     }
 
     protected static function getGlobalSearchEloquentQuery(): Builder
     {
-        return parent::getGlobalSearchEloquentQuery()->with(['brand']);
+        return self::getEloquentQuery();
     }
 
     public static function getFormSchema(string $layout = Forms\Components\Grid::class): array
@@ -98,28 +104,16 @@ class ProductResource extends Resource
                     $layout::make()
                         ->schema([
                             Forms\Components\TextInput::make('name')
-                                ->required()
-                                ->reactive()
-                                ->afterStateUpdated(fn ($state, callable $set) => $set('slug', Str::slug($state))),
-                            Forms\Components\TextInput::make('slug')
-                                ->disabled()
-                                ->required()
-                                ->unique(Product::class, 'slug', fn ($record) => $record),
+                                ->label('Название')
+                                ->required(),
                             Forms\Components\MarkdownEditor::make('description')
+                                ->label('Описание')
                                 ->columnSpan([
                                     'sm' => 2,
                                 ]),
                         ])->columns([
                             'sm' => 2,
                         ]),
-//                    $layout::make()
-//                        ->schema([
-//                            SpatieMediaLibraryFileUpload::make('media')
-//                                ->collection('product-images')
-//                                ->multiple()
-//                                ->maxFiles(5),
-//                        ])
-//                        ->columns(1),
                     $layout::make()
                         ->schema([
                             Forms\Components\Placeholder::make('Pricing'),
@@ -168,49 +162,21 @@ class ProductResource extends Resource
                                 ]),
                         ]),
 
-                    $layout::make()
-                        ->schema([
-                            Forms\Components\Placeholder::make('Shipping'),
-                            Forms\Components\Checkbox::make('backorder')
-                                ->label('This product can be returned'),
-                            Forms\Components\Checkbox::make('requires_shipping')
-                                ->label('This product will be shipped'),
-                        ])
-                        ->columns(1),
                 ])->columnSpan([
                     'sm' => 2,
                 ]),
-            Forms\Components\Group::make()
+            Forms\Components\Card::make()
                 ->schema([
-                    $layout::make()
-                        ->schema([
-                            Forms\Components\Placeholder::make('Status'),
-                            Forms\Components\Group::make()
-                                ->schema([
-                                    Forms\Components\Toggle::make('is_visible')
-                                        ->label('Visible')
-                                        ->helperText('This product will be hidden from all sales channels.')
-                                        ->default(true),
-                                ]),
-                            Forms\Components\DatePicker::make('published_at')
-                                ->label('Availability')
-                                ->default(now())
-                                ->required(),
-                        ])
-                        ->columns(1),
-                    $layout::make()
-                        ->schema([
-                            Forms\Components\Placeholder::make('Associations'),
-                            Forms\Components\Select::make('shop_brand_id')
-                                ->relationship('brand', 'name')
-                                ->searchable()
-                                ->default(fn (Component $livewire) => $livewire instanceof ProductsRelationManager ? $livewire->ownerRecord->id : null)
-                                ->disabled(fn (Component $livewire): bool => $livewire instanceof ProductsRelationManager),
-                            Forms\Components\MultiSelect::make('categories')
-                                ->relationship('categories', 'name')
-                                ->required(),
-                        ])
-                        ->columns(1),
+                    Forms\Components\Placeholder::make('created_at')
+                        ->label('Создан')
+                        ->content(fn (?Product $record): string => $record ? $record->created_at->diffForHumans() : '-'),
+                    Forms\Components\Placeholder::make('updated_at')
+                        ->label('Обновлен')
+                        ->content(fn (?Product $record): string => $record ? $record->updated_at->diffForHumans() : '-'),
+
+                    Forms\Components\FileUpload::make('image')
+                        ->label('Картинка')
+                        ->image(),
                 ])
                 ->columnSpan(1),
         ];
@@ -219,20 +185,18 @@ class ProductResource extends Resource
     public static function getTableColumns(): array
     {
         return [
-//            Tables\Columns\SpatieMediaLibraryImageColumn::make('product-image')
-//                ->label('Image')
-//                ->collection('product-images'),
-
-            Tables\Columns\TextColumn::make('name')
-                ->label('Name')
+            Tables\Columns\TextColumn::make('product_id')
+                ->label('ID')
                 ->searchable()
                 ->sortable(),
-            Tables\Columns\TextColumn::make('brand.name')
-                ->searchable()
-                ->sortable()
-                ->toggleable(),
+            Tables\Columns\SpatieMediaLibraryImageColumn::make('product-image')
+                ->label('Картинка')
+                ->collection('product-images'),
+            Tables\Columns\TextColumn::make('name')
+                ->label('Название')
+                ->searchable(),
             Tables\Columns\TextColumn::make('price')
-                ->label('Price')
+                ->label('Цена')
                 ->searchable()
                 ->sortable(),
             Tables\Columns\TextColumn::make('sku')
@@ -243,18 +207,13 @@ class ProductResource extends Resource
                 ->searchable()
                 ->sortable()
                 ->toggleable(),
+            Tables\Columns\TextColumn::make('description')
+                ->label('Описание')
+                ->searchable()
+                ->toggleable()
+                ->getStateUsing(fn ($record): ?string => mb_strimwidth($record->description, 0, 50, "...")),
             Tables\Columns\TextColumn::make('security_stock')
                 ->searchable()
-                ->sortable()
-                ->toggleable()
-                ->toggledHiddenByDefault(),
-            Tables\Columns\BooleanColumn::make('is_visible')
-                ->label('Visibility')
-                ->sortable()
-                ->toggleable(),
-            Tables\Columns\TextColumn::make('published_at')
-                ->label('Publish Date')
-                ->date()
                 ->sortable()
                 ->toggleable()
                 ->toggledHiddenByDefault(),

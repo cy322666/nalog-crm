@@ -22,7 +22,9 @@ class CategoryResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static ?string $navigationGroup = 'Shop';
+    protected static ?string $navigationLabel = 'Категории';
+
+    protected static ?string $modelLabel = 'Категорию';
 
     protected static ?string $navigationIcon = 'heroicon-o-tag';
 
@@ -30,7 +32,9 @@ class CategoryResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return Category::query()->where('shop_id', CacheService::getAccountId());
+        return Category::query()
+            ->where('shop_id', CacheService::getAccountId())
+            ->orderByDesc('created_at');
     }
 
     public static function form(Form $form): Form
@@ -42,12 +46,13 @@ class CategoryResource extends Resource
                         Forms\Components\Grid::make()
                             ->schema([
                                 Forms\Components\TextInput::make('name')
+                                    ->label('Название')
                                     ->required()
                                     ->reactive()
                                     ->afterStateUpdated(fn ($state, callable $set) => $set('slug', Str::slug($state))),
                             ]),
                         Forms\Components\MarkdownEditor::make('description')
-                            ->label('Description'),
+                            ->label('Описание'),
                     ])
                     ->columnSpan([
                         'sm' => 2,
@@ -55,10 +60,10 @@ class CategoryResource extends Resource
                 Forms\Components\Card::make()
                     ->schema([
                         Forms\Components\Placeholder::make('created_at')
-                            ->label('Created at')
+                            ->label('Создана')
                             ->content(fn (?Category $record): string => $record ? $record->created_at->diffForHumans() : '-'),
                         Forms\Components\Placeholder::make('updated_at')
-                            ->label('Last modified at')
+                            ->label('Обновлена')
                             ->content(fn (?Category $record): string => $record ? $record->updated_at->diffForHumans() : '-'),
                     ])
                     ->columnSpan(1),
@@ -77,6 +82,7 @@ class CategoryResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('category_id')
                     ->label('ID')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
                     ->label('Название')
@@ -86,7 +92,7 @@ class CategoryResource extends Resource
                     ->label('Описание')
                     ->getStateUsing(fn ($record): ?string => mb_strimwidth($record->description, 0, 50, "...")),
                 Tables\Columns\TextColumn::make('products_count')->counts('products')
-                    ->label('Продуктов')
+                    ->label('Товаров')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Создана')

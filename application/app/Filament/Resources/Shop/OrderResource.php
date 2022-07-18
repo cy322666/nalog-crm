@@ -8,8 +8,12 @@ use App\Filament\Resources\Shop\OrderResource\RelationManagers;
 use App\Filament\Resources\Shop\OrderResource\Widgets\OrderStats;
 use App\Models\Shop\Customer;
 use App\Models\Shop\Order;
+use App\Models\Shop\OrderStatus;
 use App\Models\Shop\Product;
+use App\Models\Shop\Shop;
+use App\Services\CacheService;
 use Carbon\Carbon;
+use Exception;
 use Filament\Forms;
 use Filament\Forms\Components\Tabs;
 use Filament\Resources\Form;
@@ -18,9 +22,8 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Squire\Models\Currency;
+use Squire\Models\Currency;//TODO заменить на мой
 
-//TODO интересный пример
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
@@ -29,7 +32,7 @@ class OrderResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'number';
 
-    protected static ?string $navigationGroup = 'Shop';
+    protected static ?string $navigationLabel = 'Заказы';
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
 
@@ -37,7 +40,7 @@ class OrderResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return Order::query();
+        return Order::query()->where('shop_id', CacheService::getAccountId());
     }
 
     private static function getHistory()
@@ -65,22 +68,22 @@ class OrderResource extends Resource
             ],
         ];
 
-        $components = [];
+//        $components = [];
+//
+//        foreach ($comments as $comment) {
+//
+//            $components[] = Forms\Components\Placeholder::make('')
+//                ->label($comment['label'])
+//                ->content(fn (?Order $record): string => $comment['content']);
+//        }
 
-        foreach ($comments as $comment) {
-
-            $components[] = Forms\Components\Placeholder::make('')
-                ->label($comment['label'])
-                ->content(fn (?Order $record): string => $comment['content']);
-        }
-
-        return $components;
+//        return $components;
     }
 
-    protected function getFormModel(): Order
-    {
-        return $this->order;
-    }
+//    protected function getFormModel(): Order
+//    {
+//        return $this->order;
+//    }
 
 
 //история
@@ -97,13 +100,12 @@ class OrderResource extends Resource
 //])
 //->columns(1),
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-
                 Tabs::make('Heading')
                     ->tabs([
                         Tabs\Tab::make('Общие')
@@ -112,7 +114,8 @@ class OrderResource extends Resource
                                 Forms\Components\Card::make()
                                     ->schema([
                                         Forms\Components\TextInput::make('number')
-                                            ->default('OR-' . random_int(100000, 999999))
+                                            ->label('Номер заказа')
+                                            ->default(random_int(100000, 999999))
                                             ->disabled()
                                             ->required(),
                                         Forms\Components\Select::make('shop_customer_id')
@@ -122,18 +125,13 @@ class OrderResource extends Resource
                                             ->getOptionLabelUsing(fn ($value): ?string => Customer::query()->find($value)?->name)
                                             ->required(),
                                         Forms\Components\Select::make('status')
-                                            ->options([
-                                                'new' => 'New',
-                                                'processing' => 'Processing',
-                                                'shipped' => 'Shipped',
-                                                'delivered' => 'Delivered',
-                                                'cancelled' => 'Cancelled',
-                                            ])
-                                            ->required(),
-                                        Forms\Components\Select::make('currency')
-                                            ->searchable()
-                                            ->getSearchResultsUsing(fn (string $query) => Currency::where('name', 'like', "%{$query}%")->pluck('name', 'id'))
-                                            ->getOptionLabelUsing(fn ($value): ?string => Currency::find($value)?->name)
+                                            ->options(
+                                                OrderStatus::query()
+                                                    ->where('shop_id', CacheService::getAccountId())
+                                                    ->orWhere('shop_id', 0)
+                                                    ->pluck('name', 'status_id')
+                                                    ->toArray())
+                                            ->default(101)
                                             ->required(),
 
                                         //нижняя часть основной
@@ -230,25 +228,25 @@ class OrderResource extends Resource
                     ->toggleable(),
 
 //TODO link statuses
-//                Tables\Columns\BadgeColumn::make('status.name')
-//                    ->colors([
-//                        'danger' => 'cancelled',
+                Tables\Columns\BadgeColumn::make('status.name')
+                    ->colors(
+                        Shop::query()->find(CacheService::getAccountId())
+                            ->statuses
+                            ->pluck('type', 'name')
+                            ->toArray()
+
+//                        [
+//                        'danger'  => 'cancelled',
 //                        'warning' => 'processing',
 //                        'success' => fn ($state) => in_array($state, ['delivered', 'shipped']),
-//                    ])
-//                    ->sortable(),
-
-            //TODO валюта
-//                Tables\Columns\TextColumn::make('currency')
-//                    ->getStateUsing(fn ($record): ?string => Currency::find($record->currency)?->name ?? null)
-//                    ->searchable()
-//                    ->sortable()
-//                    ->toggleable(),
+                    )
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('total_price')
+                    ->label('Цена')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('shipping_price')
-                    ->label('Shipping cost')
+                    ->label('Цена закупки')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
@@ -277,7 +275,10 @@ class OrderResource extends Resource
                             );
                     }),
             ])
-            ->bulkActions([]);
+            ->actions([])
+            ->bulkActions([
+                //TODO
+            ]);
     }
 
     //ширин
@@ -301,7 +302,7 @@ class OrderResource extends Resource
     public static function getWidgets(): array
     {
         return [
-            OrderStats::class,
+//            OrderStats::class,
         ];
     }
 
@@ -316,7 +317,7 @@ class OrderResource extends Resource
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['number', 'customer.name'];
+        return ['number'];//, 'customer.name'
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
@@ -330,9 +331,4 @@ class OrderResource extends Resource
     {
         return parent::getGlobalSearchEloquentQuery()->with(['customer', 'items']);
     }
-
-//    protected static function getNavigationBadge(): ?string
-//    {
-//        return static::$model::where('status', 'new')->count();
-//    }
 }

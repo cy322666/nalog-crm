@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Shop;
 use App\Filament\Resources\Shop\CustomerResource\Pages;
 use App\Filament\Resources\Shop\CustomerResource\RelationManagers;
 use App\Models\Shop\Customer;
+use App\Services\CacheService;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationGroup;
@@ -13,21 +14,42 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Squire\Models\Country;
 
 class CustomerResource extends Resource
 {
     protected static ?string $model = Customer::class;
 
+    protected static ?string $pluralModelLabel = 'Клиенты';
+
     protected static ?string $slug = 'shop/customers';
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static ?string $navigationGroup = 'Shop';
+    protected static ?string $navigationLabel = 'Клиенты';
 
-    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+    protected static ?string $navigationIcon = 'heroicon-o-user-add';
 
     protected static ?int $navigationSort = 1;
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Телефон' => $record->phone,
+            'Почта'   => $record->email,
+        ];
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'phone', 'email', 'customer_id'];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string
+    {
+        return $record->name;
+    }
 
     public static function form(Form $form): Form
     {
@@ -134,6 +156,11 @@ class CustomerResource extends Resource
             ]);
     }
 
+//    protected static function getGlobalSearchEloquentQuery(): Builder
+//    {
+//        return parent::getGlobalSearchEloquentQuery()->where('shop_id', CacheService::getAccountId());
+//    }
+
     public static function getRelations(): array
     {
         return [
@@ -152,10 +179,5 @@ class CustomerResource extends Resource
             'create' => Pages\CreateCustomer::route('/create'),
             'edit'   => Pages\EditCustomer::route('/{record}/edit'),
         ];
-    }
-
-    public static function getGloballySearchableAttributes(): array
-    {
-        return ['name', 'email', 'phone'];
     }
 }

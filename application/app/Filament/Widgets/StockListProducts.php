@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Resources\Shop\ProductResource;
 use App\Models\Shop\Stock;
 use App\Services\CacheService;
 use Filament\Tables;
@@ -13,9 +14,6 @@ class StockListProducts extends BaseWidget
 {
     protected int|string|array $columnSpan = 'full';
 
-      //TODO dont work
-    //protected int | string | array $columnSpan = '5xl';
-
     protected static ?int $sort = 2;
 
     protected function getTableHeading(): string|null
@@ -23,42 +21,56 @@ class StockListProducts extends BaseWidget
         return 'Остатки склада';
     }
 
-    public function getDefaultTableRecordsPerPageSelectOption(): int
-    {
-        return 5;
-    }
-
-    protected function isTablePaginationEnabled(): bool
-    {
-        return false;
-    }
+//    public function getDefaultTableRecordsPerPageSelectOption(): int
+//    {
+//        return 5;
+//    }
 
     public function isTableSearchable(): bool
     {
-        return false;
+        return true;
     }
 
     protected function getTableQuery(): Builder
     {
-        $stockId = Request::query('stock') ?? CacheService::getAccountId();
+        $query = Stock::query()->where('shop_id', CacheService::getAccountId());
 
-        return Stock::query()->where('stock_id', $stockId)->first()->products()->getQuery();
+        $stockQuery = Request::query('stock');
+
+        if ($stockQuery) {
+
+            $query->where('stock_id',  $stockQuery);
+        }
+
+        return $query->first()->products()->getQuery();
+    }
+
+    protected function getTableRecordsPerPageSelectOptions(): array
+    {
+        return [15, 30, 50, 100];
     }
 
     protected function getTableColumns(): array
     {
         return [
-            Tables\Columns\TextColumn::make('stock_id')
-                ->label('ID')
-                ->searchable(),
+            Tables\Columns\SpatieMediaLibraryImageColumn::make('product-image')
+                ->label('Картинка')
+                ->collection('product-images'),
             Tables\Columns\TextColumn::make('name')
-                ->label('Name')
+                ->label('Название')
+                ->searchable(),
+            Tables\Columns\TextColumn::make('price')
+                ->label('Цена')
                 ->searchable()
                 ->sortable(),
-            //TODO count
             Tables\Columns\TextColumn::make('description')
                 ->label('Описание')
+                ->searchable()
+                ->toggleable()
                 ->getStateUsing(fn ($record): ?string => mb_strimwidth($record->description, 0, 50, "...")),
+            Tables\Columns\TextColumn::make('count')
+                ->label('Остаток')
+                ->sortable(),
         ];
     }
 }

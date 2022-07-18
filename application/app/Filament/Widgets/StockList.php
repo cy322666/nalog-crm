@@ -11,21 +11,10 @@ use Illuminate\Database\Eloquent\Builder;
 
 class StockList extends BaseWidget
 {
-    protected function getTableDescription(): ?string
-    {
-        return  'Первый/второй уровень или подсклад';
-    }
-
     protected function getTableHeading(): string|Closure|null
     {
         return 'Основные склады';
     }
-
-    //TODO second level stocks
-//    protected int|string|array $columnSpan = 'full';
-
-      //TODO dont work
-    //protected int | string | array $columnSpan = '5xl';
 
     protected static ?int $sort = 2;
 
@@ -47,7 +36,16 @@ class StockList extends BaseWidget
 
     protected function getTableQuery(): Builder
     {
-        return Stock::query()->where('shop_id', CacheService::getAccountId());
+        return Stock::query()
+            ->where('shop_id', CacheService::getAccountId())
+            ->where('parent_stock_id', null);
+    }
+
+    protected function getTableActions(): array
+    {
+        return [
+            Tables\Actions\EditAction::make(), //TODO ????
+        ];
     }
 
     protected function getTableColumns(): array
