@@ -12,7 +12,7 @@ class ButtonActionShopView extends Action
 {
     protected ?\Closure $mutateRecordDataUsing = null;
 
-    public static function make(string $name = 'click'): static
+    public static function make(string|null $name = 'click'): static
     {
         return parent::make($name);
     }

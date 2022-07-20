@@ -18,8 +18,7 @@ class Shop extends Model
 
     public function statuses(): HasMany
     {
-        return $this->hasMany(OrderStatus::class, 'shop_id', 'id')
-            ->orWhere('shop_id', 0);
+        return $this->hasMany(OrderStatus::class)->orWhere('shop_id', 0);
     }
 
     public function tariff(): HasOne
@@ -46,5 +45,15 @@ class Shop extends Model
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
+    }
+
+    public function sources(): BelongsToMany
+    {
+        return $this->belongsToMany(OrderSources::class)->orWhere('shop_id', 0);
+    }
+
+    public function reasons(): BelongsToMany
+    {
+        return $this->belongsToMany(OrderLostReasons::class)->orWhere('shop_id', 0);
     }
 }

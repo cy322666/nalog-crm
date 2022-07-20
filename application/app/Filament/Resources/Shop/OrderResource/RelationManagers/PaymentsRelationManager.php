@@ -67,8 +67,7 @@ class PaymentsRelationManager extends HasManyRelationManager
                 Tables\Columns\TextColumn::make('method')
                     ->formatStateUsing(fn ($state) => Str::headline($state)),
             ])
-            ->filters([
-                //
-            ]);
+            ->filters([])
+            ->actions([]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Resources\Shop\StockResource;
 use App\Models\Shop\Stock;
 use App\Services\CacheService;
 use Closure;
@@ -56,7 +57,7 @@ class StockSecondList extends BaseWidget
                 ->searchable(),
             Tables\Columns\TextColumn::make('name')
                 ->label('Название')
-                ->url(fn ($record) => route('filament.resources.stocks.index', ['stock' => $record->stock_id]))
+                ->url(fn ($record) => StockResource::getUrl('index',['stock' => $record->stock_id]))
                 ->searchable(),
             Tables\Columns\TextColumn::make('created_at')
                 ->label('Дата создания')

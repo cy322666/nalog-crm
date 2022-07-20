@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Shop\OrderResource\Widgets;
 
 use App\Models\Shop\Order;
+use App\Services\CacheService;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Card;
 use Flowframe\Trend\Trend;
@@ -13,7 +14,6 @@ use Flowframe\Trend\TrendValue;
  */
 class OrderStats extends BaseWidget
 {
-    //TODO params query shop_id
     protected function getCards(): array
     {
         $orderData = Trend::model(Order::class)
@@ -26,14 +26,26 @@ class OrderStats extends BaseWidget
 
         return [
             Card::make('Orders', Order::query()
+                ->where('shop_id', CacheService::getAccountId())
                 ->count())
+                ->label('Всего заказов')
                 ->chart(
                     $orderData
                         ->map(fn (TrendValue $value) => $value->aggregate)
                         ->toArray()
                 ),
-            Card::make('В работе', Order::query()->where('closed', false)->count()),
-            Card::make('Средний чек', number_format(Order::avg('total_price'), 2)),
+            Card::make('В работе',
+                Order::query()
+                    ->where('shop_id', CacheService::getAccountId())
+                    ->where('closed', false)
+                    ->count()),
+
+            Card::make('Выиграно на сумму', number_format(
+                Order::query()
+                    ->where('closed', true)
+                    ->where('shop_id', CacheService::getAccountId())
+                    ->sum('total_price'), 2)
+            ),
         ];
     }
 }

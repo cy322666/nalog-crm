@@ -5,16 +5,16 @@ namespace App\Models\Shop;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Service extends Model
+class OrderSources extends Model
 {
     use HasFactory;
 
-    protected $table = 'shop_services';
+    protected $table = 'shop_order_sources';
 
     protected $fillable = [
-        'shop_id',
-        'service_id',
         'name',
-        'price',
+        'source_id',
+        'shop_id',
+        'is_system',
     ];
 }

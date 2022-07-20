@@ -156,10 +156,15 @@ class CustomerResource extends Resource
             ]);
     }
 
-//    protected static function getGlobalSearchEloquentQuery(): Builder
-//    {
-//        return parent::getGlobalSearchEloquentQuery()->where('shop_id', CacheService::getAccountId());
-//    }
+    protected static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->where('shop_id', CacheService::getAccountId());
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccountId());
+    }
 
     public static function getRelations(): array
     {
@@ -176,6 +181,7 @@ class CustomerResource extends Resource
     {
         return [
             'index'  => Pages\ListCustomers::route('/'),
+            'view'   => Pages\ViewCustomer::route('/{record}'),
             'create' => Pages\CreateCustomer::route('/create'),
             'edit'   => Pages\EditCustomer::route('/{record}/edit'),
         ];

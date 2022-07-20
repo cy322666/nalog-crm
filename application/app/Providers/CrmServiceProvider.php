@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Filament\Navigations\Sidebar\NavigationMap;
 use App\Filament\Pages\Profile;
 use App\Filament\Pages\Shops;
+use App\Filament\Resources\Shop\ShopResource;
 use Filament\Facades\Filament;
 use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\UserMenuItem;
@@ -47,15 +48,15 @@ class CrmServiceProvider extends ServiceProvider
 
 
             //user menu
-//            Filament::registerUserMenuItems([
-//
-//                UserMenuItem::make()
-//                    ->label('Аккаунты')
-//                    ->url('shops/list')
-//                    ->icon('heroicon-s-cog'),
-//
-//                //Profile::class
-//            ]);
+            Filament::registerUserMenuItems([
+
+                UserMenuItem::make()
+                    ->label('Аккаунты')
+                    ->url(ShopResource::getUrl())
+                    ->icon('heroicon-s-cog'),
+
+                //Profile::class
+            ]);
 
             //custom colors
             Filament::registerTheme(asset('css/app.css'));
