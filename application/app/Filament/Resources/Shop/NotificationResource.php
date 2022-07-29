@@ -36,10 +36,15 @@ class NotificationResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('message')
+                TextColumn::make('title')
                     ->label('Событие')
                     ->searchable()
                     ->url(fn ($record) => $record->link)
+                    ->sortable(),
+
+                TextColumn::make('message')
+                    ->label('Описание')
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('level')
                     ->label('Тип')
@@ -51,6 +56,10 @@ class NotificationResource extends Resource
                     ->toggleable(),
                 TextColumn::make('created_at')
                     ->label('Дата')
+                    ->dateTime()
+                    ->sortable(),
+                TextColumn::make('read_at')
+                    ->label('Дата просмотра')
                     ->dateTime()
                     ->sortable(),
             ])

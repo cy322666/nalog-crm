@@ -13,8 +13,8 @@ class CreateCategory extends CreateRecord
 
     protected function handleRecordCreation(array $data): Category
     {
-        $data['category_id'] = rand(100000, 999999);
-        $data['shop_id'] = CacheService::getAccountId();
+        $data['category_id'] = rand(100000, 999999);//TODO переместить в форму
+        $data['shop_id'] = CacheService::getAccountId();//TODO hidden field
 
         return static::getModel()::create($data);
     }

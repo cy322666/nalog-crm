@@ -6,9 +6,11 @@ use App\Filament\Resources\Shop\StockResource;
 use App\Models\Shop\Stock;
 use App\Services\CacheService;
 use Closure;
+use Exception;
 use Filament\Tables;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Request;
 
 class StockSecondList extends BaseWidget
 {
@@ -35,18 +37,43 @@ class StockSecondList extends BaseWidget
         return false;
     }
 
-    protected function getTableQuery(): Builder
+    protected function getTableQuery() : Builder
     {
-        return Stock::query()
-            ->where('shop_id', CacheService::getAccountId())
-            ->where('parent_stock_id', '>', 0);
+        $query = Stock::query()->where('shop_id', CacheService::getAccountId());
+
+        $stockQuery = Request::query('stock');
+        $isChildren = Request::query('children');
+
+        if ($stockQuery) {
+
+            if ($isChildren) {
+
+                $query = $query->where('parent_stock_id', '>', 0);
+            } else
+                $query = $query
+                    ->where('stock_id', $stockQuery)
+                    ->first()
+                        ->children()
+                        ->getQuery();
+        } else
+            $query = $query->where('parent_stock_id', '>', 0);
+
+        return $query;
     }
 
+    /**
+     * @throws Exception
+     */
     protected function getTableActions(): array
     {
         return [
-            Tables\Actions\EditAction::make(), //TODO ????
+            Tables\Actions\EditAction::make(),
         ];
+    }
+
+    public function mountTableAction(string $name, ?string $record = null)
+    {
+        $this->redirect(StockResource::getUrl($name, ['record' => $record]));
     }
 
     protected function getTableColumns(): array
@@ -57,7 +84,10 @@ class StockSecondList extends BaseWidget
                 ->searchable(),
             Tables\Columns\TextColumn::make('name')
                 ->label('Название')
-                ->url(fn ($record) => StockResource::getUrl('index',['stock' => $record->stock_id]))
+                ->url(fn ($record) => StockResource::getUrl('index', [
+                    'stock'    => $record->stock_id,
+                    'children' => 1,
+                ]))
                 ->searchable(),
             Tables\Columns\TextColumn::make('created_at')
                 ->label('Дата создания')

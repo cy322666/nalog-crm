@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Shop;
 
 use App\Filament\Forms\Components\AddressForm;
+use App\Filament\Forms\Components\TaskInfoEntity;
 use App\Filament\Resources\Shop\OrderResource\Pages;
 use App\Filament\Resources\Shop\OrderResource\RelationManagers;
 use App\Filament\Resources\Shop\OrderResource\Widgets\OrderStats;
@@ -13,25 +14,27 @@ use App\Models\Shop\OrderStatus;
 use App\Models\Shop\Product;
 use App\Models\Shop\Shop;
 use App\Services\CacheService;
+use App\Services\ModelHelper;
 use Carbon\Carbon;
 use Exception;
 use Filament\Forms;
 use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\ViewField;
 use Filament\Resources\Form;
+use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Squire\Models\Currency;//TODO заменить на мой
 
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
-    protected static ?string $slug = 'shop/orders';
+    protected static ?string $slug = 'orders';//TODO?
 
-    protected static ?string $recordTitleAttribute = 'number';
+    protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?string $navigationLabel = 'Заказы';
 
@@ -43,7 +46,9 @@ class OrderResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
-    public $shop;//TODO заменить билдеры на отношения
+    //TODO подгружать отношения
+    //TODO заменить билдеры на отношения
+    public $shop;
 
     public function __construct()
     {
@@ -52,65 +57,17 @@ class OrderResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return Order::query()->where('shop_id', CacheService::getAccountId());
+        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccountId());
     }
 
-    private static function getHistory()
+    public static function getGlobalSearchResultDetails(Model $record): array
     {
-        $comments = [
-            [
-                'label'   => 'чето там',
-                'content' => 'контент',
-            ],
-            [
-                'label'   => 'чето там',
-                'content' => 'контент',
-            ],
-            [
-                'label'   => 'чето там',
-                'content' => 'контент',
-            ],
-            [
-                'label'   => 'чето там',
-                'content' => 'контент',
-            ],
-            [
-                'label'   => 'чето там',
-                'content' => 'контент',
-            ],
+        return [
+            'Клиент' => optional($record->customer)->name,
+            'Статус' => optional($record->status)->name,
         ];
-
-//        $components = [];
-//
-//        foreach ($comments as $comment) {
-//
-//            $components[] = Forms\Components\Placeholder::make('')
-//                ->label($comment['label'])
-//                ->content(fn (?Order $record): string => $comment['content']);
-//        }
-
-//        return $components;
     }
 
-//    protected function getFormModel(): Order
-//    {
-//        return $this->order;
-//    }
-
-
-//история
-//Forms\Components\Group::make()
-//->schema([
-//Forms\Components\Card::make()
-//->schema(self::getHistory())
-//->columnSpan(1),
-//
-//Forms\Components\Textarea::make('')
-//->columnSpan(1)
-//->reactive()
-//
-//])
-//->columns(1),
     /**
      * @throws Exception
      */
@@ -129,22 +86,22 @@ class OrderResource extends Resource
                                 Forms\Components\Card::make()
                                     ->schema([
 
-                                        Forms\Components\TextInput::make('number')
+                                        Forms\Components\TextInput::make('name')
                                             ->label('Название')
                                             ->columnSpan(1),
 
-                                        Forms\Components\Select::make('status')
+                                        Forms\Components\Select::make('status.name')
                                             ->label('Статус')
                                             ->options(
                                                 OrderStatus::query()
                                                     ->where('shop_id', CacheService::getAccountId())
                                                     ->orWhere('shop_id', 0)
-                                                    ->pluck('name', 'status_id')
+                                                    ->pluck('name', 'id')
                                                     ->toArray()
                                             )
                                             ->default(101),
 
-                                        Forms\Components\TextInput::make('total_price')
+                                        Forms\Components\TextInput::make('price')
                                             ->hint('Pубли')
                                             ->label('Бюджет')
                                             ->columnSpan(1),
@@ -155,18 +112,16 @@ class OrderResource extends Resource
                                                 OrderSources::query()
                                                     ->where('shop_id', CacheService::getAccountId())
                                                     ->orWhere('shop_id', 0)
-                                                    ->pluck('name', 'source_id')
+                                                    ->pluck('name', 'id')
                                                     ->toArray())
                                             ->required(),
 
                                         //TODO обязательность при закрытии как то сделать
-//                                        Forms\Components\Select::make('reasons')
-//                                            ->label('Причина отказа')
-//                                            ->options(
-//                                                Shop::query()->find(CacheService::getAccountId())->reasons->toArray()
-//                                            )
-//                                            ->required()
-//                                            ->reactive(),
+                                        Forms\Components\Select::make('reasons')
+                                            ->label('Причина отказа')
+                                            ->options(
+                                                Shop::query()->find(CacheService::getAccountId())->reasons->pluck('name', 'reason_id')->toArray()
+                                            ),
 
                                         //нижняя часть основной
                                         //TODO сделать тут custom поля
@@ -178,64 +133,7 @@ class OrderResource extends Resource
                                         'sm' => 2,
                                     ]),
                                 ]),
-                        Tabs\Tab::make('Товары')
-                            ->schema([
-                                //форма с товарами
-                                Forms\Components\Card::make()
-                                    ->schema([
-                                        Forms\Components\Repeater::make('items')
-                                            ->relationship()
-                                            ->schema([
-                                                Forms\Components\Select::make('shop_product_id')
-                                                    ->label('Product')
-                                                    ->options(//TODO поиск
-                                                        Product::query()->pluck('name', 'id'))
-                                                    ->required()
-                                                    ->reactive()
-                                                    ->afterStateUpdated(function ($state, callable $set) {
 
-                                                        return $set('unit_price', Product::find($state)?->price ?? 0);
-                                                    })
-                                                    ->columnSpan([
-                                                        'md' => 5,
-                                                    ]),
-                                                Forms\Components\TextInput::make('qty')
-                                                    ->numeric()
-                                                    ->mask(
-                                                        fn (Forms\Components\TextInput\Mask $mask) => $mask
-                                                            ->numeric()
-                                                            ->integer()
-                                                    )
-                                                    ->default(1)
-                                                    ->columnSpan([
-                                                        'md' => 2,
-                                                    ])
-                                                    ->required(),
-                                                Forms\Components\TextInput::make('unit_price')
-                                                    ->label('Unit Price')
-                                                    ->disabled()
-                                                    ->numeric()
-                                                    ->required()
-                                                    ->columnSpan([
-                                                        'md' => 3,
-                                                    ]),
-                                            ])
-                                            ->dehydrated()
-                                            ->orderable()
-                                            ->defaultItems(1)
-                                            ->disableLabel()
-                                            ->columns([
-                                                'md' => 10,
-                                            ])
-                                            ->required(),
-                                    ]),//TODO рассчитать сумму
-                                ]),
-
-                        Tabs\Tab::make('Услуги')
-                            ->schema([
-
-
-                            ]),
                     ])->columnSpan([
                         'sm' => 2,
                     ]),
@@ -243,14 +141,11 @@ class OrderResource extends Resource
                 Forms\Components\Group::make([
                     Forms\Components\Card::make()
                         ->schema([
-                            Forms\Components\TextInput::make('number')
-                                ->label('Номер заказа')
-                                ->default(
-                                    ++Order::query()
-                                        ->where('shop_id', CacheService::getAccountId())
-                                        ->latest('id')//TODO order_id
-                                        ->first()
-                                        ->id)
+                                Forms\Components\TextInput::make('order_id')
+                                    ->label('ID')
+                                    ->default(
+                                        ModelHelper::generateId(self::$model, 'order_id')
+                                    )
                                 ->disabled(),
                             Forms\Components\Placeholder::make('created_at')
                                 ->label('Создан')
@@ -285,20 +180,8 @@ class OrderResource extends Resource
                         ->columnSpan(1),
                     Forms\Components\Card::make()
                         ->schema([
-                            Forms\Components\Select::make('shop_customer_id')
-                                ->label('Задача'),
-//                                ->relationship('customer', 'name')
-//                                ->searchable()
-//                                ->getSearchResultsUsing(function (string $query) {
-//
-//                                    return Customer::query()
-//                                        ->where('shop_id', CacheService::getAccountId())
-//                                        ->where('name', 'like', "%{$query}%")
-//                                        ->pluck('name', 'id')
-//                                        ->toArray();
-//                                })
-//                                ->getOptionLabelUsing(fn ($value): ?string => Customer::query()->find($value)?->name)
-//                                ->required(),
+                            ViewField::make('task')
+                                ->view(TaskInfoEntity::$viewName),
                         ])
                         ->columnSpan(1),
                 ]),
@@ -313,7 +196,7 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('number')
+                Tables\Columns\TextColumn::make('order_id')
                     ->label('ID')
                     ->searchable()
                     ->sortable(),
@@ -324,10 +207,11 @@ class OrderResource extends Resource
                     ->toggleable(),
 //TODO customer.type
 //TODO link statuses
-                Tables\Columns\BadgeColumn::make('status.name')
+                Tables\Columns\BadgeColumn::make('statuses.name')
                     ->label('Статус')
                     ->colors(
-                        Shop::query()->find(CacheService::getAccountId())
+                        Shop::query()
+                            ->find(CacheService::getAccountId())
                             ->statuses
                             ->pluck('type', 'name')
                             ->toArray()
@@ -338,15 +222,10 @@ class OrderResource extends Resource
 //                        'success' => fn ($state) => in_array($state, ['delivered', 'shipped']),
                     )
                     ->sortable(),
-                Tables\Columns\TextColumn::make('total_price')
-                    ->label('Цена')
+                Tables\Columns\TextColumn::make('price')
+                    ->label('Бюджет')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('shipping_price')
-                    ->label('Цена закупки')
-                    ->searchable()
-                    ->sortable()
-                    ->toggleable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Создан')
                     ->date()
@@ -393,6 +272,7 @@ class OrderResource extends Resource
     public static function getRelations(): array
     {
         return [
+            RelationManagers\ProductsRelationManager::class,
             RelationManagers\PaymentsRelationManager::class,
         ];
     }
@@ -408,7 +288,7 @@ class OrderResource extends Resource
     {
         return [
             'index'   => Pages\ListOrders::route('/'),
-            'view'    => Pages\ViewOrder::route('/{record}'),
+//            'view'    => Pages\ViewOrder::route('/{record}'),
             'settings'=> Pages\ListSettingOrder::route('/settings'),
             'create'  => Pages\CreateOrder::route('/create'),
             'edit'    => Pages\EditOrder::route('/{record}/edit'),
@@ -417,18 +297,11 @@ class OrderResource extends Resource
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['number'];//, 'customer.name'
-    }
-
-    public static function getGlobalSearchResultDetails(Model $record): array
-    {
-        return [
-            'Customer' => optional($record->customer)->name,
-        ];
+        return ['name', 'customer.name'];
     }
 
     protected static function getGlobalSearchEloquentQuery(): Builder
     {
-        return parent::getGlobalSearchEloquentQuery()->with(['customer', 'items']);
+        return parent::getGlobalSearchEloquentQuery()->with(['customer']);
     }
 }

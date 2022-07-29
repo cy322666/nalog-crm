@@ -2,13 +2,12 @@
 
 namespace App\Models\Shop;
 
-use App\Traits\Models\GenerateExternalId;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class OrderStatus extends Model
 {
-    use HasFactory, GenerateExternalId;
+    use HasFactory;
 
     protected $table = 'shop_order_statuses';
 

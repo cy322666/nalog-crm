@@ -2,12 +2,13 @@
 
 namespace App\Facades;
 
+use App\Services\Event\EventService;
 use Illuminate\Support\Facades\Facade;
 
-class Events extends Facade
+class EventLogger extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return 'events';
+        return EventService::class;
     }
 }

@@ -28,10 +28,22 @@ class Task extends Model
         'is_failed',
     ];
 
+    public function link()
+    {
+        $resourceModel = $this->model_type::$resource;
+
+        return $resourceModel::getUrl('view', ['record' => $this->model_id]);
+    }
+
     public function order()
     {
         return $this->belongsTo(Order::class, 'entity_id', 'id')
             ->where('entity_type', 'order');
+    }
+
+    public function responsibleName()
+    {
+        return $this->responsible()->first()->name;
     }
 
     //TODO employee -> user
@@ -52,6 +64,14 @@ class Task extends Model
             ->where('model_type', Customer::class);
     }
 
+    public function label()
+    {
+        $propertyName = $this->model_type::$propertyForTaskTitle;
+
+        return (new $this->model_type)->find($this->model_id)->$propertyName;
+    }
+
+    //TODO no use
     public function type()
     {
         return $this->hasOne(TaskType::class, 'id', 'type_id');

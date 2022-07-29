@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
 
-            $table->string('model', 100);
+            $table->integer('model');
             $table->bigInteger('model_id');
             $table->string('text', 150);
             $table->bigInteger('shop_id');

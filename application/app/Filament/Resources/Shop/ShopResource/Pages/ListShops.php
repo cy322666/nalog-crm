@@ -9,8 +9,6 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ListShops extends ListRecords
 {
-    protected null|string $maxContentWidth = '5xl';
-
     protected static string $resource = ShopResource::class;
 
     protected function getTitle(): string

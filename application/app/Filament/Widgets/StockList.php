@@ -9,6 +9,7 @@ use Closure;
 use Filament\Tables;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 
 class StockList extends BaseWidget
 {
@@ -42,10 +43,18 @@ class StockList extends BaseWidget
             ->where('parent_stock_id', null);
     }
 
+    public function mountTableAction(string $name, ?string $record = null)
+    {
+       $this->redirect(StockResource::getUrl($name, ['record' => $record]));
+    }
+
+    /**
+     * @throws \Exception
+     */
     protected function getTableActions(): array
     {
         return [
-            Tables\Actions\EditAction::make(), //TODO ????
+            Tables\Actions\EditAction::make(),
         ];
     }
 

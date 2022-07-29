@@ -9,11 +9,22 @@ class CacheService
 {
     public static function setAccountId(int $accountId)
     {
-        Cache::put('user_'.Auth::user()?->id.'_account', $accountId);
+        Cache::put('user_'.Auth::user()->id.'_account', $accountId);
+    }
+
+    public static function deleteAccountId()
+    {
+        Cache::forget('user_'.Auth::user()->id.'_account');
     }
 
     public static function getAccountId()
     {
-        return Cache::get('user_'.Auth::user()?->id.'_account');
+        $accountId = Cache::get('user_'.Auth::user()->id.'_account');
+
+        if (!$accountId) {
+
+            redirect(route('filament.auth.login'));
+        } else
+            return $accountId;
     }
 }

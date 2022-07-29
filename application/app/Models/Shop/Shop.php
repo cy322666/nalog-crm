@@ -52,8 +52,8 @@ class Shop extends Model
         return $this->belongsToMany(OrderSources::class)->orWhere('shop_id', 0);
     }
 
-    public function reasons(): BelongsToMany
+    public function reasons(): HasMany
     {
-        return $this->belongsToMany(OrderLostReasons::class)->orWhere('shop_id', 0);
+        return $this->HasMany(OrderLostReasons::class)->orWhere('shop_id', 0);
     }
 }

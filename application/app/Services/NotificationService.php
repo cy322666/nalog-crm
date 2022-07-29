@@ -37,9 +37,6 @@ class NotificationService extends Notification
                 ->hidden(fn($record) => $record->read()) // Use $record to access/update notification, this is DatabaseNotification model
                 ->action(function ($record, $livewire) {
 
-
-                    $record->markAsRead();
-                    $livewire->refresh(); // $livewire can be used to refresh ou reset notification feed
                 })
 //                ->outlined(),
                 ->color('danger'),

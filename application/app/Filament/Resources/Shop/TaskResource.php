@@ -77,17 +77,20 @@ class TaskResource extends Resource
                         Card::make()
                             ->schema([
                                 ViewField::make('')
-                                    ->view('forms.components.task-work-days-label')
+                                    ->view('forms.components.task-work-days-label')//TODO static
                                     ->label('0'),//TODO
                                 ViewField::make('')
-                                    ->view('forms.components.task-count-failed-label')
+                                    ->view('forms.components.task-count-failed-label')//TODO static
                                     ->label('0')//TODO
-                        ]),
+                            ]),
 
                     ])->columns(1),
-           ])->columns(2);
+            ])->columns(2);
     }
 
+    /**
+     * @throws \Exception
+     */
     public static function table(Table $table): Table
     {
         return $table
@@ -99,12 +102,12 @@ class TaskResource extends Resource
                 Tables\Columns\TextColumn::make('text')
                     ->label('Описание')
                     ->searchable()
-                    ->getStateUsing(fn ($record): ?string => mb_strimwidth($record->text, 0, 50, "...")),
+                    ->getStateUsing(fn($record): ?string => mb_strimwidth($record->text, 0, 50, "...")),
                 Tables\Columns\TextColumn::make('model')
                     ->label('Объект')
                     ->url(function ($record) {
 
-                        return $record->model_type::$resource::getUrl('edit', [ $record->model_id ]);
+                        return $record->model_type::$resource::getUrl('edit', [$record->model_id]);//TODO refactoring
                     })
                     ->sortable()
                     ->getStateUsing(function ($record) {
@@ -121,12 +124,12 @@ class TaskResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Создана')
                     ->sortable()
-                    ->date()
+                    ->dateTime()
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('execute_at')
                     ->label('Дата выполнения')
                     ->sortable()
-                    ->date()
+                    ->dateTime()
                     ->toggleable(),
 //                Tables\Columns\BooleanColumn::make('failed')
 //                    ->label('Была просрочена')
@@ -137,13 +140,13 @@ class TaskResource extends Resource
                 //TODO https://github.com/webbingbrasil/filament-advancedfilter
                 ///resources/lang/vendor/filament-advancedfilter]
 
-                NumberFilter::make('quantity'),//
+//                NumberFilter::make('quantity'),//
 
-                TextFilter::make('title'),//
+//                TextFilter::make('title'),//
 
-                DateFilter::make('created_at'),//TODO dont work
+//                DateFilter::make('created_at'),//TODO dont work
 
-                BooleanFilter::make('is_active'),//
+//                BooleanFilter::make('is_active'),//
 
                 Tables\Filters\Filter::make('created_at')
                     ->form([
@@ -160,7 +163,7 @@ class TaskResource extends Resource
 //                            )
                             ->when(
                                 $data['execute_at'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('execute_at', '<=', $date),
+                                fn(Builder $query, $date): Builder => $query->whereDate('execute_at', '<=', $date),
                             );
                     }),
 //TODO просрочены
@@ -196,20 +199,8 @@ class TaskResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Shop\TaskResource\Pages\ListTasks::route('/'),
+            'index'  => Shop\TaskResource\Pages\ListTasks::route('/'),
+            'kanban' => Shop\TaskResource\Pages\KanbanTask::route('/kanban'),
         ];
     }
-
-    //TODO полезно
-    // ->helperText('The safety stock is the limit stock for your products which alerts you if the product stock will soon be out of stock.')
-//TODO полезно
-//                    $layout::make()
-//                        ->schema([
-//                            Placeholder::make('Shipping'),
-//                            Checkbox::make('backorder')
-//                                ->label('This product can be returned'),
-//                            Checkbox::make('requires_shipping')
-//                                ->label('This product will be shipped'),
-//                        ])
-//                        ->columns(1),
 }

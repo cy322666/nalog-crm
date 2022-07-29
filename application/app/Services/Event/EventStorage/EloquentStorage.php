@@ -1,24 +1,28 @@
 <?php
 
-namespace App\Services\Event\EventStrategy;
+namespace App\Services\Event\EventStorage;
 
 use App\Models\Shop\Event;
 use App\Services\Event\EventDto;
-use App\Services\Event\EventStrategyInterface;
 
-class EloquentStrategy implements EventStrategyInterface
+class EloquentStorage implements EventStorageInterface
 {
-    public function __construct(private Event $model) {}
+    private Event $model;
+
+    public function __construct() {
+        $this->model = new Event;
+    }
 
     public function set(EventDto $event)
     {
         $this->model
-            ->query()->create([
-                'model'    => $event->model,
+            ->query()
+            ->create([
+                'model'    => $event->modelTypeId,
                 'model_id' => $event->modelId,
-                'text'     => $event->text,
+                'title'    => $event->title,
                 'shop_id'  => $event->shopId,
-                'type'     => $event->type,
+                'type'     => $event->typeId,
                 'author_name' => $event->authorName,
             ]);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Filament\Resources\Shop\NotificationResource;
 use App\Modules\Notification\Concerns\HasActions;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
@@ -10,6 +11,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Notifications\DatabaseNotification;
 use App\Modules\Notification\Actions\Concerns\HasAction;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Livewire\Component;
@@ -24,72 +26,42 @@ class Notification extends Component implements Forms\Contracts\HasForms
     use Forms\Concerns\InteractsWithForms;
 
     protected $feed;
-    public $totalUnread;
+    public int $totalUnread;
+    public Collection $notifications;
 
-    public function boot()
+    public function boot() {}
+
+    public function reading()
     {
-        $this->refresh();
+        Auth::user()
+            ->unreadNotifications()
+            ->getQuery()
+            ->update([
+                'read_at' => Carbon::now(),
+                'is_read' => true,
+            ]);
+
+        $this->render();
     }
 
-    public function refresh()
+    public function notificationPage()
     {
-        $this->hydrateNotificationFeed();
-        $this->prepareActions();
-    }
-
-    public function hydrateNotificationFeed()
-    {
-        $this->feed = Auth::user()
-            ->notifications()
-            ->orderByDesc('created_at')
-            ->limit(Config::get('crm-notification.limit'))
-            ->get();
-
-        $this->totalUnread = Auth::user()->unreadNotifications()->count();
-    }
-
-    public function markAllAsRead()
-    {
-        Auth::user()->unreadNotifications()->update(['read_at' => now()]);
-        $this->refresh();
-    }
-
-    protected function getForms(): array
-    {
-        return [
-            'mountedNotificationActionForm' => $this->makeForm()
-                ->schema(($action = $this->getMountedNotificationAction()) ? $action->getFormSchema() : [])
-                ->model($this->getMountedNotificationActionRecord() ?? DatabaseNotification::class)
-                ->statePath('mountedNotificationActionData'),
-        ];
-    }
-
-    protected function resolveNotificationRecord(?string $key): ?Model
-    {
-        return DatabaseNotification::find($key);
-    }
-
-    protected function prepareActions(): void
-    {
-        foreach ($this->feed as $notification) {
-            if (isset($this->cachedNotificationActions[$notification->type])) {
-                continue;
-            }
-            $actions = [];
-            if(method_exists($notification->type, 'notificationFeedActions')) {
-                $actions = call_user_func([$notification->type, 'notificationFeedActions']);
-            }
-            $this->cacheNotificationActions($notification->type, $actions);
-        }
+        redirect(NotificationResource::getUrl());
     }
 
     /**
      * @return Application|Factory|View
      */
-    public function render()
+    public function render(): View|Factory|Application
     {
+        $unreadQuery = Auth::user()->unreadNotifications();
+
+        $this->totalUnread = $unreadQuery->count();
+
+        $this->notifications = $unreadQuery->limit(Config::get('crm-notification.limit'))->get();
+
         return view('livewire.notification', [
-            'notifications' => $this->feed
+            'notifications' => $this->notifications,
         ]);
     }
 }

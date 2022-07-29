@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Shop\CustomerResource\Pages;
 
 use App\Filament\Resources\Shop\CustomerResource;
+use Filament\Pages\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Tables;
 
@@ -31,10 +32,10 @@ class ListCustomers extends ListRecords
         return [25, 50, 100, 150];
     }
 
-//    protected function getTableBulkActions(): array
+//    protected function getActions(): array
 //    {
 //        return [
-//
+//            CreateAction::make('sads'),
 //        ];
 //    }
 }

@@ -180,6 +180,8 @@ return [
         \App\Providers\CrmServiceProvider::class,
 
         \App\Providers\NotificationProvider::class,
+
+        \App\Providers\AnalyticsProvider::class,
     ],
 
     /*
@@ -235,7 +237,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
-        'Events' => \App\Facades\Events::class,
+        'EventLogger' => \App\Services\Event\EventService::class,
     ],
 
 ];

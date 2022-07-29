@@ -7,6 +7,7 @@ use App\Filament\Resources\Shop\ProductResource\RelationManagers;
 use App\Filament\Resources\Shop\ProductResource\Widgets\ProductStats;
 use App\Models\Shop\Product;
 use App\Services\CacheService;
+use App\Services\ModelHelper;
 use Filament\Forms;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Resources\Form;
@@ -21,7 +22,7 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $slug = 'shop/products';
+    protected static ?string $slug = 'products';
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -78,7 +79,7 @@ class ProductResource extends Resource
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['name', 'sku'];
+        return ['name', 'sku', 'barcode'];
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
@@ -93,9 +94,13 @@ class ProductResource extends Resource
 
     protected static function getGlobalSearchEloquentQuery(): Builder
     {
-        return self::getEloquentQuery();
+        return self::getEloquentQuery()->where('shop_id', CacheService::getAccountId());
     }
 
+    //TODO категории
+    /**
+     * @throws \Exception
+     */
     public static function getFormSchema(string $layout = Forms\Components\Grid::class): array
     {
         return [
@@ -116,49 +121,60 @@ class ProductResource extends Resource
                         ]),
                     $layout::make()
                         ->schema([
-                            Forms\Components\Placeholder::make('Pricing'),
+                            Forms\Components\Placeholder::make('Стоимость'),
                             Forms\Components\Grid::make()
                                 ->schema([
                                     Forms\Components\TextInput::make('price')
                                         ->numeric()
                                         ->rules(['regex:/^\d{1,6}(\.\d{0,2})?$/'])
-                                        ->required(),
-                                    Forms\Components\TextInput::make('old_price')
-                                        ->label('Compare at price')
-                                        ->numeric()
-                                        ->rules(['regex:/^\d{1,6}(\.\d{0,2})?$/'])
+                                        ->label('Цена продажи')
                                         ->required(),
                                     Forms\Components\TextInput::make('cost')
-                                        ->label('Cost per item')
-                                        ->helperText('Customers won\'t see this price.')
+                                        ->label('Закупочная цена')
                                         ->numeric()
                                         ->rules(['regex:/^\d{1,6}(\.\d{0,2})?$/'])
                                         ->required(),
+                                    Forms\Components\TextInput::make('old_price')
+                                        ->numeric()
+                                        ->rules(['regex:/^\d{1,6}(\.\d{0,2})?$/'])
+                                        ->label('Старая цена')
+                                        ->disabled(),
                                 ]),
                         ]),
                     $layout::make()
                         ->schema([
-                            Forms\Components\Placeholder::make('Inventory'),
+                            Forms\Components\Placeholder::make('Учет'),
                             Forms\Components\Grid::make()
                                 ->schema([
                                     Forms\Components\TextInput::make('sku')
-                                        ->label('SKU (Stock Keeping Unit)')
+                                        ->label('Артикул')
                                         ->unique(Product::class, 'sku', fn ($record) => $record)
                                         ->required(),
                                     Forms\Components\TextInput::make('barcode')
-                                        ->label('Barcode (ISBN, UPC, GTIN, etc.)')
+                                        ->label('Штрихкод')
                                         ->unique(Product::class, 'barcode', fn ($record) => $record)
                                         ->required(),
                                     Forms\Components\TextInput::make('qty')
-                                        ->label('Quantity')
+                                        ->label('Количество')
                                         ->numeric()
                                         ->rules(['integer', 'min:0'])
+                                        ->required(),
+                                    Forms\Components\Select::make('weight_unit')//TODO справочник
+                                        ->label('Единица измерения')
+                                        ->options([
+                                            'кг' => 'кг',
+                                            'шт' => 'шт',
+                                        ])
                                         ->required(),
                                     Forms\Components\TextInput::make('security_stock')
-                                        ->helperText('The safety stock is the limit stock for your products which alerts you if the product stock will soon be out of stock.')
+                                        ->label('Неснижаемый остаток')
+                                        ->helperText('Количество товара, при котором вы будете оповещены')
                                         ->numeric()
                                         ->rules(['integer', 'min:0'])
                                         ->required(),
+
+                                    Forms\Components\Hidden::make('shop_id')
+                                        ->default(CacheService::getAccountId())
                                 ]),
                         ]),
 
@@ -167,6 +183,11 @@ class ProductResource extends Resource
                 ]),
             Forms\Components\Card::make()
                 ->schema([
+                    Forms\Components\TextInput::make('product_id')
+                        ->label('ID')
+                        ->default(
+                            ModelHelper::generateId(self::$model, 'product_id'))
+                        ->disabled(),
                     Forms\Components\Placeholder::make('created_at')
                         ->label('Создан')
                         ->content(fn (?Product $record): string => $record ? $record->created_at->diffForHumans() : '-'),

@@ -12,20 +12,38 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class ServiceResource extends Resource
 {
     protected static ?string $model = Service::class;
 
+    protected static ?string $pluralLabel = 'Услуги';
+
     protected static ?string $navigationLabel = 'Услуги';
 
-    protected static ?string $modelLabel = 'Услугу';
+    protected static ?string $modelLabel = 'Услуги';
+
+    protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?string $navigationIcon = 'heroicon-o-briefcase';
 
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->where('shop_id', CacheService::getAccountId());
+    }
+
+    protected static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->where('shop_id', CacheService::getAccountId());
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Стоимость' => $record->price,
+            'ID' => $record->service_id,
+        ];
     }
 
     public static function form(Form $form): Form
@@ -40,7 +58,7 @@ class ServiceResource extends Resource
                                     ->label('Название')
                                     ->required(),
                                 Forms\Components\TextInput::make('price')
-                                    ->label('Цена')
+                                    ->label('Стоимость')
                                     ->required()//TODO check validate
                             ]),
                     ])
@@ -101,6 +119,11 @@ class ServiceResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['service_id', 'name'];
     }
 
     public static function getPages(): array

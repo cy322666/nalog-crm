@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Shop;
 
+use App\Filament\Pages\Analytics;
 use App\Filament\Resources\Shop\ReportResource\Pages;
 use App\Models\Shop\Report;
 use Filament\Forms;

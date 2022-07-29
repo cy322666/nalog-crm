@@ -52,6 +52,8 @@ class Product extends Model implements HasMedia
         'depth_unit',
         'volume_value',
         'volume_unit',
+        'product_id',
+        'shop_id',
     ];
 
     /**
@@ -73,6 +75,11 @@ class Product extends Model implements HasMedia
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class, 'shop_category_product', 'shop_category_id', 'shop_product_id');
+    }
+
+    public function orders(): BelongsToMany
+    {
+        return $this->belongsToMany(Order::class, 'shop_order_product', 'shop_product_id', 'shop_order_id');
     }
 
     public function comments(): MorphMany

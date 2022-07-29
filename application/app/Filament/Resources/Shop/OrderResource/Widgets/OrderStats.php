@@ -44,7 +44,7 @@ class OrderStats extends BaseWidget
                 Order::query()
                     ->where('closed', true)
                     ->where('shop_id', CacheService::getAccountId())
-                    ->sum('total_price'), 2)
+                    ->sum('price'), 2)
             ),
         ];
     }

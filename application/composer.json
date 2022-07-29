@@ -16,6 +16,7 @@
         "flowframe/laravel-trend": "^0.1.1",
         "fruitcake/laravel-cors": "^2.0.5",
         "guzzlehttp/guzzle": "^7.2",
+        "invaders-xx/filament-kanban-board": "^0.2.6",
         "laravel/framework": "v9.0.0",
         "laravel/octane": "^1.2",
         "laravel/sanctum": "^2.14",
@@ -25,7 +26,8 @@
         "spatie/laravel-medialibrary": "10.3",
         "squirephp/countries-en": "^3.3",
         "squirephp/currencies-en": "^3.3",
-        "webbingbrasil/filament-advancedfilter": "dev-main"
+        "webbingbrasil/filament-advancedfilter": "dev-main",
+      "ext-gmp": "*"
     },
     "require-dev": {
         "laravel/telescope": "^4.9",

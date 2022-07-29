@@ -2,8 +2,6 @@
 
 namespace App\Filament\Resources\Shop;
 
-//use App\Filament\Resources\EventResource\Pages;
-//use App\Filament\Resources\EventResource\RelationManagers;
 use App\Filament\Resources\Shop;
 use App\Models\Shop\Event;
 use App\Services\CacheService;
@@ -28,9 +26,7 @@ class EventResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return Event::query()
-            ->where('shop_id', CacheService::getAccountId())
-            ->orderByDesc('created_at');
+        return Event::query()->where('shop_id', CacheService::getAccountId());
     }
 
     public static function table(Table $table): Table
@@ -45,9 +41,6 @@ class EventResource extends Resource
                 Tables\Columns\TextColumn::make('title')
                     ->label('Название')
                     ->searchable(),
-//                Tables\Columns\TextColumn::make('model_id')
-//                    ->label('ID сущности')
-//                    ->toggleable(),
                 Tables\Columns\TextColumn::make('text')
                     ->label('Событие')
                     ->sortable(),
@@ -59,6 +52,7 @@ class EventResource extends Resource
                     ->dateTime()
                     ->sortable(),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 //TODO
             ])

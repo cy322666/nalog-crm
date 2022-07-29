@@ -2,29 +2,33 @@
 
 namespace App\Filament\Resources\Shop\CustomerResource\Pages;
 
-use App\Facades\Events;
+use App\Facades\EventLogger;
 use App\Filament\Resources\Shop\CustomerResource;
-use App\Models\Shop\Customer;
 use App\Services\CacheService;
 use App\Services\Event\EventDto;
+use App\Services\Event\EventService;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 
 class EditCustomer extends EditRecord
 {
     protected static string $resource = CustomerResource::class;
 
-    protected function afterSave(Customer $customer): void
+    protected function afterSave(): void
     {
-//        Events::set(new EventDto(
-//            Customer::class,
-//            $customer->id,
-//            'Обновление',
-//            CacheService::getAccountId(),
-//            'updated',
-//            Auth::user()->name,
-//        ));
+        EventLogger::set(new EventDto(
+            CustomerResource::MODEL_TYPE,
+            $this->record->id,
+            EventService::CUSTOMER_UPDATED_TEXT,
+            CacheService::getAccountId(),
+            EventService::UPDATED_TYPE,
+            Auth::user()->name,
+        ));
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return CustomerResource::getUrl('view', ['record' => $this->record]);
     }
 }
 

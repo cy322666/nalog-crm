@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Filament\Navigations\Sidebar\NavigationMap;
+use App\Filament\Pages\Import;
 use App\Filament\Pages\Profile;
 use App\Filament\Pages\Shops;
+use App\Filament\Resources\Shop\ImportResource;
 use App\Filament\Resources\Shop\ShopResource;
 use Filament\Facades\Filament;
 use Filament\Navigation\NavigationBuilder;
@@ -46,12 +48,21 @@ class CrmServiceProvider extends ServiceProvider
                 fn (): string => Blade::render('@livewire(\'notification\')')
             );
 
-
             //user menu
             Filament::registerUserMenuItems([
 
                 UserMenuItem::make()
                     ->label('Аккаунты')
+                    ->url(ShopResource::getUrl())
+                    ->icon('heroicon-s-cog'),
+
+                UserMenuItem::make()
+                    ->label('Импорт')
+                    ->url(ImportResource::getUrl())
+                    ->icon('heroicon-s-cog'),
+
+                UserMenuItem::make()
+                    ->label('Экспорт')
                     ->url(ShopResource::getUrl())
                     ->icon('heroicon-s-cog'),
 

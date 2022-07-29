@@ -33,6 +33,6 @@ class Stock extends Model
 
     public function children(): HasMany
     {
-        return $this->hasMany(Stock::class, 'id', 'parent_stock_id');
+        return $this->hasMany(Stock::class, 'parent_stock_id', 'id');
     }
 }

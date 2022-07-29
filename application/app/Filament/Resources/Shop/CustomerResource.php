@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources\Shop;
 
+use App\Filament\Forms\Components\TaskInfoEntity;
 use App\Filament\Resources\Shop\CustomerResource\Pages;
 use App\Filament\Resources\Shop\CustomerResource\RelationManagers;
 use App\Models\Shop\Customer;
 use App\Services\CacheService;
 use Filament\Forms;
+use Filament\Forms\Components\ViewField;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Resources\Resource;
@@ -19,19 +21,21 @@ use Squire\Models\Country;
 
 class CustomerResource extends Resource
 {
+    public const MODEL_TYPE = 1;
+
     protected static ?string $model = Customer::class;
 
     protected static ?string $pluralModelLabel = 'Клиенты';
 
-    protected static ?string $slug = 'shop/customers';
+    protected static ?string $slug = 'customers';
 
-    protected static ?string $recordTitleAttribute = 'name';
+    protected static ?string $recordTitleAttribute = 'name';//TODO?
 
     protected static ?string $navigationLabel = 'Клиенты';
 
     protected static ?string $navigationIcon = 'heroicon-o-user-add';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 1;//TODO ?
 
     public static function getGlobalSearchResultDetails(Model $record): array
     {
@@ -58,8 +62,10 @@ class CustomerResource extends Resource
                 Forms\Components\Card::make()
                     ->schema([
                         Forms\Components\TextInput::make('name')
+                            ->label('Имя')
                             ->required(),
                         Forms\Components\TextInput::make('email')
+                            ->label('Почта')
                             ->email()
                             ->unique(Customer::class, 'email', fn ($record) => $record),
                         Forms\Components\TextInput::make('phone')
@@ -68,12 +74,8 @@ class CustomerResource extends Resource
                             ->mask(
                                 fn ($mask) => $mask->pattern('+{7}(000)000-00-00')//TODO msk
                             ),
-                        Forms\Components\DatePicker::make('birthday'),
-                        Forms\Components\SpatieTagsInput::make('tags')->type('customers'),
-                        Forms\Components\Select::make('gender')->options([
-                            'male' => 'male',
-                            'female' => 'female',
-                        ])
+                        Forms\Components\DatePicker::make('birthday')
+                            ->label('Дата рождения'),
                     ])
                     ->columns([
                         'sm' => 2,
@@ -81,16 +83,24 @@ class CustomerResource extends Resource
                     ->columnSpan([
                         'sm' => 2,
                     ]),
-                Forms\Components\Card::make()
-                    ->schema([
-                        Forms\Components\Placeholder::make('created_at')
-                            ->label('Создан')
-                            ->content(fn (?Customer $record): string => $record ? $record->created_at->diffForHumans() : '-'),
-                        Forms\Components\Placeholder::make('updated_at')
-                            ->label('Последнее обновление')
-                            ->content(fn (?Customer $record): string => $record ? $record->updated_at->diffForHumans() : '-'),
-                    ])
-                    ->columnSpan(1),
+                Forms\Components\Group::make([
+                    Forms\Components\Card::make()
+                        ->schema([
+                            Forms\Components\Placeholder::make('created_at')
+                                ->label('Создан')
+                                ->content(fn (?Customer $record): string => $record ? $record->created_at->diffForHumans() : '-'),
+                            Forms\Components\Placeholder::make('updated_at')
+                                ->label('Последнее обновление')
+                                ->content(fn (?Customer $record): string => $record ? $record->updated_at->diffForHumans() : '-'),
+                        ])
+                        ->columnSpan(1),
+
+                    Forms\Components\Card::make()
+                        ->schema([
+                            Forms\Components\SpatieTagsInput::make('tags')->type('customers'),
+                        ])
+                        ->columnSpan(1),
+                ]),
             ])
             ->columns([
                 'sm' => 3,
@@ -111,9 +121,8 @@ class CustomerResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->toggleable(),//TODO make hidden
-                Tables\Columns\SpatieTagsColumn::make('tags')->type('customers'),
-//                Tables\Columns\TextColumn::make('country')
-//                    ->getStateUsing(fn ($record): ?string => Country::find($record->addresses->first()?->country)?->name ?? null),
+                Tables\Columns\SpatieTagsColumn::make('tags')
+                    ->type('customers'),
                 Tables\Columns\TextColumn::make('phone')
                     ->label('Телефон')
                     ->searchable()
@@ -171,8 +180,8 @@ class CustomerResource extends Resource
         return [
             //TODO on
 //          RelationManagers\CommentsRelationManager::class,
-            RelationManagers\TasksRelationManager::class,
             RelationManagers\OrdersRelationManager::class,
+            RelationManagers\TasksRelationManager::class,
             RelationManagers\PaymentsRelationManager::class,
         ];
     }
@@ -181,7 +190,7 @@ class CustomerResource extends Resource
     {
         return [
             'index'  => Pages\ListCustomers::route('/'),
-            'view'   => Pages\ViewCustomer::route('/{record}'),
+//            'view'   => Pages\ViewCustomer::route('/{record}'),
             'create' => Pages\CreateCustomer::route('/create'),
             'edit'   => Pages\EditCustomer::route('/{record}/edit'),
         ];

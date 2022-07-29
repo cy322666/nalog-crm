@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Shop;
 use App\Filament\Resources\Shop\StockResource\Pages;
 use App\Models\Shop\Stock;
 use App\Services\CacheService;
+use App\Services\ModelHelper;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -14,25 +15,21 @@ class StockResource extends Resource
 {
     protected static ?string $model = Stock::class;
 
+    protected static ?string $slug = 'stocks';
+
     protected static ?string $navigationLabel = 'Склады';
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-list';
 
+    /**
+     * @throws \Exception
+     */
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Card::make()
                     ->schema([
-                        //TODO generate id
-                        //TODO
-//                            Forms\Components\TextInput::make('number')
-//                                ->label('Номер заказа')
-//                                ->default(random_int(100000, 999999))
-//                                ->disabled()
-//                                ->required(),
-//                            Forms\Components\Select::make('shop_customer_id')
-
                         Forms\Components\TextInput::make('name')
                             ->label('Название')
                             ->required(),
@@ -54,6 +51,11 @@ class StockResource extends Resource
 
                 Forms\Components\Card::make()
                     ->schema([
+                        Forms\Components\TextInput::make('stock_id')
+                            ->label('ID')
+                            ->default(
+                                ModelHelper::generateId(self::$model, 'stock_id'))
+                            ->disabled(),
                         Forms\Components\Placeholder::make('created_at')
                             ->label('Создан')
                             ->content(fn (?Stock $record): string => $record ? $record->created_at->diffForHumans() : '-'),

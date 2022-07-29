@@ -2,15 +2,23 @@
 
 namespace App\Filament\Pages\Auth;
 
+use App\Models\Shop\Shop;
+use App\Services\CacheService;
 use Filament\Facades\Filament;
-use Filament\Http\Livewire\Auth\Login as BasePage;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth;
 
 class Login extends \Filament\Http\Livewire\Auth\Login
 {
     public function mount(): void
     {
+
         if (Filament::auth()->check()) {
+
+            CacheService::setAccountId(Auth::user()
+                ->shops()
+                ->where('active', true)
+                ->first()->id);
 
             redirect()->intended(Filament::getUrl());
         }

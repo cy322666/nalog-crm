@@ -10,8 +10,6 @@ class ListNotifications extends ListRecords
 {
     protected static string $resource = NotificationResource::class;
 
-    protected ?string $maxContentWidth = '6xl';
-
     protected function getTitle(): string
     {
         return 'Уведомления';
@@ -19,7 +17,9 @@ class ListNotifications extends ListRecords
 
     protected function getActions(): array
     {
-        return [];
+        return [
+            //TODO просмотреть все
+        ];
     }
 
     protected function getTableRecordsPerPageSelectOptions(): array

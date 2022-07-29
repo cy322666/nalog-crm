@@ -11,10 +11,12 @@ class Event extends Model
 
     protected $table = 'shop_events';
 
+    const UPDATED_AT = null;
+
     protected $fillable = [
         'model',
         'model_id',
-        'text',
+        'title',
         'shop_id',
         'type',
         'author_name',

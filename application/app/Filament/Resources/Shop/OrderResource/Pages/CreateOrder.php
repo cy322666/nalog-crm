@@ -20,4 +20,9 @@ class CreateOrder extends CreateRecord
 
         return $data;
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return OrderResource::getUrl();
+    }
 }

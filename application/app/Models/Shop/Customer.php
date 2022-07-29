@@ -14,9 +14,8 @@ class Customer extends Model
 {
     use HasFactory, HasTags;
 
-    /**
-     * @var string
-     */
+    public const TYPE = 1;
+
     protected $table = 'shop_customers';
 
     public static string $resource = CustomerResource::class;
@@ -35,6 +34,7 @@ class Customer extends Model
 
     static public string $entity = 'Клиент';
 
+    static public string $propertyForTaskTitle = 'name';
     /**
      * @var array<string, string>
      */
