@@ -6,6 +6,7 @@ use App\Filament\Resources\Shop;
 use App\Filament\Resources\Shop\TaskResource\Widgets\TaskStats;
 use App\Models\Shop\Task;
 use App\Services\CacheService;
+use Exception;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
@@ -19,6 +20,7 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Webbingbrasil\FilamentAdvancedFilter\Filters\BooleanFilter;
 use Webbingbrasil\FilamentAdvancedFilter\Filters\DateFilter;
 use Webbingbrasil\FilamentAdvancedFilter\Filters\NumberFilter;
@@ -28,15 +30,43 @@ class TaskResource extends Resource
 {
     protected static ?string $model = Task::class;
 
+    protected static ?string $slug = 'tasks';//TODO урл?
+
     protected static ?string $navigationIcon = 'heroicon-o-clock';
+
+    protected static ?string $recordTitleAttribute = 'title';
 
     protected static ?string $navigationLabel = 'Задачи';
 
+    protected static ?string $pluralLabel = 'Задачи';
+
+    protected static ?string $modelLabel = 'Задача';
+
+    protected static ?int $navigationSort = 2;
+
     public static function getEloquentQuery(): Builder
     {
-        return Task::query()
-            ->where('shop_id', CacheService::getAccountId())
-            ->orderBy('created_at');
+        return Task::query()->where('shop_id', CacheService::getAccountId());
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'ID' => $record->task_id,
+            'Название' => $record->title,
+//            'Описание' => $record->text,
+//            'Ответственный' => optional($record->responsible)->name,
+        ];
+    }
+
+    protected static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery();
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['title', 'text', 'task_id'];
     }
 
     public static function form(Form $form): Form
@@ -89,7 +119,7 @@ class TaskResource extends Resource
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public static function table(Table $table): Table
     {

@@ -26,24 +26,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Filament::registerNavigationGroups([
-            'Shop',
-            'Blog',
-        ]);
-
-        UserMenuItem::make()
-            ->label('Аккаунты')
-            ->url('shops')
-            ->icon('heroicon-s-cog');
-
-        Filament::registerScripts([
-            resource_path('js/app.js'),
-        ]);
-
-        Filament::registerStyles([
-            resource_path('css/app.css'),
-        ]);
-
-        URL::forceScheme('http');//s
     }
 }

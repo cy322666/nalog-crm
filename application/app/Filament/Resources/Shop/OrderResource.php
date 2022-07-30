@@ -178,12 +178,13 @@ class OrderResource extends Resource
                             //TODO краткая инфа клиента и конечно же его тип!
                         ])
                         ->columnSpan(1),
-                    Forms\Components\Card::make()
-                        ->schema([
-                            ViewField::make('task')
-                                ->view(TaskInfoEntity::$viewName),
-                        ])
-                        ->columnSpan(1),
+//TODO виджет таски на странице создания мешает
+//                    Forms\Components\Card::make()
+//                        ->schema([
+//                            ViewField::make('task')
+//                                ->view(TaskInfoEntity::$viewName),
+//                        ])
+//                        ->columnSpan(1),
                 ]),
             ])
             ->columns([

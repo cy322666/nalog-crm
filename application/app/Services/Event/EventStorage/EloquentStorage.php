@@ -13,6 +13,7 @@ class EloquentStorage implements EventStorageInterface
         $this->model = new Event;
     }
 
+    // see EventDto __construct
     public function set(EventDto $event)
     {
         $this->model

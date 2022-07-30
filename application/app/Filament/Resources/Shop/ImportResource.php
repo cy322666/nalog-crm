@@ -34,7 +34,7 @@ class ImportResource extends Resource
                                     3 => 'Оплаты',
                                 ]),
                             Forms\Components\FileUpload::make('document')
-                                ->acceptedFileTypes(['excel', 'xlsx', 'csv'])
+                                ->acceptedFileTypes(['xlsx', 'csv'])
                                 ->helperText('Только файлы Excel ')
                                 ->required(),
                         ]),

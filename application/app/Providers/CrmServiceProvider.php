@@ -12,6 +12,7 @@ use Filament\Facades\Filament;
 use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\UserMenuItem;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class CrmServiceProvider extends ServiceProvider
@@ -41,6 +42,12 @@ class CrmServiceProvider extends ServiceProvider
             //TODO crash
 //        $this->app->bind('events', 'App\Services\Event\EventService');
 
+            UserMenuItem::make()
+                ->label('Аккаунты')
+                ->url('shops')
+                ->icon('heroicon-s-cog');
+
+            URL::forceScheme('http');//s
 
             //notification component
             Filament::registerRenderHook(
@@ -61,16 +68,18 @@ class CrmServiceProvider extends ServiceProvider
                     ->url(ImportResource::getUrl())
                     ->icon('heroicon-s-cog'),
 
-                UserMenuItem::make()
-                    ->label('Экспорт')
-                    ->url(ShopResource::getUrl())
-                    ->icon('heroicon-s-cog'),
+//                UserMenuItem::make()
+//                    ->label('Экспорт')
+//                    ->url(ShopResource::getUrl())
+//                    ->icon('heroicon-s-cog'),
 
                 //Profile::class
             ]);
 
             //custom colors
-            Filament::registerTheme(asset('css/app.css'));
+            Filament::registerTheme(
+                asset('css/app.css')
+            );
 
             //TODO add in <head>
 //            Filament::pushMeta([

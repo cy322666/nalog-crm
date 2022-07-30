@@ -2,11 +2,9 @@
 
 namespace App\Filament\Resources\Shop\CustomerResource\Pages;
 
-use App\Facades\EventLogger;
+use App\Events\Shop\EntityEvent;
 use App\Filament\Resources\Shop\CustomerResource;
-use App\Services\CacheService;
-use App\Services\Event\EventDto;
-use App\Services\Event\EventService;
+use App\Services\Event\EventManager;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,20 +17,17 @@ class CreateCustomer extends CreateRecord
         return 'Создать клиента';
     }
 
+    protected function afterCreate(): void
+    {
+        event(new EntityEvent(
+            Auth::user(),
+            $this->record,
+            EventManager::clientCreated(),
+        ));
+    }
+
     protected function getRedirectUrl(): string
     {
         return CustomerResource::getUrl();
-    }
-
-    protected function afterCreate(): void
-    {
-        EventLogger::set(new EventDto(
-            CustomerResource::MODEL_TYPE,
-            $this->record->id,
-            EventService::CUSTOMER_CREATED_TEXT,
-            CacheService::getAccountId(),
-            EventService::CREATED_TYPE,
-            Auth::user()->name,
-        ));
     }
 }

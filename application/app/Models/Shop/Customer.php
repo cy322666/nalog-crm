@@ -67,4 +67,9 @@ class Customer extends Model
         return $this->hasMany(Task::class, 'model_id', 'id')
             ->where('model_type', $this::class);
     }
+
+    public function account()
+    {
+        return $this->belongsTo(Shop::class);
+    }
 }

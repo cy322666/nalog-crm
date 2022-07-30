@@ -30,9 +30,10 @@ class Task extends Model
 
     public function link()
     {
+        //TODO
         $resourceModel = $this->model_type::$resource;
 
-        return $resourceModel::getUrl('view', ['record' => $this->model_id]);
+        return $resourceModel::getUrl('edit', ['record' => $this->model_id]);
     }
 
     public function order()
@@ -56,12 +57,6 @@ class Task extends Model
     public function author()
     {
         return $this->hasOne(User::class, 'id', 'created_employee_id');
-    }
-
-    public function customer()
-    {
-        return $this->belongsTo(Customer::class, 'id', 'customer_id')
-            ->where('model_type', Customer::class);
     }
 
     public function label()

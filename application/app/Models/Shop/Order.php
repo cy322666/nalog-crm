@@ -14,9 +14,8 @@ class Order extends Model
 {
     use HasFactory;
 
-    /**
-     * @var string
-     */
+    public const TYPE = 2;
+
     protected $table = 'shop_orders';
 
     /**

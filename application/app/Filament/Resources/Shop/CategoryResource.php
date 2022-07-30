@@ -12,6 +12,7 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class CategoryResource extends Resource
@@ -26,15 +27,28 @@ class CategoryResource extends Resource
 
     protected static ?string $modelLabel = 'Категорию';
 
+    protected static ?string $pluralLabel = 'Категории';
+
     protected static ?string $navigationIcon = 'heroicon-o-tag';
 
     protected static ?int $navigationSort = 3;
 
     public static function getEloquentQuery(): Builder
     {
-        return Category::query()
-            ->where('shop_id', CacheService::getAccountId())
-            ->orderByDesc('created_at');
+        return Category::query()->where('shop_id', CacheService::getAccountId());
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'ID' => $record->category_id,
+            'Товаров' => optional($record->products)->count(),
+        ];
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'category_id'];
     }
 
     public static function form(Form $form): Form

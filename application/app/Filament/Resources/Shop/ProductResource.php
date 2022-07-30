@@ -28,9 +28,11 @@ class ProductResource extends Resource
 
     protected static ?string $navigationLabel = 'Товары';
 
-    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
+    protected static ?string $pluralLabel = 'Товары';
 
     protected static ?string $modelLabel = 'Товар';
+
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
 
     protected static ?int $navigationSort = 0;
 
@@ -79,12 +81,16 @@ class ProductResource extends Resource
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['name', 'sku', 'barcode'];
+        return ['name', 'sku', 'barcode', 'product_id'];
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
     {
-        return [];
+        return [
+            'ID'  => $record->product_id,
+            'Стоимость' => $record->price,
+            'Sku' => $record->sku,
+        ];
     }
 
     public static function getEloquentQuery(): Builder

@@ -32,8 +32,13 @@ class TaskService
     public const EMPTY_LABEL = 'Нет задачи!';
     public const EMPTY_STATE = 'empty';
 
-    public function __construct(private Model $model)
+    public function __construct(private ?Model $model = null)
     {
+        if ($this->model == null) {
+
+            return;
+        }
+
         $task = $this->model->tasks()
             ->where('is_execute', false)
             ->latest('execute_to')
