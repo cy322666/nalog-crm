@@ -46,16 +46,17 @@
                 ])>
                 {{-- Заголовок --}}
                 <div class="flex space-x-3 place-content-start h-8 mt-2">
-                    @php
-                        $icon = match ($notification->level) {
-                            'info'    => 'heroicon-o-information-circle',
-                            'warning' => 'heroicon-o-exclamation-circle',
-                            'error'   => 'heroicon-o-x-circle',
-                            'success' => 'heroicon-o-check-circle',
-                        }
-                    @endphp
+{{--                    @php--}}
+{{--                        $icon = match ($notification->level) {--}}
+{{--                            'info'    => 'heroicon-o-information-circle',--}}
+{{--                            'warning' => 'heroicon-o-exclamation-circle',--}}
+{{--                            'error'   => 'heroicon-o-x-circle',--}}
+{{--                            'success' => 'heroicon-o-check-circle',--}}
+{{--                            'default' => 'heroicon-o-information-circle',--}}
+{{--                        }--}}
+{{--                    @endphp--}}
 
-                    <div>@svg($icon, ['class' => "w-6 space-x-2"])</div>
+{{--                    <div>@svg($icon, ['class' => "w-6 space-x-2"])</div>--}}
 
                     {{-- Заголовок --}}
                     <div>{{ $notification->title }}</div>
@@ -70,7 +71,7 @@
                 <button wire:click="notificationPage()" class="inline-flex items-center justify-center gap-1 font-medium rounded-lg border transition-colors focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset filament-button dark:focus:ring-offset-0 h-9 px-4 text-sm text-white shadow focus:ring-white border-transparent bg-primary-500 hover:bg-gray-600 focus:bg-gray-500 focus:ring-offset-primary-700 filament-page-button-action">
                     <span>Все уведомления</span>
                 </button>
-                
+
                 <button wire:click="reading()" class="inline-flex items-center justify-center gap-1 font-medium rounded-lg border transition-colors focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset filament-button dark:focus:ring-offset-0 h-9 px-4 text-sm text-white shadow focus:ring-white border-transparent bg-black hover:bg-black-600 focus:bg-gray-500 focus:ring-offset-primary-700 filament-page-button-action">
                     <span>Прочитать</span>
                 </button>

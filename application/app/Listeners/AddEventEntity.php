@@ -19,12 +19,6 @@ class AddEventEntity implements ShouldQueue
      */
     public function handle(EntityEvent $event)
     {
-        Notification::make()
-            ->title('Saved successfully7777')
-            ->success()
-            ->duration(5000)
-            ->send();
-
         EventLogger::set(new EventDto(
             $event->entity::TYPE,
             $event->entity->id,

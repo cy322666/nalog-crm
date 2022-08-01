@@ -52,14 +52,15 @@ class Notification extends Component implements Forms\Contracts\HasForms
 
     private function pushUnpushed()
     {
-        $notification = $this->notifications
-            ->where('is_pushed', '!=', true)
-            ->first();
-
-        \Filament\Notifications\Notification::make()
-            ->title($notification->title)
-            ->body($notification->message)
-            ->send();
+        //TODO on
+//        $notification = $this->notifications
+//            ->where('is_pushed', '!=', true)
+//            ->first();
+//
+//        \Filament\Notifications\Notification::make()
+//            ->title($notification->title)
+//            ->body($notification->message)
+//            ->send();
     }
 
     public function getNotifications($unreadQuery): Collection

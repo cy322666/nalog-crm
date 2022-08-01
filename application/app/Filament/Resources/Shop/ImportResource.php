@@ -10,6 +10,8 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Illuminate\Support\Facades\Log;
+use Livewire\TemporaryUploadedFile;
 
 class ImportResource extends Resource
 {
@@ -21,33 +23,43 @@ class ImportResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Wizard::make([
-                    Forms\Components\Wizard\Step::make('Загрузка')
-                        ->description('Review your basket')
-                        ->icon('heroicon-o-shopping-bag')
-                        ->schema([
-                            Forms\Components\Select::make('type')
-                                ->label('Тип загружаемых данных')
-                                ->required()
-                                ->options([
-                                    1 => 'Клиенты',
-                                    2 => 'Клиенты + Заказы',
-                                    3 => 'Оплаты',
-                                ]),
-                            Forms\Components\FileUpload::make('document')
-//                                ->acceptedFileTypes(['xlsx', 'csv'])
-                                ->helperText('Только файлы Excel ')
-                                ->required(),
-                        ]),
-                    Forms\Components\Wizard\Step::make('Настройка')
-                        ->schema([
-                            // ...
-                        ]),
-                    Forms\Components\Wizard\Step::make('Запуск')
-                        ->schema([
-                            // ...
-                        ]),
-                ]),
+                Forms\Components\Card::make()
+                    ->schema([
+                    Forms\Components\Wizard::make([
+                        Forms\Components\Wizard\Step::make('Загрузка')
+                            ->description('Review your basket')
+                            ->icon('heroicon-o-shopping-bag')
+                            ->schema([
+                                Forms\Components\Select::make('type')
+                                    ->label('Тип загружаемых данных')
+                                    ->required()
+                                    ->options([
+                                        1 => 'Клиенты',
+                                        2 => 'Клиенты + Заказы',
+                                        3 => 'Оплаты',
+                                    ]),
+//                                Forms\Components\FileUpload::make('document')
+//    //                                ->acceptedFileTypes(['xlsx', 'csv'])
+//                                    ->helperText('Только файлы Excel ')
+//                                    ->required()
+//                                    ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file): string {
+//                                        Log::info(__METHOD__, [$file->getClientOriginalName()]);
+//
+//
+//
+//                                        return (string) str($file->getClientOriginalName())->prepend('custom-prefix-');
+//                                    })
+                            ]),
+                        Forms\Components\Wizard\Step::make('Настройка')
+                            ->schema([
+                                // ...
+                            ]),
+                        Forms\Components\Wizard\Step::make('Запуск')
+                            ->schema([
+                                // ...
+                            ]),
+                    ]),
+                ])->maxWidth('3xl')
             ]);
     }
 

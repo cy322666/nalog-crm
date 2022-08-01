@@ -16,6 +16,27 @@ class Payment extends Model
 
     public function order(): BelongsTo
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Order::class, 'id', 'order_id');
+    }
+
+    public function providers()
+    {
+        return $this->hasMany(PaymentProvider::class, 'id', 'payment_id')
+            ->orWhere('shop_id', 0);
+    }
+
+    public function provider()
+    {
+        return $this->hasOne(PaymentProvider::class, 'id', 'payment_id');
+    }
+
+//    public function method()
+//    {
+//
+//    }
+
+    public function status()
+    {
+
     }
 }

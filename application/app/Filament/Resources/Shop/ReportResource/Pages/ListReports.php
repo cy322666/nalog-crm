@@ -64,7 +64,7 @@ class ListReports extends ListRecords
             OrderSource::class,
             EmployeeOrder::class,
 
-            EmployeeFailTask::class,
+//            EmployeeFailTask::class,
 
             EmployeeSaleOrder::class,
 

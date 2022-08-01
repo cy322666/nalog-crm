@@ -46,18 +46,18 @@ class Analytics extends Page
     protected function getHeaderWidgets(): array
     {
         return [
-            PageViewsWidget::class,
-            VisitorsWidget::class,
-            ActiveUsersOneDayWidget::class,
-            ActiveUsersSevenDayWidget::class,
-            ActiveUsersFourteenDayWidget::class,
-            ActiveUsersTwentyEightDayWidget::class,
-            SessionsWidget::class,
-            SessionsDurationWidget::class,
-            SessionsByCountryWidget::class,
-            SessionsByDeviceWidget::class,
-            MostVisitedPagesWidget::class,
-            TopReferrersListWidget::class,
+//            PageViewsWidget::class,
+//            VisitorsWidget::class,
+//            ActiveUsersOneDayWidget::class,
+//            ActiveUsersSevenDayWidget::class,
+//            ActiveUsersFourteenDayWidget::class,
+//            ActiveUsersTwentyEightDayWidget::class,
+//            SessionsWidget::class,
+//            SessionsDurationWidget::class,
+//            SessionsByCountryWidget::class,
+//            SessionsByDeviceWidget::class,
+//            MostVisitedPagesWidget::class,
+//            TopReferrersListWidget::class,
         ];
     }
 }

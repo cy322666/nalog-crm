@@ -27,16 +27,6 @@ class CrmServiceProvider extends ServiceProvider
 //            resource_path('js/bootstrap.js'),
         ]);
 
-        Filament::registerRenderHook(
-            'body.start',
-            fn (): View => view('layouts.body'),
-        );
-
-        Filament::registerRenderHook(
-            'head.start',
-            fn (): View => view('layouts.head'),
-        );
-
         //sidebar
         Filament::serving(function () {
 
