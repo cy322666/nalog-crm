@@ -142,11 +142,17 @@ return [
         'max_content_width' => null,
         'sidebar' => [
             'is_collapsible_on_desktop' => true,
+//            'width' => '13px',
+        ],
+        'notifications' => [
+            'vertical_alignment' => 'top',
+            'alignment' => 'right',
         ],
         'forms' => [
             'actions' => [
                 'alignment' => 'left',
             ],
+            'have_inline_labels' => false, //TODO?
         ],
     ],
 

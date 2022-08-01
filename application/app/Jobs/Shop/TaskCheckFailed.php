@@ -2,7 +2,7 @@
 
 namespace App\Jobs\Shop;
 
-use App\Events\Shop\TaskFailedPush;
+use App\Events\Shop\Push\Task\TaskFailedPush;
 use App\Models\Shop\Task;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -49,7 +49,7 @@ class TaskCheckFailed implements ShouldQueue
             $this->task->count_failed++;
             $this->task->save();
 
-            (new TaskFailedPush($this->task))->dispatch();
+//            (new TaskFailedPush($this->task))->dispatch();
         }
     }
 }

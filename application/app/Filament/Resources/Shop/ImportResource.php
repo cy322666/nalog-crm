@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Shop;
 
+use App\Events\Shop\Push\Task\TaskCreated;
 use App\Filament\Resources\Shop\ImportResource\Pages;
 use App\Models\Shop\Import;
 use Filament\Forms;
@@ -34,7 +35,7 @@ class ImportResource extends Resource
                                     3 => 'Оплаты',
                                 ]),
                             Forms\Components\FileUpload::make('document')
-                                ->acceptedFileTypes(['xlsx', 'csv'])
+//                                ->acceptedFileTypes(['xlsx', 'csv'])
                                 ->helperText('Только файлы Excel ')
                                 ->required(),
                         ]),

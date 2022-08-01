@@ -13,6 +13,7 @@ use App\Models\Shop\OrderSources;
 use App\Models\Shop\OrderStatus;
 use App\Models\Shop\Product;
 use App\Models\Shop\Shop;
+use App\Modules\Notification\Actions\Action;
 use App\Services\CacheService;
 use App\Services\ModelHelper;
 use Carbon\Carbon;
@@ -20,6 +21,7 @@ use Exception;
 use Filament\Forms;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\ViewField;
+use Filament\Notifications\Notification;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Resources\Resource;
@@ -73,6 +75,21 @@ class OrderResource extends Resource
      */
     public static function form(Form $form): Form
     {
+//        Notification::make()
+//            ->title('Saved successfully')
+//            ->success()
+//            ->body('Changes to the **post** have been saved.')
+//            ->actions([
+////                Action::make('view')
+////                    ->button()
+////                    ->url(route('posts.show', $post), shouldOpenInNewTab: true),
+////                Action::make('undo')
+////                    ->color('secondary')
+////                    ->emit('undoEditingPost', [$post->id])
+////                    ->close(),
+//            ])
+//            ->send();
+
         //TODO услуги
         return $form
             ->schema([
@@ -195,6 +212,8 @@ class OrderResource extends Resource
 
     public static function table(Table $table): Table
     {
+//        \App\Events\Shop\Push\Task\TaskCreated::dispatch('test push!');
+
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('order_id')

@@ -2,13 +2,7 @@
 
 namespace App\Filament\Pages;
 
-use App\Events\Shop\TaskFailedPush;
-use App\Models\Shop\Notification;
-use App\Models\Shop\Task;
-use App\Models\User;
-use App\Notifications\Shop\TaskFailed;
-use Filament\Facades\Filament;
-use Illuminate\Support\Facades\Auth;
+use App\Events\Shop\Push\Task\TaskCreated;
 
 class Profile extends \RyanChandler\FilamentProfile\Pages\Profile
 {
@@ -17,15 +11,6 @@ class Profile extends \RyanChandler\FilamentProfile\Pages\Profile
     {
 //        event(new TaskFailedPush());//Task::query()->find(17)
 //        User::query()->find(1)->notify(new TaskFailed(Task::query()->first()));
-
-//        Notification::query()
-//            ->create([
-//                'title' => 'new push!',
-//                'message' => 'new message push!',
-//                'notifiable_id' => 1,
-//                'link' => route('filament.pages.analytics'),
-//                'notifiable_type' => User::class,
-//            ]);
     }
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';

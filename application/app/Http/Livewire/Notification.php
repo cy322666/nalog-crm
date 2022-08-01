@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Filament\Resources\Shop\NotificationResource;
+use App\Modules\Notification\Actions\Action;
 use App\Modules\Notification\Concerns\HasActions;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
@@ -25,7 +26,6 @@ class Notification extends Component implements Forms\Contracts\HasForms
     use HasActions;
     use Forms\Concerns\InteractsWithForms;
 
-    protected $feed;
     public int $totalUnread;
     public Collection $notifications;
 
@@ -33,13 +33,14 @@ class Notification extends Component implements Forms\Contracts\HasForms
 
     public function reading()
     {
-        Auth::user()
-            ->unreadNotifications()
-            ->getQuery()
-            ->update([
-                'read_at' => Carbon::now(),
-                'is_read' => true,
-            ]);
+        //TODO прочитывает все что открыли
+//        Auth::user()
+//            ->unreadNotifications()
+//            ->getQuery()
+//            ->update([
+//                'read_at' => Carbon::now(),
+//                'is_read' => true,
+//            ]);
 
         $this->render();
     }
@@ -47,6 +48,27 @@ class Notification extends Component implements Forms\Contracts\HasForms
     public function notificationPage()
     {
         redirect(NotificationResource::getUrl());
+    }
+
+    private function pushUnpushed()
+    {
+        $notification = $this->notifications
+            ->where('is_pushed', '!=', true)
+            ->first();
+
+        \Filament\Notifications\Notification::make()
+            ->title($notification->title)
+            ->body($notification->message)
+            ->send();
+    }
+
+    public function getNotifications($unreadQuery): Collection
+    {
+        $this->notifications = $unreadQuery->limit(
+            Config::get('crm-notification.limit')
+        )->get();
+
+        return $this->notifications;
     }
 
     /**
@@ -58,10 +80,15 @@ class Notification extends Component implements Forms\Contracts\HasForms
 
         $this->totalUnread = $unreadQuery->count();
 
-        $this->notifications = $unreadQuery->limit(Config::get('crm-notification.limit'))->get();
+        if ($this->totalUnread > 0) {
+
+            $this->getNotifications($unreadQuery);
+
+            $this->pushUnpushed();
+        }
 
         return view('livewire.notification', [
-            'notifications' => $this->notifications,
+            'notifications' => $this->totalUnread > 0 ? $this->notifications: [],
         ]);
     }
 }

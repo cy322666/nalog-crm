@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Filament\Navigations\Sidebar\NavigationMap;
-use App\Filament\Pages\Import;
 use App\Filament\Pages\Profile;
 use App\Filament\Pages\Shops;
 use App\Filament\Resources\Shop\ImportResource;
@@ -14,15 +13,29 @@ use Filament\Navigation\UserMenuItem;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\View\View;
 
 class CrmServiceProvider extends ServiceProvider
 {
     public function boot()
     {
         //TODO sockets
-//        Filament::registerScripts([
-//            asset('js/websocket.js'),
-//        ]);
+        Filament::registerScripts([
+            asset('js/app.js'),
+//            asset('js/echo.js'),
+//            resource_path('js/app.js'),
+//            resource_path('js/bootstrap.js'),
+        ]);
+
+        Filament::registerRenderHook(
+            'body.start',
+            fn (): View => view('layouts.body'),
+        );
+
+        Filament::registerRenderHook(
+            'head.start',
+            fn (): View => view('layouts.head'),
+        );
 
         //sidebar
         Filament::serving(function () {
@@ -41,7 +54,11 @@ class CrmServiceProvider extends ServiceProvider
 
             //TODO crash
 //        $this->app->bind('events', 'App\Services\Event\EventService');
-
+/*
+ *     @stack('scripts')
+    @livewireStyles
+    @livewireScripts
+ */
             UserMenuItem::make()
                 ->label('Аккаунты')
                 ->url('shops')
@@ -89,7 +106,7 @@ class CrmServiceProvider extends ServiceProvider
 //            Filament::registerScripts([
 //                asset('js/my-script.js'),
 //            ]);
-//
+////
 //            Filament::registerStyles([
 //                'https://unpkg.com/tippy.js@6/dist/tippy.css',
 //                asset('css/my-styles.css'),
