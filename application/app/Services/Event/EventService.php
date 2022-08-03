@@ -11,7 +11,7 @@ class EventService
 
     public function __construct()
     {
-        $this->storage = new (Config::get('crm.events'));
+        $this->storage = new (Config::get('crm.event_storage'));
     }
 
     public function set(EventDto $event)

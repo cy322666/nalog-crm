@@ -30,6 +30,12 @@ class Customer extends Model
         'gender',
         'phone',
         'birthday',
+        'shop_id',
+        'customer_id',
+        'type',
+        'inn',
+        'kpp',
+        'rs',
     ];
 
     static public string $entity = 'Клиент';

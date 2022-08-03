@@ -3,5 +3,7 @@
 return [
     'url_support' => 'https://t.me/integrator',
 
-    'events' => \App\Services\Event\EventStorage\EloquentStorage::class,
+    'event_storage' => \App\Services\Event\EventStorage\EloquentStorage::class,
+
+    'storage_disk' => 'public',
 ];

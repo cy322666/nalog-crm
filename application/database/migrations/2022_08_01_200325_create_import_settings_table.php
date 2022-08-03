@@ -17,10 +17,10 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
 
-            $table->integer('type');
             $table->integer('import_id');
-            $table->boolean('imported')->default(false);
-            $table->json('fields')->nullable();
+            $table->string('column');
+            $table->string('key');
+            $table->integer('entity_type')->nullable();
         });
     }
 

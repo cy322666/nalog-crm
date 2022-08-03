@@ -180,6 +180,8 @@ return [
 
 //        App\Providers\NotificationProvider::class,
         App\Providers\AnalyticsProvider::class,
+
+        Maatwebsite\Excel\ExcelServiceProvider::class,
     ],
 
     /*
@@ -236,6 +238,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         'EventLogger' => \App\Services\Event\EventService::class,
+
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],
 
 ];

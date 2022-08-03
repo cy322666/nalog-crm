@@ -6,12 +6,16 @@ use App\Events\Shop\Push\Task\TaskCreated;
 use App\Filament\Resources\Shop\ImportResource\Pages;
 use App\Models\Shop\Import;
 use Filament\Forms;
+use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\TemporaryUploadedFile;
 
@@ -25,53 +29,22 @@ class ImportResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Card::make()
+                Card::make()
                     ->schema([
-                    Forms\Components\Wizard::make([
-                        Forms\Components\Wizard\Step::make('Загрузка')
-                            ->description('Review your basket')
-                            ->icon('heroicon-o-shopping-bag')
-                            ->schema([
-                                Forms\Components\Select::make('type')
-                                    ->label('Тип загружаемых данных')
-                                    ->required()
-                                    ->options([
-                                        1 => 'Клиенты',
-                                        2 => 'Клиенты + Заказы',
-                                        3 => 'Оплаты',
-                                    ]),
-                                Forms\Components\FileUpload::make('name')
+                        Select::make('type')
+                            ->label('Тип загружаемых данных')
+                            ->required()
+                            ->options([
+                                1 => 'Клиенты',
+                                2 => 'Клиенты + Заказы',
+                                3 => 'Оплаты',
+                            ]),
+                        Forms\Components\FileUpload::make('name')
     //                                ->acceptedFileTypes(['xlsx', 'csv'])
-                                    ->helperText('Только файлы Excel ')
-//                                    ->getUploadedFileUrlUsing(function ())
-                                    ->required()
-                                    ->saveUploadedFileUsing(function (TemporaryUploadedFile $file): string {
-
-                                        $a = $file->getRealPath();
-
-                                        Log::info(__METHOD__, [$a]);
-
-                                        return (string) str($file->getClientOriginalName())->prepend('custom-prefix-');
-                                    })
-//                                ->afterStateUpdated(function () {
-//
-//                                })
-                            ])
-
-                            ->afterStateUpdated(function (\Closure $set, $state) {
-
-                                Log::info(__METHOD__,[$set, $state, $this]);
-                            }),
-                        Forms\Components\Wizard\Step::make('Настройка')
-                            ->schema([
-                                // ...
-                            ]),
-                        Forms\Components\Wizard\Step::make('Запуск')
-                            ->schema([
-                                // ...
-                            ]),
-                    ]),
-                ])->maxWidth('3xl')
+                            ->directory(Storage::disk(Config::get('crm.storage_disk'))->get('import'))
+                            ->helperText('Только файлы Excel ')
+                            ->required()
+                    ])->maxWidth('2xl'),
             ]);
     }
 
@@ -79,32 +52,35 @@ class ImportResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Создано')
+                    ->dateTime(),
+                Tables\Columns\TextColumn::make('count_rows')
+                    ->label('Всего строк'),
+                Tables\Columns\TextColumn::make('count_imported')
+                    ->label('Выгружено'),
+                Tables\Columns\BooleanColumn::make('is_completed')
+                    ->label('Закончено'),
             ])
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
-            ]);
+            ->bulkActions([]);
     }
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListImports::route('/'),
+            'index'  => Pages\ListImports::route('/'),
             'create' => Pages\CreateImport::route('/create'),
-            'edit' => Pages\EditImport::route('/{record}/edit'),
+            'view'   => Pages\ViewImport::route('/{record}'),
+            'edit'   => Pages\EditImport::route('/{record}/edit'),
         ];
     }
 }
