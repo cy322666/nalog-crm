@@ -4,7 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Events\Shop\Push\Task\TaskCreated;
 
-class Profile extends \RyanChandler\FilamentProfile\Pages\Profile
+class Profile //extends \RyanChandler\FilamentProfile\Pages\Profile
 {
     //TODO notif test
     public function __construct()
