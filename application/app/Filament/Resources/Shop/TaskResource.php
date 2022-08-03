@@ -61,7 +61,7 @@ class TaskResource extends Resource
 
     protected static function getGlobalSearchEloquentQuery(): Builder
     {
-        return parent::getGlobalSearchEloquentQuery();
+        return parent::getGlobalSearchEloquentQuery()->where('shop_id', CacheService::getAccountId());
     }
 
     public static function getGloballySearchableAttributes(): array

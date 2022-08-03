@@ -10,4 +10,11 @@ class Import extends Model
     use HasFactory;
 
     protected $table = 'shop_imports';
+
+    protected $fillable = [
+        'name',
+        'type',
+        'count_rows',
+        
+    ];
 }

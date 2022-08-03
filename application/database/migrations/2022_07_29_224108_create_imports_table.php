@@ -17,12 +17,12 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
 
-            $table->string('name');
-            $table->integer('type');
-            $table->integer('count_rows');
+            $table->string('name')->nullable();
+            $table->integer('type')->nullable();
+            $table->integer('count_rows')->nullable();
             $table->integer('count_imported')->default(0);
             $table->boolean('is_completed')->default(false);
-            $table->bigInteger('shop_id');
+            $table->bigInteger('shop_id')->nullable();
         });
     }
 

@@ -11,7 +11,7 @@ class ListTaskTypes extends ListRecords
 {
     protected static string $resource = TaskTypeResource::class;
 
-        protected ?string $maxContentWidth = '5xl';
+    protected ?string $maxContentWidth = '5xl';
 
     protected function getTitle(): string
     {

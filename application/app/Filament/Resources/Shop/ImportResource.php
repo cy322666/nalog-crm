@@ -6,11 +6,13 @@ use App\Events\Shop\Push\Task\TaskCreated;
 use App\Filament\Resources\Shop\ImportResource\Pages;
 use App\Models\Shop\Import;
 use Filament\Forms;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Support\Facades\Log;
+use Livewire\Component;
 use Livewire\TemporaryUploadedFile;
 
 class ImportResource extends Resource
@@ -38,18 +40,28 @@ class ImportResource extends Resource
                                         2 => 'Клиенты + Заказы',
                                         3 => 'Оплаты',
                                     ]),
-//                                Forms\Components\FileUpload::make('document')
-//    //                                ->acceptedFileTypes(['xlsx', 'csv'])
-//                                    ->helperText('Только файлы Excel ')
-//                                    ->required()
-//                                    ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file): string {
-//                                        Log::info(__METHOD__, [$file->getClientOriginalName()]);
+                                Forms\Components\FileUpload::make('name')
+    //                                ->acceptedFileTypes(['xlsx', 'csv'])
+                                    ->helperText('Только файлы Excel ')
+//                                    ->getUploadedFileUrlUsing(function ())
+                                    ->required()
+                                    ->saveUploadedFileUsing(function (TemporaryUploadedFile $file): string {
+
+                                        $a = $file->getRealPath();
+
+                                        Log::info(__METHOD__, [$a]);
+
+                                        return (string) str($file->getClientOriginalName())->prepend('custom-prefix-');
+                                    })
+//                                ->afterStateUpdated(function () {
 //
-//
-//
-//                                        return (string) str($file->getClientOriginalName())->prepend('custom-prefix-');
-//                                    })
-                            ]),
+//                                })
+                            ])
+
+                            ->afterStateUpdated(function (\Closure $set, $state) {
+
+                                Log::info(__METHOD__,[$set, $state, $this]);
+                            }),
                         Forms\Components\Wizard\Step::make('Настройка')
                             ->schema([
                                 // ...
