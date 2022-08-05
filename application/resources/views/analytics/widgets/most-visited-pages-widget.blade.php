@@ -55,7 +55,7 @@
                     @endforeach
                 @else
                     <div class="flex justify-center items-center h-[270px] w-full">
-                        <x-filament-google-analytics::loading-indicator />
+{{--                        <x-filament-google-analytics::loading-indicator />--}}
                     </div>
                 @endif
             </ul>
@@ -63,7 +63,7 @@
                 <div class="absolute inset-0">
                     <div class="flex justify-center items-center mx-auto h-full w-full"
                         wire:loading.delay.long.class='bg-[#ffffffccc]'>
-                        <x-filament-google-analytics::loading-indicator />
+{{--                        <x-filament-google-analytics::loading-indicator />--}}
                     </div>
                 </div>
             </div>

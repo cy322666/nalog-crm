@@ -3,15 +3,11 @@
 namespace App\Filament\Resources\Shop;
 
 use App\Filament\Resources\Shop\OrderSourceResource\Pages;
-use App\Filament\Resources\Shop\OrderSourceResource\RelationManagers;
 use App\Models\Shop\OrderSource;
-use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class OrderSourceResource extends Resource
 {
@@ -44,11 +40,11 @@ class OrderSourceResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-    
+
     public static function getPages(): array
     {
         return [
             'index' => Pages\ManageOrderSources::route('/'),
         ];
-    }    
+    }
 }

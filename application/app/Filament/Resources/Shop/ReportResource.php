@@ -29,33 +29,23 @@ class ReportResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                //
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
-            ]);
+            ->columns([])
+            ->filters([])
+            ->actions([])
+            ->bulkActions([]);
     }
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListReports::route('/'),
-            'create' => Pages\CreateReport::route('/create'),
-            'edit' => Pages\EditReport::route('/{record}/edit'),
+//            'create' => Pages\CreateReport::route('/create'),
+//            'edit' => Pages\EditReport::route('/{record}/edit'),
         ];
     }
 }

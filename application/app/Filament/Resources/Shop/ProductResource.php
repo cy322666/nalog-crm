@@ -7,16 +7,14 @@ use App\Filament\Resources\Shop\ProductResource\RelationManagers;
 use App\Filament\Resources\Shop\ProductResource\Widgets\ProductStats;
 use App\Models\Shop\Product;
 use App\Services\CacheService;
-use App\Services\ModelHelper;
+use App\Services\Helpers\ModelHelper;
 use Filament\Forms;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 class ProductResource extends Resource
 {

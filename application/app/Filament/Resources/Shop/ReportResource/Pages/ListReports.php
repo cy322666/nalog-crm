@@ -42,9 +42,7 @@ class ListReports extends ListRecords
      */
     protected function getActions(): array
     {
-        return [
-            Actions\CreateAction::make(),
-        ];
+        return [];
     }
 
     protected function getHeaderWidgets(): array
@@ -52,8 +50,7 @@ class ListReports extends ListRecords
         return [
             PageViewsWidget::class,
             ActiveUsersOneDayWidget::class,
-//            CountNewOrdersChart::class,
-//            PaymentsChart::class,
+            PaymentsChart::class,
             OrdersChart::class,
             StatusOrder::class,
             EmployeeOrder::class,

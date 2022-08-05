@@ -5,7 +5,7 @@ namespace App\Filament\Resources\Shop;
 use App\Filament\Resources\Shop\StockResource\Pages;
 use App\Models\Shop\Stock;
 use App\Services\CacheService;
-use App\Services\ModelHelper;
+use App\Services\Helpers\ModelHelper;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;

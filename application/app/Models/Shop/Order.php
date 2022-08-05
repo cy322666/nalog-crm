@@ -43,6 +43,16 @@ class Order extends Model
         return $this->belongsTo(Customer::class, 'shop_customer_id');
     }
 
+    public function source(): BelongsTo
+    {
+        return $this->belongsTo(OrderSource::class, 'source_id');
+    }
+
+    public function reason(): BelongsTo
+    {
+        return $this->belongsTo(OrderLostReasons::class, 'lost_reasons_id');
+    }
+
     public function statuses(): BelongsTo
     {
         return $this->belongsTo(OrderStatus::class, 'status_id')
@@ -77,7 +87,7 @@ class Order extends Model
 
     public function status()
     {
-        return $this->hasOne(OrderStatus::class, 'id', 'status_id');
+        return $this->belongsTo(OrderStatus::class, 'status_id');
     }
 
     public function services()

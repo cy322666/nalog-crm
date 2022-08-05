@@ -65,7 +65,7 @@
                 </div>
             @else
                 <div class="flex justify-center items-center h-[270px] w-full">
-                    <x-filament-google-analytics::loading-indicator />
+{{--                    <x-filament-google-analytics::loading-indicator />--}}
                 </div>
             @endif
         </div>

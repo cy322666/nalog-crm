@@ -5,7 +5,7 @@ namespace App\Models\Shop;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class OrderSources extends Model
+class OrderSource extends Model
 {
     use HasFactory;
 

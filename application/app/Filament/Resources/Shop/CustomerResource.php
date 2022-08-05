@@ -129,7 +129,7 @@ class CustomerResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Создан')
-                    ->date()
+                    ->dateTime()
                     ->toggleable(),
             ])
             ->defaultSort('created_at')

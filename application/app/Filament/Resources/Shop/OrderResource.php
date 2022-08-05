@@ -2,28 +2,22 @@
 
 namespace App\Filament\Resources\Shop;
 
-use App\Filament\Forms\Components\AddressForm;
-use App\Filament\Forms\Components\TaskInfoEntity;
 use App\Filament\Resources\Shop\OrderResource\Pages;
 use App\Filament\Resources\Shop\OrderResource\RelationManagers;
 use App\Filament\Resources\Shop\OrderResource\Widgets\OrderStats;
 use App\Models\Shop\Customer;
 use App\Models\Shop\Order;
-use App\Models\Shop\OrderSources;
+use App\Models\Shop\OrderSource;
 use App\Models\Shop\OrderStatus;
-use App\Models\Shop\Product;
 use App\Models\Shop\Shop;
-use App\Modules\Notification\Actions\Action;
 use App\Services\CacheService;
-use App\Services\ModelHelper;
+use App\Services\Helpers\ModelHelper;
 use Carbon\Carbon;
 use Exception;
 use Filament\Forms;
 use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\ViewField;
 use Filament\Notifications\Notification;
 use Filament\Resources\Form;
-use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
@@ -75,15 +69,14 @@ class OrderResource extends Resource
      */
     public static function form(Form $form): Form
     {
+        //TODO customer.type
         //TODO услуги
         return $form
             ->schema([
                 Tabs::make('')
                     ->tabs([
-                        Tabs\Tab::make('Общие')
+                        Tabs\Tab::make('Основное')
                             ->schema([
-                                //основная форма
-                                //TODO title?
 
                                 Forms\Components\Card::make()
                                     ->schema([
@@ -92,7 +85,7 @@ class OrderResource extends Resource
                                             ->label('Название')
                                             ->columnSpan(1),
 
-                                        Forms\Components\Select::make('status.name')
+                                        Forms\Components\Select::make('status_id')
                                             ->label('Статус')
                                             ->options(
                                                 OrderStatus::query()
@@ -108,14 +101,20 @@ class OrderResource extends Resource
                                             ->label('Бюджет')
                                             ->columnSpan(1),
 
-                                        Forms\Components\Select::make('source')
+                                        Forms\Components\Select::make('source_id')
                                             ->label('Источник')
-                                            ->options(
-                                                OrderSources::query()
+                                            ->relationship('source', 'name')
+                                            ->searchable()
+                                            ->getSearchResultsUsing(function (string $query) {
+
+                                                return OrderSource::query()
                                                     ->where('shop_id', CacheService::getAccountId())
                                                     ->orWhere('shop_id', 0)
+                                                    ->where('name', 'like', "%{$query}%")
                                                     ->pluck('name', 'id')
-                                                    ->toArray())
+                                                    ->toArray();
+                                            })
+                                            ->getOptionLabelUsing(fn ($value): ?string => OrderSource::query()->find($value)?->name)
                                             ->required(),
 
                                         //TODO обязательность при закрытии как то сделать
@@ -204,38 +203,55 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('order_id')
                     ->label('ID')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(true),
+
                 Tables\Columns\TextColumn::make('customer.name')
                     ->label('Клиент')
                     ->searchable()
                     ->sortable()
+                    //TODO cache??
+                    ->url(fn ($record) => CustomerResource::getUrl('edit', ['record' => $record->shop_customer_id]))
                     ->toggleable(),
-//TODO customer.type
-//TODO link statuses
-                Tables\Columns\BadgeColumn::make('statuses.name')
-                    ->label('Статус')
-                    ->colors(
-                        Shop::query()
-                            ->find(CacheService::getAccountId())
-                            ->statuses
-                            ->pluck('type', 'name')
-                            ->toArray()
 
-//                        [
-//                        'danger'  => 'cancelled',
-//                        'warning' => 'processing',
-//                        'success' => fn ($state) => in_array($state, ['delivered', 'shipped']),
-                    )
+                Tables\Columns\BadgeColumn::make('status.name')
+                    ->label('Статус')
+                    ->colors([
+                        'primary' => fn ($state): bool => true,
+                        'danger'  => fn ($state): bool => $state === OrderStatus::LOST_STATUS_NAME,
+                        'warning' => fn ($state): bool => $state === OrderStatus::NEW_STATUS_NAME,
+                        'success' => fn ($state): bool => $state === OrderStatus::WIN_STATUS_NAME,
+                    ])
                     ->sortable(),
                 Tables\Columns\TextColumn::make('price')
                     ->label('Бюджет')
                     ->searchable()
                     ->sortable(),
+
+                Tables\Columns\TextColumn::make('customer.name')
+                    ->label('Клиент')
+                    ->searchable()
+                    ->sortable(),
+
+//TODO
+//                Tables\Columns\TextColumn::make('responsible.name')
+//                    ->label('Ответственный')
+//                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Создан')
-                    ->date()
+                    ->dateTime()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable(true),
+                Tables\Columns\TextColumn::make('source.name')
+                    ->label('Источник')
+                    ->sortable()
+                    ->toggleable(true),
+
+                Tables\Columns\TextColumn::make('reason.name')
+                    ->label('Причина отказа')
+                    ->sortable()
+                    ->toggleable(true),
             ])
             ->filters([
                 Tables\Filters\Filter::make('created_at')

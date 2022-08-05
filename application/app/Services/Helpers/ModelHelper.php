@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Helpers;
 
+use App\Services\CacheService;
 use Exception;
 
 abstract class ModelHelper

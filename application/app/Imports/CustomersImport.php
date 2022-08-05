@@ -5,7 +5,7 @@ namespace App\Imports;
 use App\Models\Shop\Customer;
 use App\Models\Shop\Import;
 use App\Models\Shop\Shop;
-use App\Services\ModelHelper;
+use App\Services\Helpers\ModelHelper;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;

@@ -33,7 +33,7 @@
                 @else
                     <div class="absolute inset-0 flex justify-center items-center">
                         <div class="flex justify-center items-center h-12 w-12 rounded-lg shadow-lg">
-                            <x-filament-google-analytics::loading-indicator />
+{{--                            <x-filament-google-analytics::loading-indicator />--}}
                         </div>
                     </div>
                 @endif
@@ -136,14 +136,14 @@
             @else
                 <div class="absolute inset-0 flex justify-center items-center">
                     <div class="flex justify-center items-center h-12 w-12 rounded-lg shadow-lg">
-                        <x-filament-google-analytics::loading-indicator />
+{{--                        <x-filament-google-analytics::loading-indicator />--}}
                     </div>
                 </div>
             @endif
         </div>
         <div wire:loading.delay.long wire:target='filter'>
             <div class="absolute inset-0 flex justify-center items-center">
-                <x-filament-google-analytics::loading-indicator />
+{{--                <x-filament-google-analytics::loading-indicator />--}}
             </div>
         </div>
     </div>
