@@ -89,7 +89,7 @@ class Notification extends Component implements Forms\Contracts\HasForms
         }
 
         return view('livewire.notification', [
-            'notifications' => $this->totalUnread > 0 ? $this->notifications: [],
+            'notifications' => $this->totalUnread > 0 ? $this->notifications : new Collection,
         ]);
     }
 }

@@ -23,6 +23,16 @@ class Shop extends Model
             ->orWhere('shop_id', 0);
     }
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'shop_id', 'id');
+    }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'shop_id', 'id');
+    }
+
     public function status()
     {
         return $this->hasOne(OrderStatus::class, 'shop_id', 'id');

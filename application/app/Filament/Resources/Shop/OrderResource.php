@@ -10,6 +10,7 @@ use App\Models\Shop\Order;
 use App\Models\Shop\OrderSource;
 use App\Models\Shop\OrderStatus;
 use App\Models\Shop\Shop;
+use App\Models\User;
 use App\Services\CacheService;
 use App\Services\Helpers\ModelHelper;
 use Carbon\Carbon;
@@ -28,7 +29,7 @@ class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
-    protected static ?string $slug = 'orders';//TODO?
+    protected static ?string $slug = 'orders';
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -124,6 +125,21 @@ class OrderResource extends Resource
                                                 Shop::query()->find(CacheService::getAccountId())->reasons->pluck('name', 'reason_id')->toArray()
                                             ),
 
+                                        Forms\Components\Select::make('responsible_id')
+                                            ->label('Ответственный')
+                                            ->required()
+                                            ->options(
+                                                CacheService::getAccount()
+                                                    ->users
+                                                    ->pluck('name', 'id')
+                                                    ->toArray(),
+                                            ),
+                                        Forms\Components\TextInput::make('parts_pay')
+                                            ->label('Платежей')
+                                            ->numeric()
+                                            ->default(1)
+                                            ->columnSpan(1),
+
                                         //нижняя часть основной
                                         //TODO сделать тут custom поля
 //                                        AddressForm::make('address')->columnSpan([
@@ -196,21 +212,20 @@ class OrderResource extends Resource
 
     public static function table(Table $table): Table
     {
-//        \App\Events\Shop\Push\Task\TaskCreated::dispatch('test push!');
-
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('order_id')
                     ->label('ID')
                     ->searchable()
-                    ->sortable()
-                    ->toggleable(true),
+                    ->toggleable()
+                    ->toggledHiddenByDefault()
+                    ->searchable()
+                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('customer.name')
                     ->label('Клиент')
                     ->searchable()
                     ->sortable()
-                    //TODO cache??
                     ->url(fn ($record) => CustomerResource::getUrl('edit', ['record' => $record->shop_customer_id]))
                     ->toggleable(),
 
@@ -223,6 +238,7 @@ class OrderResource extends Resource
                         'success' => fn ($state): bool => $state === OrderStatus::WIN_STATUS_NAME,
                     ])
                     ->sortable(),
+
                 Tables\Columns\TextColumn::make('price')
                     ->label('Бюджет')
                     ->searchable()
@@ -233,16 +249,29 @@ class OrderResource extends Resource
                     ->searchable()
                     ->sortable(),
 
-//TODO
-//                Tables\Columns\TextColumn::make('responsible.name')
-//                    ->label('Ответственный')
-//                    ->sortable(),
+                Tables\Columns\TextColumn::make('pay_parts')
+                    ->label('Частей')
+                    ->toggleable()
+                    ->toggledHiddenByDefault()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('responsible.name')
+                    ->label('Ответственный')
+                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Создан')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(true),
+                    ->toggleable(),
+
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Обновлен')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggledHiddenByDefault()
+                    ->toggleable(),
+
                 Tables\Columns\TextColumn::make('source.name')
                     ->label('Источник')
                     ->sortable()
@@ -251,9 +280,14 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('reason.name')
                     ->label('Причина отказа')
                     ->sortable()
+                    ->toggledHiddenByDefault(true)
                     ->toggleable(true),
             ])
             ->filters([
+                Tables\Filters\Filter::make('is_work')
+                    ->label('В работе')
+                    ->query(fn (Builder $query): Builder => $query->where('closed', false))
+                    ->default(),
                 Tables\Filters\Filter::make('created_at')
                     ->form([
                         Forms\Components\DatePicker::make('created_from')

@@ -9,6 +9,12 @@ use App\Services\CacheService;
 use App\Services\Event\EventDto;
 use App\Services\Event\EventManager;
 use App\Services\Event\EventService;
+use Exception;
+use Filament\Pages\Actions\Action;
+use Filament\Pages\Actions\ActionGroup;
+use Filament\Pages\Actions\DeleteAction;
+use Filament\Pages\Actions\EditAction;
+use Filament\Pages\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,6 +34,27 @@ class EditCustomer extends EditRecord
     protected function getRedirectUrl(): string
     {
         return CustomerResource::getUrl();
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function getActions(): array
+    {
+        return [
+            Action::make('history')
+                ->label('История')
+                ->action('history')
+                ->modalHeading('История клиента')
+                ->modalContent(view('history.customer')),
+
+            DeleteAction::make(),
+        ];
+    }
+
+    public function history()
+    {
+         return true;//TODO добавление коммента
     }
 }
 

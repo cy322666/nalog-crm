@@ -47,16 +47,14 @@ class Task extends Model
         return $this->responsible()->first()->name;
     }
 
-    //TODO employee -> user
     public function responsible()
     {
         return $this->belongsTo(User::class, 'responsible_id', 'id');
     }
 
-    //TODO employee -> user
     public function author()
     {
-        return $this->hasOne(User::class, 'id', 'created_employee_id');
+        return $this->belongsTo(User::class, 'created_employee_id', 'id');
     }
 
     public function label()

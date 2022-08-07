@@ -112,6 +112,12 @@ class CustomerResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('customer_id')
+                    ->label('ID')
+                    ->toggleable()
+                    ->toggledHiddenByDefault()
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->label('Имя')
                     ->searchable()
@@ -122,6 +128,7 @@ class CustomerResource extends Resource
                     ->sortable()
                     ->toggleable(),//TODO make hidden
                 Tables\Columns\SpatieTagsColumn::make('tags')
+                    ->label('Теги')
                     ->type('customers'),
                 Tables\Columns\TextColumn::make('phone')
                     ->label('Телефон')

@@ -24,16 +24,15 @@ class TaskStats extends BaseWidget
             ->count();
 
         return [
-            Card::make('Tasks', Task::query()
-                ->where('shop_id', CacheService::getAccountId())
-                ->count()
-            )->chart(
-                $orderData
-                    ->map(fn (TrendValue $value) => $value->aggregate)
-                    ->toArray()
-            )->label('Задач за 7 дней'),
-            Card::make('В работе сейчас', Task::query()->where('is_execute', false)->count()),
-            Card::make('Просрочено сейчас', Task::query()->where('execute_at', '<', Carbon::now()->format('Y-m-d'))->count()),
+            Card::make('На сегодня', Task::query()
+                ->whereBetween('execute_to', [
+                    Carbon::now()->format('Y-m-d').' 00:00:00',
+                    Carbon::now()->format('Y-m-d').' 23:59:59',
+                ])->count()),
+
+            Card::make('В работе', Task::query()->where('is_execute', false)->count()),
+
+            Card::make('Просрочено', Task::query()->where('execute_at', '<', Carbon::now()->format('Y-m-d'))->count()),
         ];
     }
 }

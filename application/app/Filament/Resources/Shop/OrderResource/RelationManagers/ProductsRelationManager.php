@@ -37,7 +37,9 @@ class ProductsRelationManager extends HasManyRelationManager
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('product_id')
-                    ->label('ID'),
+                    ->label('ID')
+                    ->toggleable(true)
+                    ->toggledHiddenByDefault(true),
 
                 Tables\Columns\TextColumn::make('name')
                     ->label('Название'),

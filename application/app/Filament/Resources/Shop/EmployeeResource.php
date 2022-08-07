@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Shop;
 
 use App\Filament\Resources\Shop\EmployeeResource\Pages;
-use App\Filament\Resources\Shop\EmployeeResource\RelationManagers;
 use App\Models\Shop\TaskType;
 use App\Models\User;
 use Filament\Forms;

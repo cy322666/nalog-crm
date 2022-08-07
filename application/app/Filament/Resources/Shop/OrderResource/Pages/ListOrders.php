@@ -27,6 +27,7 @@ class ListOrders extends ListRecords
         ];
     }
 
+
     protected function getTableRecordsPerPageSelectOptions(): array
     {
         return [25, 50, 100];

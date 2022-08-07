@@ -35,4 +35,9 @@ class Stock extends Model
     {
         return $this->hasMany(Stock::class, 'parent_stock_id', 'id');
     }
+
+    public function isChild(): bool
+    {
+        return (bool)$this->parent_stock_id > 0;
+    }
 }

@@ -57,7 +57,7 @@ class ProductResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\CommentsRelationManager::class,
+            RelationManagers\OrderRelationManager::class,
         ];
     }
 
@@ -212,33 +212,33 @@ class ProductResource extends Resource
         return [
             Tables\Columns\TextColumn::make('product_id')
                 ->label('ID')
+                ->toggleable()
+                ->toggledHiddenByDefault()
                 ->searchable()
                 ->sortable(),
-            Tables\Columns\SpatieMediaLibraryImageColumn::make('product-image')
-                ->label('Картинка')
-                ->collection('product-images'),
+//            Tables\Columns\SpatieMediaLibraryImageColumn::make('product-image')
+//                ->label('Картинка')
+//                ->collection('product-images'),
             Tables\Columns\TextColumn::make('name')
                 ->label('Название')
                 ->searchable(),
             Tables\Columns\TextColumn::make('price')
                 ->label('Цена')
-                ->searchable()
                 ->sortable(),
             Tables\Columns\TextColumn::make('sku')
                 ->searchable()
                 ->sortable()
                 ->toggleable(),
             Tables\Columns\TextColumn::make('qty')
-                ->searchable()
+                ->label('Остаток')
                 ->sortable()
                 ->toggleable(),
             Tables\Columns\TextColumn::make('description')
                 ->label('Описание')
-                ->searchable()
                 ->toggleable()
                 ->getStateUsing(fn ($record): ?string => mb_strimwidth($record->description, 0, 50, "...")),
             Tables\Columns\TextColumn::make('security_stock')
-                ->searchable()
+                ->label('Защищенный остаток')
                 ->sortable()
                 ->toggleable()
                 ->toggledHiddenByDefault(),

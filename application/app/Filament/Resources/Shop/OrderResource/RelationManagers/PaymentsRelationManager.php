@@ -56,6 +56,7 @@ class PaymentsRelationManager extends HasManyRelationManager
                     Tables\Columns\TextColumn::make('payment_id')
                         ->label('ID')
                         ->toggleable(true)
+                        ->toggledHiddenByDefault(true)
                         ->sortable()
                         ->searchable(),
 
@@ -70,17 +71,12 @@ class PaymentsRelationManager extends HasManyRelationManager
                         ->label('Платежная система')
                         ->sortable(),
 
-                    Tables\Columns\TextColumn::make('steps')
-                        ->label('Частей')
-                        ->toggleable(true)
-                        ->sortable(),
-
                     Tables\Columns\TextColumn::make('method')
                         ->label('Способ оплаты')
                         ->sortable(),
 
                     Tables\Columns\BooleanColumn::make('payed')
-                        ->label('Оплачен полнстью')//TODO bool
+                        ->label('Оплачен')//TODO bool
                         ->toggleable(true)
                         ->sortable(),
 

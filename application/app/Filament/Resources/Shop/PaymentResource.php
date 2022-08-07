@@ -156,7 +156,8 @@ class PaymentResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('payment_id')
                     ->label('ID')
-                    ->toggleable(true)
+                    ->toggleable()
+                    ->toggledHiddenByDefault()
                     ->sortable()
                     ->searchable(),
 
@@ -178,15 +179,10 @@ class PaymentResource extends Resource
                     ->label('Платежная система')
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('steps')
-                    ->label('Частей')
-                    ->toggleable(true)
-                    ->sortable(),
-
                 Tables\Columns\TextColumn::make('method')
                     ->label('Способ оплаты')
                     ->sortable(),
-
+//TODO дата оплаты добавить
                 Tables\Columns\BooleanColumn::make('payed')
                     ->label('Оплачен полнстью')//TODO bool
                     ->toggleable(true)

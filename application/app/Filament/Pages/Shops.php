@@ -29,7 +29,7 @@ class Shops extends Page
                 //user_{id}_account
                 CacheService::setAccountId($accounts->first()->id);
 
-                $this->redirect(route('filament.resources.tasks.index'));
+                $this->redirect(route('filament.resources.tasks.index'));//TODO norm ti cho
             }
         }
         //TODO else redirect login?

@@ -3,11 +3,14 @@
 namespace App\Filament\Resources\Shop\EmployeeResource\Pages;
 
 use App\Filament\Resources\Shop\EmployeeResource;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
 
 class EditEmployee extends EditRecord
 {
+    use HasPageShield;//TODO
+
     protected static string $resource = EmployeeResource::class;
 
     protected function getActions(): array

@@ -34,7 +34,7 @@
         ])
     >
 
-        @if(!$notifications->isEmpty())
+        @if(!empty($notifications) && !$notifications->isEmpty())
             <div @class([
                 'py-3 px-3 space-y-3 overflow-hidden  rounded-md shadow-xl space-y-4',
                 'dark:border-gray-600 w-80 dark:bg-gray-700' => config('filament.dark_mode'),

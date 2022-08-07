@@ -10,6 +10,8 @@ use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class StockResource extends Resource
 {
@@ -17,9 +19,34 @@ class StockResource extends Resource
 
     protected static ?string $slug = 'stocks';
 
+    protected static ?string $recordTitleAttribute = 'name';
+
     protected static ?string $navigationLabel = 'Склады';
 
+    protected static ?string $pluralLabel = 'Склады';
+
+    protected static ?string $modelLabel = 'Склад';
+
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-list';
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccountId());
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'ID'      => $record->stock_id,
+            'Остатки' => optional($record->products)->count() ?? 0,
+            'Тип'     => $record->isChild() === true ? 'Подсклад' : 'Склад',
+        ];
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'stock_id'];
+    }
 
     /**
      * @throws \Exception

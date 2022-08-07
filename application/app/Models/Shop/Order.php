@@ -2,6 +2,7 @@
 
 namespace App\Models\Shop;
 
+use App\Models\User;
 use App\Services\CacheService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -25,12 +26,14 @@ class Order extends Model
         'number',
         'total_price',
         'status_id',
-        'currency_id',
+        'lost_reasons_id',
         'source_id',
+        'responsible_id',
         'shipping_price',
         'shipping_method',
-        'notes',
+        'description',
         'closed',
+        'pay_parts',
     ];
 
     public function address(): MorphOne
@@ -53,6 +56,11 @@ class Order extends Model
         return $this->belongsTo(OrderLostReasons::class, 'lost_reasons_id');
     }
 
+    public function responsible(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'responsible_id');
+    }
+
     public function statuses(): BelongsTo
     {
         return $this->belongsTo(OrderStatus::class, 'status_id')
@@ -63,11 +71,6 @@ class Order extends Model
     {
         return $this->belongsToMany(Product::class, 'shop_order_product', 'shop_order_id', 'shop_product_id');
     }
-
-//    public function products(): HasMany
-//    {
-//        return $this->hasMany(OrderProduct::class, 'shop_order_id');
-//    }
 
     public function payments(): HasMany
     {

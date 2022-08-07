@@ -21,6 +21,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Webbingbrasil\FilamentAdvancedFilter\Filters\BooleanFilter;
 use Webbingbrasil\FilamentAdvancedFilter\Filters\DateFilter;
 use Webbingbrasil\FilamentAdvancedFilter\Filters\NumberFilter;
@@ -30,7 +31,7 @@ class TaskResource extends Resource
 {
     protected static ?string $model = Task::class;
 
-    protected static ?string $slug = 'tasks';//TODO урл?
+    protected static ?string $slug = 'tasks';
 
     protected static ?string $navigationIcon = 'heroicon-o-clock';
 
@@ -154,59 +155,72 @@ class TaskResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Создана')
                     ->sortable()
-                    ->dateTime()
-                    ->toggleable(),
+                    ->date()
+                    ->toggledHiddenByDefault(true),
                 Tables\Columns\TextColumn::make('execute_at')
                     ->label('Дата выполнения')
                     ->sortable()
-                    ->dateTime()
-                    ->toggleable(),
-//                Tables\Columns\BooleanColumn::make('failed')
-//                    ->label('Была просрочена')
-//                    ->toggleable(),
+                    ->dateTime(),
+                Tables\Columns\BooleanColumn::make('is_execute')
+                    ->label('Статус')
+                    ->trueColor('success')
+                    ->falseColor('primary')
+                    ->trueIcon('heroicon-o-badge-check')//TODO поменять на IconColumn
+                    ->falseIcon('heroicon-o-x-circle'),
             ])
             ->filters([
 
-                //TODO https://github.com/webbingbrasil/filament-advancedfilter
-                ///resources/lang/vendor/filament-advancedfilter]
+                Tables\Filters\TernaryFilter::make('date_execute')
+                    ->label('Период выполнения')
+                    ->placeholder('Сегодня')
+                    ->trueLabel('Завтра')
+                    ->falseLabel('Все время')
+                    ->queries(
+                        true:  fn (Builder $query) => $query->where('execute_to', now()->addDay()),
+                        false: fn (Builder $query) => $query->where('execute_to', now()->addDays(7)),
+                        blank: fn (Builder $query) => $query,
+                    ),
 
-//                NumberFilter::make('quantity'),//
+                Tables\Filters\SelectFilter::make('responsible')
+                    ->label('Ответственный')
+                    ->relationship('responsible', 'name')
+                    ->default(Auth::user()->id),
 
-//                TextFilter::make('title'),//
+                Tables\Filters\SelectFilter::make('author')
+                    ->label('Автор')
+                    ->relationship('author', 'name'),
 
-//                DateFilter::make('created_at'),//TODO dont work
-
-//                BooleanFilter::make('is_active'),//
+                Tables\Filters\TernaryFilter::make('status')
+                    ->label('Статус')
+                    ->placeholder('В работе')
+                    ->trueLabel('Выполнено')
+                    ->falseLabel('Просрочено')
+                    ->queries(
+                        true:  fn (Builder $query) => $query->where('is_execute', false),
+                        false: fn (Builder $query) => $query->where('is_execute', true),
+                        blank: fn (Builder $query) => $query->where('is_failed', true),
+                    ),
 
                 Tables\Filters\Filter::make('created_at')
                     ->form([
-//                        DatePicker::make('created_at')
-//                            ->label('Создана после'),
+                        DatePicker::make('created_at')
+                            ->label('Дата создания'),
                         DatePicker::make('execute_at')
                             ->label('Выполнить до'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
-//                            ->when(
-//                                $data['created_at'],
-//                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
-//                            )
+                            ->when(
+                                $data['created_at'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
                             ->when(
                                 $data['execute_at'],
                                 fn(Builder $query, $date): Builder => $query->whereDate('execute_at', '<=', $date),
                             );
                     }),
-//TODO просрочены
-//TODO Менеджеры
-//TODO Авторы
-//TODO Закрытые
-                Tables\Filters\SelectFilter::make('responsible')
-                    ->label('Ответственный')
-                    ->relationship('responsible', 'name')
             ])
-            ->actions([
-//                Tables\Actions\EditAction::make()
-            ])
+            ->actions([])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);

@@ -16,36 +16,20 @@ class OrderStats extends BaseWidget
 {
     protected function getCards(): array
     {
-        $orderData = Trend::model(Order::class)
-            ->between(
-                start: now()->subDays(7),
-                end: now(),
-            )
-            ->perDay()
-            ->count();
+        $shop = CacheService::getAccount();
 
         return [
-            Card::make('Orders', Order::query()
+            Card::make('without_tasks', Order::query()//TODO
                 ->where('shop_id', CacheService::getAccountId())
                 ->count())
-                ->label('Всего заказов')
-                ->chart(
-                    $orderData
-                        ->map(fn (TrendValue $value) => $value->aggregate)
-                        ->toArray()
-                ),
-            Card::make('В работе',
-                Order::query()
-                    ->where('shop_id', CacheService::getAccountId())
-                    ->where('closed', false)
-                    ->count()),
+                ->color('warning')
+                ->label('Заказов без задачи'),
 
-            Card::make('Выиграно на сумму', number_format(
-                Order::query()
-                    ->where('closed', true)
-                    ->where('shop_id', CacheService::getAccountId())
-                    ->sum('price'), 2)
-            ),
+            Card::make('in_work_count', $shop->orders()->where('closed', false)->count())
+                ->label('В работе'),
+
+            Card::make('in_work_sum', $shop->orders()->where('closed', false)->sum('price'), 2)
+                ->label('В работе на сумму'),
         ];
     }
 }

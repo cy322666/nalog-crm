@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Shop\Shop;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
@@ -26,5 +27,12 @@ class CacheService
             redirect(route('filament.auth.login'));
         } else
             return $accountId;
+    }
+
+    public static function getAccount()
+    {
+        return Shop::query()
+            ->find(Cache::get('user_'.Auth::user()->id.'_account'))
+            ->first();
     }
 }

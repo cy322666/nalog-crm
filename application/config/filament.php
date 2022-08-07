@@ -53,7 +53,7 @@ return [
     'auth' => [
         'guard' => env('FILAMENT_AUTH_GUARD', 'web'),
         'pages' => [
-            'login' => \App\Filament\Pages\Auth\Login::class,
+            'login' => \JeffGreco13\FilamentBreezy\Http\Livewire\Auth\Login::class,
         ],
     ],
 
@@ -193,6 +193,7 @@ return [
     'middleware' => [
         'auth' => [
             Authenticate::class,
+            'verified:filament.verification.notice'
         ],
         'base' => [
             EncryptCookies::class,

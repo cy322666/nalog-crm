@@ -10,6 +10,7 @@ use App\Filament\Tables\Actions\ButtonActionShopView;
 use App\Models\Currency;
 use App\Models\Shop\Shop;
 use App\Models\Timezone;
+use App\Services\CacheService;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
@@ -22,12 +23,14 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class ShopResource extends Resource
 {
     protected static ?string $model = Shop::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $slug = 'shops';
 
     public static function form(Form $form): Form
     {
@@ -44,9 +47,11 @@ class ShopResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('shop_id')->label('ID'),
                 TextColumn::make('name')->label('Название'),
                 TextColumn::make('expired_at')->label('Оплачен до'),
                 TextColumn::make('tariff.name')->label('Тариф'),//TODO тут ссылка на страницу
+                //TODO тут статус аккаунта
             ])
             ->filters([
                 //

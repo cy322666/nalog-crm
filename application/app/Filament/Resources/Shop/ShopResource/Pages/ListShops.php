@@ -5,7 +5,9 @@ namespace App\Filament\Resources\Shop\ShopResource\Pages;
 use App\Filament\Resources\Shop\ShopResource;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Phpsa\FilamentFeed\Widgets\FeedWidget;
 
 class ListShops extends ListRecords
 {
@@ -21,6 +23,11 @@ class ListShops extends ListRecords
         return [
             Actions\CreateAction::make(),
         ];
+    }
+
+    protected function getFooterWidgets() : array
+    {
+        return [];
     }
 
     protected function isTablePaginationEnabled(): bool

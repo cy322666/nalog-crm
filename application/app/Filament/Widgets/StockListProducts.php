@@ -21,11 +21,6 @@ class StockListProducts extends BaseWidget
         return 'Остатки склада';
     }
 
-//    public function getDefaultTableRecordsPerPageSelectOption(): int
-//    {
-//        return 5;
-//    }
-
     public function isTableSearchable(): bool
     {
         return true;
@@ -33,7 +28,7 @@ class StockListProducts extends BaseWidget
 
     protected function getTableQuery(): Builder
     {
-        $query = Stock::query()->where('shop_id', CacheService::getAccountId());
+        $query = CacheService::getAccount();
 
         $stockQuery = Request::query('stock');
 
@@ -43,6 +38,16 @@ class StockListProducts extends BaseWidget
         }
 
         return $query->first()->products()->getQuery();
+    }
+
+    protected function getTableActions(): array
+    {
+        return [
+            Tables\Actions\Action::make('add')
+                ->label('')
+                ->icon('heroicon-o-plus')
+                ->modalContent(view('history.customer')), //TODO пополнение
+        ];
     }
 
     protected function getTableRecordsPerPageSelectOptions(): array
@@ -55,7 +60,8 @@ class StockListProducts extends BaseWidget
         return [
             Tables\Columns\SpatieMediaLibraryImageColumn::make('product-image')
                 ->label('Картинка')
-                ->collection('product-images'),
+                ->collection('product-images')
+                ->hidden(true),
             Tables\Columns\TextColumn::make('name')
                 ->label('Название')
                 ->searchable(),
@@ -68,9 +74,14 @@ class StockListProducts extends BaseWidget
                 ->searchable()
                 ->toggleable()
                 ->getStateUsing(fn ($record): ?string => mb_strimwidth($record->description, 0, 50, "...")),
-            Tables\Columns\TextColumn::make('count')
+            Tables\Columns\TextColumn::make('qty')
                 ->label('Остаток')
                 ->sortable(),
         ];
+    }
+
+    public function add_products()
+    {
+        echo 'puk';
     }
 }

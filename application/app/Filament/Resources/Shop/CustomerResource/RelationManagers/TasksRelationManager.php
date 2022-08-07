@@ -125,7 +125,11 @@ class TasksRelationManager extends HasManyThroughRelationManager
                     ->sortable(),
 
                 Tables\Columns\BooleanColumn::make('is_execute')
-                    ->label('Выполнена'),
+                    ->label('Выполнена')
+                    ->trueColor('primary')
+                    ->falseColor('warning')
+                    ->trueIcon('heroicon-o-badge-check')
+                    ->falseIcon('heroicon-o-x-circle'),
 
                 Tables\Columns\BadgeColumn::make('is_failed')
                     ->label('Статус')

@@ -5,17 +5,22 @@ namespace App\Models;
 use App\Models\Shop\Notification;
 use App\Models\Shop\Shop;
 use Filament\Models\Contracts\FilamentUser;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasPermissions;
+use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
     use HasApiTokens;
     use HasFactory;
     use Notifiable;
+    use HasRoles;
+    use HasPermissions;
 
     /**
      * @var array<int, string>
@@ -65,5 +70,17 @@ class User extends Authenticatable implements FilamentUser
             ->hasMany(Notification::class, 'notifiable_id', 'id')
             ->where('notifiable_type', __CLASS__)
             ->where('is_read', false);
+    }
+
+    public function roles() : belongsToMany
+    {
+        return $this->belongsToMany(Role::class,'users_roles');
+    }
+    /**
+     * @return mixed
+     */
+    public function permissions() : belongsToMany
+    {
+        return $this->belongsToMany(Permission::class,'users_permissions');
     }
 }

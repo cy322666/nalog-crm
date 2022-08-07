@@ -36,7 +36,12 @@ class ListTasks extends ListRecords
 
     protected function getTableRecordsPerPageSelectOptions(): array
     {
-        return [25, 50, 100, 150];
+        return [25, 50, 100];
+    }
+
+    protected function getTableFiltersFormColumns(): int
+    {
+        return 2;
     }
 
     //TODO фильтры над таблицей или как

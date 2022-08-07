@@ -96,6 +96,8 @@ class CategoryResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('category_id')
                     ->label('ID')
+                    ->toggleable()
+                    ->toggledHiddenByDefault()
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
