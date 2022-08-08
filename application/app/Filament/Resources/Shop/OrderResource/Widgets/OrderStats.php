@@ -19,6 +19,7 @@ class OrderStats extends BaseWidget
         $shop = CacheService::getAccount();
 
         return [
+            //TODO оплаченно на сумму
             Card::make('without_tasks', Order::query()//TODO
                 ->where('shop_id', CacheService::getAccountId())
                 ->count())

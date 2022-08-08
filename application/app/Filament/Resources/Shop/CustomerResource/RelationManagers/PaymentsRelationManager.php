@@ -16,79 +16,53 @@ class PaymentsRelationManager extends HasManyThroughRelationManager
 {
     protected static string $relationship = 'payments';
 
-    protected static ?string $recordTitleAttribute = 'reference';
+    protected static ?string $recordTitleAttribute = 'name';
+
+    protected static ?string $title = 'Платежи';
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\Select::make('order_id')
-                    ->label('Order')
-                    ->relationship(
-                        'order',
-                        'number',
-                        fn (Builder $query, HasManyThroughRelationManager $livewire) => $query->whereBelongsTo($livewire->ownerRecord)
-                    )
-                    ->searchable()
-                    ->hidden(fn (HasManyThroughRelationManager $livewire) => $livewire->mountedTableAction === 'edit')
-                    ->required(),
-
-                Forms\Components\TextInput::make('reference')
-                    ->columnSpan(fn (HasManyThroughRelationManager $livewire) => $livewire->mountedTableAction === 'edit' ? 2 : 1)
-                    ->required(),
-
-                Forms\Components\TextInput::make('amount')
-                    ->numeric()
-                    ->required(),
-
-                Forms\Components\Select::make('currency')
-                    ->options(collect(Currency::getCurrencies())->mapWithKeys(fn ($item, $key) => [$key => data_get($item, 'name')]))
-                    ->searchable()
-                    ->required(),
-
-                Forms\Components\Select::make('provider')
-                    ->options([
-                        'stripe' => 'Stripe',
-                        'paypal' => 'PayPal',
-                    ])
-                    ->required(),
-
-                Forms\Components\Select::make('method')
-                    ->options([
-                        'credit_card' => 'Credit card',
-                        'bank_transfer' => 'Bank transfer',
-                        'paypal' => 'PayPal',
-                    ])
-                    ->required(),
-            ]);
+        return $form->schema([]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('order.number')
-                    ->url(fn ($record) => OrderResource::getUrl('edit', [$record->order]))
-                    ->searchable()
-                    ->sortable(),
-
-                Tables\Columns\TextColumn::make('reference')
+                Tables\Columns\TextColumn::make('payment_id')
+                    ->label('ID')
+                    ->toggleable(true)
+                    ->toggledHiddenByDefault(true)
+                    ->sortable()
                     ->searchable(),
 
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Название'),
+
                 Tables\Columns\TextColumn::make('amount')
-                    ->sortable()
-                    ->money(fn ($record) => $record->currency),
+                    ->label('Сумма')
+                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('provider')
-                    ->formatStateUsing(fn ($state) => Str::headline($state))
+                    ->label('Платежная система')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('method')
-                    ->formatStateUsing(fn ($state) => Str::headline($state))
+                    ->label('Способ оплаты')
+                    ->sortable(),
+
+                Tables\Columns\BooleanColumn::make('payed')
+                    ->label('Оплачен')//TODO bool
+                    ->toggleable(true)
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Создан')
+                    ->dateTime()
+                    ->toggleable(true)
                     ->sortable(),
             ])
-            ->filters([
-                //
-            ]);
+            ->actions([])
+            ->filters([]);
     }
 }

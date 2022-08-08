@@ -20,71 +20,45 @@ class PaymentsRelationManager extends HasManyRelationManager
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-
-//                Forms\Components\TextInput::make('amount')
-//                    ->numeric()
-//                    ->required(),
-//
-//                Forms\Components\Select::make('currency')
-//                    ->options(collect(Currency::getCurrencies())->mapWithKeys(fn ($item, $key) => [$key => data_get($item, 'name')]))
-//                    ->searchable()
-//                    ->required(),
-//
-//                Forms\Components\Select::make('provider')
-//                    ->options([
-//                        'stripe' => 'Stripe',
-//                        'paypal' => 'PayPal',
-//                    ])
-//                    ->required(),
-//
-//                Forms\Components\Select::make('method')
-//                    ->options([
-//                        'credit_card' => 'Credit card',
-//                        'bank_transfer' => 'Bank transfer',
-//                        'paypal' => 'PayPal',
-//                    ])
-//                    ->required(),
-            ]);
+        return $form->schema([]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                    Tables\Columns\TextColumn::make('payment_id')
-                        ->label('ID')
-                        ->toggleable(true)
-                        ->toggledHiddenByDefault(true)
-                        ->sortable()
-                        ->searchable(),
+                Tables\Columns\TextColumn::make('payment_id')
+                    ->label('ID')
+                    ->toggleable(true)
+                    ->toggledHiddenByDefault(true)
+                    ->sortable()
+                    ->searchable(),
 
-                    Tables\Columns\TextColumn::make('name')
-                        ->label('Название'),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Название'),
 
-                    Tables\Columns\TextColumn::make('amount')
-                        ->label('Сумма')
-                        ->sortable(),
+                Tables\Columns\TextColumn::make('amount')
+                    ->label('Сумма')
+                    ->sortable(),
 
-                    Tables\Columns\TextColumn::make('provider')
-                        ->label('Платежная система')
-                        ->sortable(),
+                Tables\Columns\TextColumn::make('provider')
+                    ->label('Платежная система')
+                    ->sortable(),
 
-                    Tables\Columns\TextColumn::make('method')
-                        ->label('Способ оплаты')
-                        ->sortable(),
+                Tables\Columns\TextColumn::make('method')
+                    ->label('Способ оплаты')
+                    ->sortable(),
 
-                    Tables\Columns\BooleanColumn::make('payed')
-                        ->label('Оплачен')//TODO bool
-                        ->toggleable(true)
-                        ->sortable(),
+                Tables\Columns\BooleanColumn::make('payed')
+                    ->label('Оплачен')//TODO bool
+                    ->toggleable(true)
+                    ->sortable(),
 
-                    Tables\Columns\TextColumn::make('created_at')
-                        ->label('Создан')
-                        ->dateTime()
-                        ->toggleable(true)
-                        ->sortable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Создан')
+                    ->dateTime()
+                    ->toggleable(true)
+                    ->sortable(),
             ])
             ->filters([])
             ->actions([]);

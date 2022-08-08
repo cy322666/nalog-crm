@@ -23,8 +23,7 @@ class Order extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'number',
-        'total_price',
+        'name',
         'status_id',
         'lost_reasons_id',
         'source_id',
@@ -32,7 +31,10 @@ class Order extends Model
         'shipping_price',
         'shipping_method',
         'description',
+        'responsible_id',
         'closed',
+        'price',
+        'shop_id',
         'pay_parts',
     ];
 
@@ -93,9 +95,9 @@ class Order extends Model
         return $this->belongsTo(OrderStatus::class, 'status_id');
     }
 
-    public function services()
+    public function services(): BelongsToMany
     {
-
+        return $this->belongsToMany(Service::class, 'shop_order_service', 'order_id', 'service_id');
     }
 
     public function events()

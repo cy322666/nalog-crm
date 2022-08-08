@@ -126,7 +126,7 @@ class CustomerResource extends Resource
                     ->label('Почта')
                     ->searchable()
                     ->sortable()
-                    ->toggleable(),//TODO make hidden
+                    ->toggleable(),
                 Tables\Columns\SpatieTagsColumn::make('tags')
                     ->label('Теги')
                     ->type('customers'),
@@ -185,8 +185,6 @@ class CustomerResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //TODO on
-//          RelationManagers\CommentsRelationManager::class,
             RelationManagers\OrdersRelationManager::class,
             RelationManagers\TasksRelationManager::class,
             RelationManagers\PaymentsRelationManager::class,

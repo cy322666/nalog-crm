@@ -37,3 +37,9 @@
     --tw-text-opacity: 1;
     color: rgb(34 197 94 / var(--tw-text-opacity));
 }
+
+/*TODO dont work*/
+
+.filament-sidebar-open-button{
+    display: none;
+}

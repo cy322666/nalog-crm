@@ -95,7 +95,7 @@ class OrderResource extends Resource
                                                     ->pluck('name', 'id')
                                                     ->toArray()
                                             )
-                                            ->default(101),
+                                            ->default(2),//TODO оставить?
 
                                         Forms\Components\TextInput::make('price')
                                             ->hint('Pубли')
@@ -329,6 +329,7 @@ class OrderResource extends Resource
         return [
             RelationManagers\ProductsRelationManager::class,
             RelationManagers\PaymentsRelationManager::class,
+            RelationManagers\ServicesRelationManager::class,
         ];
     }
 

@@ -5,9 +5,12 @@ namespace App\Filament\Resources\Shop;
 use App\Filament\Resources\Shop\ProductResource\Pages;
 use App\Filament\Resources\Shop\ProductResource\RelationManagers;
 use App\Filament\Resources\Shop\ProductResource\Widgets\ProductStats;
+use App\Models\Shop\Category;
+use App\Models\Shop\OrderSource;
 use App\Models\Shop\Product;
 use App\Services\CacheService;
 use App\Services\Helpers\ModelHelper;
+use Exception;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -101,9 +104,8 @@ class ProductResource extends Resource
         return self::getEloquentQuery()->where('shop_id', CacheService::getAccountId());
     }
 
-    //TODO категории
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public static function getFormSchema(string $layout = Forms\Components\Grid::class): array
     {
@@ -115,6 +117,24 @@ class ProductResource extends Resource
                             Forms\Components\TextInput::make('name')
                                 ->label('Название')
                                 ->required(),
+
+                            //TODO fatal
+                            Forms\Components\Select::make('categories.name')
+                                ->label('Категория')
+                                ->relationship('categories', 'name')
+                                ->searchable()
+                                ->getSearchResultsUsing(function (string $query) {
+
+//                                    dd($query);
+                                    return Category::query()
+                                        ->where('shop_id', CacheService::getAccountId())
+                                        ->where('name', 'like', "%{$query}%")
+                                        ->pluck('name', 'id')
+                                        ->toArray();
+                                })
+                                ->getOptionLabelUsing(fn ($value): ?string => Category::query()->find($value)?->name)
+                                ->required(),
+
                             Forms\Components\MarkdownEditor::make('description')
                                 ->label('Описание')
                                 ->columnSpan([
@@ -192,6 +212,7 @@ class ProductResource extends Resource
                         ->default(
                             ModelHelper::generateId(self::$model, 'product_id'))
                         ->disabled(),
+
                     Forms\Components\Placeholder::make('created_at')
                         ->label('Создан')
                         ->content(fn (?Product $record): string => $record ? $record->created_at->diffForHumans() : '-'),
@@ -241,7 +262,7 @@ class ProductResource extends Resource
                 ->label('Защищенный остаток')
                 ->sortable()
                 ->toggleable()
-                ->toggledHiddenByDefault(),
+                ->toggledHiddenByDefault(true),
         ];
     }
 

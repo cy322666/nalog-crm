@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Run Swoole
-composer install
+#composer install
 #  composer update
 #  php artisan key:generate
 

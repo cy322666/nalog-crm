@@ -21,13 +21,19 @@
 {{--                    }">--}}
 
                 <div class="divide-y divide-dashed dark:divide-gray-700">
-                    @foreach (\App\Models\Shop\Comment::query()->limit(10)->get() as $row)
+                    @foreach (\App\Models\Shop\Comment::query()->orderByDesc('created_at')->limit(10)->get() as $row)
                         <div class="px-2 py-3 filament-tables-text-column">
 
-                            <a class="text-sm truncate" href="{{$row->title }}" target="_blank">
-                                [{{$row->created_at }}] {{$row->title}}
-{{--                                TODO блок для даты и мельче шрифт--}}
-                            </a>
+{{--                            <a class="text-sm truncate" href="{{$row->title }}" target="_blank">--}}
+
+                            <div class="flex">
+                                <p class="text-xs antialiased font-light text-left text-slate-400 inset-0 min-w-40">[{{$row->created_at }}]</p>
+
+                                <div class="ml-2 mt-1">
+                                    <p>{{$row->title}}</p>
+                                </div>
+                            </div>
+{{--                            </a>--}}
                         </div>
                     @endforeach
                 </div>

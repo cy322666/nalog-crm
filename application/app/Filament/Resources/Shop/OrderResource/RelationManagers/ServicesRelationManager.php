@@ -8,14 +8,19 @@ use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\HasManyRelationManager;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Actions\AttachAction;
 use Illuminate\Support\Str;
 
 class ServicesRelationManager extends HasManyRelationManager
 {
     protected static string $relationship = 'services';
 
-//    protected static ?string $recordTitleAttribute = 'reference';
-//
+    protected static ?string $title = 'Услуги';
+
+    protected static ?string $label = 'Услугу';
+
+    protected static ?string $recordTitleAttribute = 'name';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -26,11 +31,6 @@ class ServicesRelationManager extends HasManyRelationManager
 
                 Forms\Components\TextInput::make('amount')
                     ->numeric()
-                    ->required(),
-
-                Forms\Components\Select::make('currency')
-                    ->options(collect(Currency::getCurrencies())->mapWithKeys(fn ($item, $key) => [$key => data_get($item, 'name')]))
-                    ->searchable()
                     ->required(),
 
                 Forms\Components\Select::make('provider')
@@ -54,20 +54,28 @@ class ServicesRelationManager extends HasManyRelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('reference')
+                Tables\Columns\TextColumn::make('service_id')
+                    ->label('ID')
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Название')
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('amount')
-                    ->sortable()
-                    ->money(fn ($record) => $record->currency),
+                Tables\Columns\TextColumn::make('price')
+                    ->label('Стоимость')
+                    ->sortable(),
 
-                Tables\Columns\TextColumn::make('provider')
-                    ->formatStateUsing(fn ($state) => Str::headline($state)),
-
-                Tables\Columns\TextColumn::make('method')
-                    ->formatStateUsing(fn ($state) => Str::headline($state)),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Создано')
+                    ->dateTime()
+                    ->sortable(),
             ])
             ->filters([])
-            ->actions([]);
+            ->actions([])
+            ->headerActions([
+
+                AttachAction::make(),
+            ]);
     }
 }

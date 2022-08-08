@@ -30,7 +30,7 @@ class PaymentResource extends Resource
 
     protected static ?string $pluralLabel = 'Платежи';
 
-    protected static ?string $modelLabel = 'Платеж';
+    protected static ?string $modelLabel = 'Платежа';
 
     protected static ?string $navigationIcon = 'heroicon-o-cash';
 
@@ -125,7 +125,7 @@ class PaymentResource extends Resource
                         ->columnSpan(1),
                     Forms\Components\Card::make()
                         ->schema([
-                            Forms\Components\Select::make('order_id')
+                            Forms\Components\Select::make('order.name')
                                 ->label('Заказ')
                                 ->relationship('order', 'name')
                                 ->searchable()
@@ -139,6 +139,7 @@ class PaymentResource extends Resource
                                 })
                                 ->getOptionLabelUsing(fn ($value): ?string => Order::query()->find($value)?->name)
                                 ->required(),
+
                             //TODO краткая инфа заказа!
                         ])
                         ->columnSpan(1),

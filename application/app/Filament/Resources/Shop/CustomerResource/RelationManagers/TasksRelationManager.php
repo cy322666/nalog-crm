@@ -30,10 +30,12 @@ class TasksRelationManager extends HasManyThroughRelationManager
 {
     protected static string $relationship = 'tasks';
 
+    protected static ?string $title = 'Задачи';
+
     //TODO check double
     //protected bool $allowsDuplicates = true;
 
-    protected static ?string $recordTitleAttribute = 'task_id';
+    protected static ?string $recordTitleAttribute = 'title';
 
     //TODO tz
     public static function form(Form $form): Form
@@ -55,6 +57,7 @@ class TasksRelationManager extends HasManyThroughRelationManager
                 Forms\Components\Group::make()
                     ->schema([
                         DateTimePicker::make('execute_at')
+                            ->label('Начало выполнения')
                             ->withoutSeconds()
                             ->firstDayOfWeek(7),
                         DateTimePicker::make('execute_to')
@@ -142,9 +145,7 @@ class TasksRelationManager extends HasManyThroughRelationManager
                     ->label('Результат')
                     ->sortable(),
             ])
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->actions([]);
     }
 }

@@ -172,13 +172,13 @@ class TaskResource extends Resource
 
                 Tables\Filters\TernaryFilter::make('date_execute')
                     ->label('Период выполнения')
-                    ->placeholder('Сегодня')
+                    ->placeholder('Все время')
                     ->trueLabel('Завтра')
-                    ->falseLabel('Все время')
+                    ->falseLabel('В течении недели')
                     ->queries(
                         true:  fn (Builder $query) => $query->where('execute_to', now()->addDay()),
                         false: fn (Builder $query) => $query->where('execute_to', now()->addDays(7)),
-                        blank: fn (Builder $query) => $query,
+                        blank: fn (Builder $query) => $query->where('execute_to', '!=', null),
                     ),
 
                 Tables\Filters\SelectFilter::make('responsible')
@@ -198,7 +198,7 @@ class TaskResource extends Resource
                     ->queries(
                         true:  fn (Builder $query) => $query->where('is_execute', false),
                         false: fn (Builder $query) => $query->where('is_execute', true),
-                        blank: fn (Builder $query) => $query->where('is_failed', true),
+                        blank: fn (Builder $query) => $query->where('is_failed', true)
                     ),
 
                 Tables\Filters\Filter::make('created_at')

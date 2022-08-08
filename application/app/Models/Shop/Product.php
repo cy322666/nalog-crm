@@ -60,11 +60,11 @@ class Product extends Model implements HasMedia
      * @var array<string, string>
      */
     protected $casts = [
-        'featured' => 'boolean',
+        'featured'   => 'boolean',
         'is_visible' => 'boolean',
-        'backorder' => 'boolean',
+        'backorder'  => 'boolean',
         'requires_shipping' => 'boolean',
-        'published_at' => 'date',
+        'published_at'      => 'date',
     ];
 
     public function brand(): BelongsTo
@@ -74,16 +74,11 @@ class Product extends Model implements HasMedia
 
     public function categories(): BelongsToMany
     {
-        return $this->belongsToMany(Category::class, 'shop_category_product', 'shop_category_id', 'shop_product_id');
+        return $this->belongsToMany(Category::class, 'shop_category_product', 'shop_product_id', 'shop_category_id');
     }
 
     public function orders(): BelongsToMany
     {
         return $this->belongsToMany(Order::class, 'shop_order_product', 'shop_product_id', 'shop_order_id');
-    }
-
-    public function comments(): MorphMany
-    {
-        return $this->morphMany(Comment::class, 'commentable');
     }
 }
