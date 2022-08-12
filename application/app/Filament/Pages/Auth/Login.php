@@ -12,7 +12,6 @@ class Login extends \Filament\Http\Livewire\Auth\Login
 {
     public function mount(): void
     {
-
         if (Filament::auth()->check()) {
 
             CacheService::setAccountId(Auth::user()

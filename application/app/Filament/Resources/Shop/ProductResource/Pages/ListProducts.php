@@ -10,10 +10,6 @@ class ListProducts extends ListRecords
 {
     protected static string $resource = ProductResource::class;
 
-//    protected int|string|array $columnSpan = 'full';
-
-//    protected ?string $maxContentWidth = 'full';
-
     protected function getTitle(): string
     {
         return 'Товары';

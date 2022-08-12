@@ -36,7 +36,7 @@ class SettingsPage extends Widget implements HasForms
 
     public function mount(): void
     {
-        $this->shop = Shop::query()->find(CacheService::getAccountId());
+        $this->shop = CacheService::getAccount();
 
         $statuses = $this->shop->statuses;
 

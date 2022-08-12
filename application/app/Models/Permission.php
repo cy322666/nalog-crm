@@ -9,7 +9,7 @@ class Permission extends Model
 {
     use HasFactory;
 
-    public function roles()
+    public function roles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Role::class,'roles_permissions');
     }

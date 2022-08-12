@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Shop\CustomerResource\Pages;
 use App\Events\Shop\EntityEvent;
 use App\Facades\EventLogger;
 use App\Filament\Resources\Shop\CustomerResource;
+use App\Models\Shop\Customer;
 use App\Services\CacheService;
 use App\Services\Event\EventDto;
 use App\Services\Event\EventManager;
@@ -48,7 +49,8 @@ class EditCustomer extends EditRecord
                 ->modalHeading('История клиента')
                 ->modalContent(view('history.customer')),
 
-            DeleteAction::make(),
+            DeleteAction::make()
+               //TODO ->visible(fn (Customer $record): bool => auth()->user()->can('delete', $record))
         ];
     }
 

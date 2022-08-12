@@ -4,6 +4,8 @@ namespace App\Policies\Shop;
 
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
+use Illuminate\Support\Facades\Log;
 
 class CustomerPolicy
 {
@@ -12,30 +14,30 @@ class CustomerPolicy
     /**
      * Determine whether the user can view any models.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return bool
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
-        return $user->can('view_any_shop::customer');
+        return $user->isAdmin() || $user->hasPermission('view_customers');
     }
 
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return bool
      */
-    public function view(User $user)
+    public function view(User $user): bool
     {
-        return $user->can('view_shop::customer');
+        return true;//$user->can('view_shop::customer');
     }
 
     /**
      * Determine whether the user can create models.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return Response|bool
      */
     public function create(User $user)
     {
@@ -45,85 +47,89 @@ class CustomerPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return Response|bool
      */
     public function update(User $user)
     {
-        return $user->can('update_shop::customer');
+        return true;//$user->can('update_shop::customer');
     }
 
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return Response|bool
      */
     public function delete(User $user)
     {
+        Log::info(__METHOD__);
         return $user->can('delete_shop::customer');
     }
 
     /**
      * Determine whether the user can bulk delete.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return Response|bool
      */
     public function deleteAny(User $user)
     {
+        Log::info(__METHOD__);
         return $user->can('delete_any_shop::customer');
     }
 
     /**
      * Determine whether the user can permanently delete.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return Response|bool
      */
     public function forceDelete(User $user)
     {
+        Log::info(__METHOD__);
         return $user->can('{{ ForceDelete }}');
     }
 
     /**
      * Determine whether the user can permanently bulk delete.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return Response|bool
      */
     public function forceDeleteAny(User $user)
     {
+        Log::info(__METHOD__);
         return $user->can('{{ ForceDeleteAny }}');
     }
 
     /**
      * Determine whether the user can restore.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return Response|bool
      */
     public function restore(User $user)
     {
-        return $user->can('{{ Restore }}');
+        return false;//$user->can('{{ Restore }}');
     }
 
     /**
      * Determine whether the user can bulk restore.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return Response|bool
      */
     public function restoreAny(User $user)
     {
-        return $user->can('{{ RestoreAny }}');
+        return false;//$user->can('{{ RestoreAny }}');
     }
 
     /**
      * Determine whether the user can bulk restore.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return Response|bool
      */
     public function replicate(User $user)
     {
@@ -133,12 +139,12 @@ class CustomerPolicy
     /**
      * Determine whether the user can reorder.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return Response|bool
      */
     public function reorder(User $user)
     {
-        return $user->can('{{ Reorder }}');
+        return false;//$user->can('{{ Reorder }}');
     }
 
 }

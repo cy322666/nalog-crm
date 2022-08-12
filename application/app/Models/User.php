@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Models\Shop\Notification;
 use App\Models\Shop\Shop;
+use App\Policies\Traits\HasRolesAndPermissions;
+use App\Services\CacheService;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,8 +21,9 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     use HasApiTokens;
     use HasFactory;
     use Notifiable;
-    use HasRoles;
-    use HasPermissions;
+    use HasRolesAndPermissions;
+//    use HasRoles;
+//    use HasPermissions;
 
     /**
      * @var array<int, string>
@@ -82,5 +85,10 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     public function permissions() : belongsToMany
     {
         return $this->belongsToMany(Permission::class,'users_permissions');
+    }
+
+    public function isAdmin(): bool
+    {
+        return (bool)CacheService::getRole() == ('admin' || 'root');//TODO root?
     }
 }

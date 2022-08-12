@@ -23,4 +23,12 @@ abstract class ModelHelper
 
         return $lastRecord ? $lastRecord->$column + 2 : random_int(200000, 999999);
     }
+
+    public static function clearPhone(?string $phone)
+    {
+        $patterns = ['/[^\d,]+/', '/,,+/'];
+        $replacements = [''];
+
+        return preg_replace($patterns, $replacements, $phone);
+    }
 }

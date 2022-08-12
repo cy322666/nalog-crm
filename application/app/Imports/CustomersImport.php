@@ -8,8 +8,10 @@ use App\Models\Shop\Shop;
 use App\Services\Helpers\ModelHelper;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
+use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -17,7 +19,7 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Events\AfterImport;
 use Maatwebsite\Excel\Events\ImportFailed;
 
-class CustomersImport implements ToModel, WithHeadingRow, ShouldQueue, WithChunkReading, WithEvents
+class CustomersImport implements ToCollection, WithHeadingRow, ShouldQueue, WithChunkReading, WithEvents
 {
     use RegistersEventListeners;
 
@@ -29,34 +31,53 @@ class CustomersImport implements ToModel, WithHeadingRow, ShouldQueue, WithChunk
 
     public function __construct(Shop $shop, Import $import)
     {
+        sleep(3);
+
         $this->shop = $shop;
         $this->import = $import;
         $this->customerId = ModelHelper::generateId(Customer::class, 'customer_id');
     }
 
-    /**
-     * @param array $row
-     *
-     * @return Model|Customer|null
-     */
-    public function model(array $row): Model|Customer|null
+    public function collection(Collection $collection)
     {
-        ++$this->customerId;
-        ++$this->rows;
+        foreach ($collection as $row) {
 
-        return new Customer([
-            'name'     => $row['name'] ?? 'as',
-            'email'    => $row['email'] ?? null,
-            'phone'    => $row['phone'] ?? null,
-            'birthday' => $row['birthday'] ?? null,
-            'inn'      => $row['inn'] ?? null,
-            'kpp'      => $row['kpp'] ?? null,
-            'rs'       => $row['rs'] ?? null,
-            'type'     => (!empty($row['kpp']) || !empty($row['rs']) || !empty($row['inn'])) ? 2 : 1,
+            //TODO валидация, репорты о проблемах
 
-            'shop_id'     => $this->shop->id,
-            'customer_id' => $this->customerId,
-        ]);
+//            if (!empty($row['email']) || !empty($row['phone'])) {
+
+                ++$this->customerId;
+                ++$this->rows;
+
+                $customer = Customer::query()
+                    ->where('shop_id', $this->shop->id)
+                    ->where('email', trim($row['email']))
+                    ->orWhere('phone', trim($row['phone']))
+                    ->first();
+
+                if (!$customer) {
+
+                    $customer = new Customer();
+                }
+
+                $customer->fill([
+                    'name'     => $row['name'] ?? "Клиент #{$this->customerId}",
+                    'email'    => trim($row['email']) ?? null,
+                    'phone'    => ModelHelper::clearPhone(trim($row['phone'])) ?? null,
+                    'birthday' => $row['birthday'] ?? null,
+                    'inn'      => trim($row['inn']) ?? null,
+                    'kpp'      => trim($row['kpp']) ?? null,
+                    'rs'       => trim($row['rs']) ?? null,
+                    'type'     => (!empty($row['kpp']) || !empty($row['rs']) || !empty($row['inn'])) ? 2 : 1,
+
+                    'shop_id'     => $this->shop->id,
+                    'customer_id' => $this->customerId,
+                ]);
+                $customer->save();
+
+                Log::info(__METHOD__.' customer id '.$customer->id);
+//            }
+        }
     }
 
     public function registerEvents(): array
@@ -67,6 +88,8 @@ class CustomersImport implements ToModel, WithHeadingRow, ShouldQueue, WithChunk
                 Log::error($event->getException());
             },
             AfterImport::class => function(AfterImport $event) {
+
+                sleep(3);
 
                 $this->import->count_imported = ++$this->rows;//TODO
                 $this->import->is_completed = true;
@@ -79,7 +102,7 @@ class CustomersImport implements ToModel, WithHeadingRow, ShouldQueue, WithChunk
     {
         return [
             'email' => 'email',
-            'phone' => 'numeric',
+//            'phone' => 'numeric',
             'name'  => 'size:100',
         ];
     }
@@ -89,8 +112,8 @@ class CustomersImport implements ToModel, WithHeadingRow, ShouldQueue, WithChunk
         return 500;
     }
 
-    public function uniqueBy(): array//TODO
-    {
-        return ['email', 'shop_id'];
-    }
+//    public function uniqueBy(): array//TODO
+//    {
+//        return ['email', 'shop_id'];
+//    }
 }

@@ -175,12 +175,9 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-//        App\Providers\TenancyServiceProvider::class,
-
         App\Providers\TelescopeServiceProvider::class,
 
         App\Providers\CrmServiceProvider::class,
-
 //        App\Providers\NotificationProvider::class,
         App\Providers\AnalyticsProvider::class,
 

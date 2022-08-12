@@ -37,10 +37,10 @@ class ImportResource extends Resource
                             ->options([
                                 1 => 'Клиенты',
                                 2 => 'Клиенты + Заказы',
-                                3 => 'Оплаты',
+                                3 => 'Товары',
                             ]),
                         Forms\Components\FileUpload::make('name')
-    //                                ->acceptedFileTypes(['xlsx', 'csv'])
+//                            ->acceptedFileTypes(['xlsx', 'csv'])
                             ->directory(Storage::disk(Config::get('crm.storage_disk'))->get('import'))
                             ->helperText('Только файлы Excel ')
                             ->required()
@@ -54,7 +54,8 @@ class ImportResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Создано')
-                    ->dateTime(),
+                    ->dateTime()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('count_rows')
                     ->label('Всего строк'),
                 Tables\Columns\TextColumn::make('count_imported')

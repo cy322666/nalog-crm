@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
 class RolePolicy
 {
@@ -12,133 +13,133 @@ class RolePolicy
     /**
      * Determine whether the user can view any models.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return bool
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
-        return $user->can('view_any_role');
+        return $user->isAdmin() || $user->hasPermission('view_roles');
     }
 
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return bool
      */
-    public function view(User $user)
+    public function view(User $user): bool
     {
-        return $user->can('view_role');
+        return $user->isAdmin() || $user->hasPermission('view_role');
     }
 
     /**
      * Determine whether the user can create models.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return bool
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
-        return $user->can('create_role');
+        return $user->isAdmin() || $user->hasPermission('create_role');
     }
 
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return Response|bool
      */
     public function update(User $user)
     {
-        return $user->can('update_role');
+        return $user->isAdmin() || $user->hasPermission('update_role');
     }
 
     /**
      * Determine whether the user can delete the model.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return Response|bool
      */
     public function delete(User $user)
     {
-        return $user->can('delete_role');
+        return $user->isAdmin() || $user->hasPermission('delete_role');
     }
 
     /**
      * Determine whether the user can bulk delete.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return Response|bool
      */
     public function deleteAny(User $user)
     {
-        return $user->can('delete_any_role');
+        return $user->isAdmin() || $user->hasPermission('delete_role');
     }
 
     /**
      * Determine whether the user can permanently delete.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return Response|bool
      */
-    public function forceDelete(User $user)
+    public function forceDelete(User $user): Response|bool
     {
-        return $user->can('{{ ForceDelete }}');
+        return $user->isAdmin() || $user->hasPermission('delete_role');
     }
 
     /**
      * Determine whether the user can permanently bulk delete.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return bool
      */
-    public function forceDeleteAny(User $user)
+    public function forceDeleteAny(User $user): bool
     {
-        return $user->can('{{ ForceDeleteAny }}');
+        return $user->isAdmin() || $user->hasPermission('delete_role');
     }
 
     /**
      * Determine whether the user can restore.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return bool
      */
-    public function restore(User $user)
+    public function restore(User $user): bool
     {
-        return $user->can('{{ Restore }}');
+        return $user->isAdmin() || $user->hasPermission('restore_role');
     }
 
     /**
      * Determine whether the user can bulk restore.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return Response|bool
      */
     public function restoreAny(User $user)
     {
-        return $user->can('{{ RestoreAny }}');
+        return $user->isAdmin() || $user->hasPermission('restore_any_role');
     }
 
     /**
      * Determine whether the user can bulk restore.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return Response|bool
      */
     public function replicate(User $user)
     {
-        return $user->can('{{ Replicate }}');
+        return $user->isAdmin() || $user->hasPermission('replicate_role');
     }
 
     /**
      * Determine whether the user can reorder.
      *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
+     * @param User $user
+     * @return Response|bool
      */
     public function reorder(User $user)
     {
-        return $user->can('{{ Reorder }}');
+        return $user->isAdmin() || $user->hasPermission('reorder_role');
     }
 
 }

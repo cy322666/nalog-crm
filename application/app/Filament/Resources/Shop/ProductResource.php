@@ -37,6 +37,9 @@ class ProductResource extends Resource
 
     protected static ?int $navigationSort = 0;
 
+    /**
+     * @throws Exception
+     */
     public static function form(Form $form): Form
     {
         return $form
@@ -119,21 +122,19 @@ class ProductResource extends Resource
                                 ->required(),
 
                             //TODO fatal
-                            Forms\Components\Select::make('categories.name')
+                            Forms\Components\MultiSelect::make('categories.name')
                                 ->label('Категория')
                                 ->relationship('categories', 'name')
                                 ->searchable()
                                 ->getSearchResultsUsing(function (string $query) {
 
-//                                    dd($query);
                                     return Category::query()
                                         ->where('shop_id', CacheService::getAccountId())
                                         ->where('name', 'like', "%{$query}%")
                                         ->pluck('name', 'id')
                                         ->toArray();
                                 })
-                                ->getOptionLabelUsing(fn ($value): ?string => Category::query()->find($value)?->name)
-                                ->required(),
+                                ->getOptionLabelUsing(fn ($value): ?string => Category::query()->find($value)?->name),
 
                             Forms\Components\MarkdownEditor::make('description')
                                 ->label('Описание')
@@ -195,6 +196,7 @@ class ProductResource extends Resource
                                         ->helperText('Количество товара, при котором вы будете оповещены')
                                         ->numeric()
                                         ->rules(['integer', 'min:0'])
+                                        ->reactive()
                                         ->required(),
 
                                     Forms\Components\Hidden::make('shop_id')
@@ -237,9 +239,10 @@ class ProductResource extends Resource
                 ->toggledHiddenByDefault()
                 ->searchable()
                 ->sortable(),
-//            Tables\Columns\SpatieMediaLibraryImageColumn::make('product-image')
-//                ->label('Картинка')
-//                ->collection('product-images'),
+            Tables\Columns\SpatieMediaLibraryImageColumn::make('product-image')
+                ->label('Картинка')
+                ->toggleable()
+                ->collection('product-images'),
             Tables\Columns\TextColumn::make('name')
                 ->label('Название')
                 ->searchable(),
@@ -263,9 +266,23 @@ class ProductResource extends Resource
                 ->sortable()
                 ->toggleable()
                 ->toggledHiddenByDefault(true),
+            Tables\Columns\TextColumn::make('created_at')
+                ->label('Создано')
+                ->dateTime()
+                ->sortable()
+                ->toggleable()
+                ->toggledHiddenByDefault(true),
+            Tables\Columns\TextColumn::make('updated_at')
+                ->label('Обновлено')
+                ->dateTime()
+                ->sortable()
+                ->toggleable()
+                ->toggledHiddenByDefault(true),
         ];
     }
 
+
+    //TODO sho
 //    protected static function getNavigationBadge(): ?string
 //    {
 //        return self::$model::whereColumn('qty', '<', 'security_stock')->count();

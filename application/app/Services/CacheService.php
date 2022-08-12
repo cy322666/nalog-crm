@@ -35,4 +35,10 @@ class CacheService
             ->find(Cache::get('user_'.Auth::user()->id.'_account'))
             ->first();
     }
+
+    public static function getRole()
+    {
+//        Cache::put('user_'.Auth::user()->id.'_role', 'root');
+        return Cache::get('user_'.Auth::user()->id.'_role');
+    }
 }

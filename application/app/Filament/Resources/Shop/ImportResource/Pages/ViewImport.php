@@ -97,6 +97,7 @@ class ViewImport extends ViewRecord
             Actions\Action::make('start')
                 ->label('Импорт')
                 ->action('startImport'),
+
             Actions\DeleteAction::make(),
         ];
     }
@@ -107,5 +108,7 @@ class ViewImport extends ViewRecord
             $this->record->shop,
             $this->record,
         ), Config::get('crm.storage_disk').'/'.$this->record->name);
+
+        $this->redirect(ImportResource::getUrl());
     }
 }

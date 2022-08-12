@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Filament\Navigations\Sidebar\NavigationMap;
-use App\Filament\Pages\Profile;
 use App\Filament\Pages\Shops;
 use App\Filament\Resources\Shop\ImportResource;
 use App\Filament\Resources\Shop\ShopResource;
@@ -44,11 +43,7 @@ class CrmServiceProvider extends ServiceProvider
 
             //TODO crash
 //        $this->app->bind('events', 'App\Services\Event\EventService');
-/*
- *     @stack('scripts')
-    @livewireStyles
-    @livewireScripts
- */
+
             UserMenuItem::make()
                 ->label('Аккаунты')
                 ->url('shops')
@@ -80,7 +75,6 @@ class CrmServiceProvider extends ServiceProvider
 //                    ->url(ShopResource::getUrl())
 //                    ->icon('heroicon-s-cog'),
 
-                //Profile::class
             ]);
 
             //custom colors

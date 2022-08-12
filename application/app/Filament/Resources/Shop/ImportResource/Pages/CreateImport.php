@@ -31,8 +31,8 @@ class CreateImport extends CreateRecord
                 ->settings()
                 ->create([
                     'column' => $heads[$i],
-                    'key' => $values[$i],
-                    'import_id' => 1223,
+                    'key'    => $values[$i],
+                    'import_id'   => 1223,
                     'entity_type' => $this->record->type,
                 ]);
         }
@@ -40,9 +40,10 @@ class CreateImport extends CreateRecord
         $this->record->count_rows = count(
             Excel::toArray(
                 new CustomersImport(
-                    new Shop(),
-                    new Import(),//TODO ???
+                    CacheService::getAccount(),
+                    $this->record,
                 ), $filePath)[0]);
+
         $this->record->shop_id = CacheService::getAccountId();
         $this->record->save();
     }

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Shop\EmployeeResource\Pages;
 
 use App\Filament\Resources\Shop\EmployeeResource;
+use App\Filament\Resources\Shop\RoleResource;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -20,6 +21,11 @@ class ListEmployees extends ListRecords
     protected function getActions(): array
     {
         return [
+            Actions\Action::make('roles')
+                ->label('Роли и права')
+                ->url(
+                    RoleResource::getUrl()
+                ),
             Actions\CreateAction::make(),
         ];
     }

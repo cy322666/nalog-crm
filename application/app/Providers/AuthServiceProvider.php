@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Shop\Customer;
+use App\Policies\Shop\CustomerPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -13,7 +15,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
 //            'Spatie\Permission\Models\Role' => 'App\Policies\RolePolicy',
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+         Customer::class => CustomerPolicy::class
     ];
 
     /**
