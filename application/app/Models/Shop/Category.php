@@ -15,6 +15,8 @@ class Category extends Model implements HasMedia
     use HasFactory;
     use InteractsWithMedia;
 
+    public const TYPE = 6;
+
     /**
      * @var string
      */
@@ -28,6 +30,7 @@ class Category extends Model implements HasMedia
         'shop_id',
         'description',
         'category_id',
+        'creator_id',
     ];
 
     public function products(): BelongsToMany

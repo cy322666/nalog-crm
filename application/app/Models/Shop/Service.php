@@ -17,6 +17,7 @@ class Service extends Model
         'service_id',
         'name',
         'price',
+        'creator_id',
     ];
 
     public function orders(): BelongsToMany

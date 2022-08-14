@@ -10,6 +10,8 @@ class Task extends Model
 {
     use HasFactory;
 
+    public const TYPE = 3;
+
     protected $table = 'shop_tasks';
 
     protected $fillable = [
@@ -20,12 +22,12 @@ class Task extends Model
         'responsible_id',
         'type_id',
         'shop_id',
-        'created_employee_id',
         'execute_at',
         'execute_to',
         'is_execute',
         'task_id',
         'is_failed',
+        'creator_id',
     ];
 
     public function link()

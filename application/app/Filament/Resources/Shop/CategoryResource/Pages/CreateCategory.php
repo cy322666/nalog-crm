@@ -2,20 +2,24 @@
 
 namespace App\Filament\Resources\Shop\CategoryResource\Pages;
 
+use App\Events\Shop\EntityEvent;
 use App\Filament\Resources\Shop\CategoryResource;
 use App\Models\Shop\Category;
 use App\Services\CacheService;
+use App\Services\Event\EventManager;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Facades\Auth;
 
 class CreateCategory extends CreateRecord
 {
     protected static string $resource = CategoryResource::class;
 
-    protected function handleRecordCreation(array $data): Category
+    protected function afterCreate(): void
     {
-        $data['category_id'] = rand(100000, 999999);//TODO переместить в форму
-        $data['shop_id'] = CacheService::getAccountId();//TODO hidden field
-
-        return static::getModel()::create($data);
+        event(new EntityEvent(
+            Auth::user(),
+            $this->record,
+            EventManager::categoryCreated(),
+        ));
     }
 }

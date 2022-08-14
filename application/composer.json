@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.0.2",
         "ext-mbstring": "*",
+        "doctrine/dbal": "^3.4",
         "ernysans/laraworld": "^1.0",
         "filament/filament": "^v2.14.1",
         "filament/notifications": "^2.0",

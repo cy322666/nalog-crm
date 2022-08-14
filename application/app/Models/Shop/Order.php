@@ -15,7 +15,7 @@ class Order extends Model
 {
     use HasFactory;
 
-    public const TYPE = 2;
+    public const TYPE = 1;
 
     protected $table = 'shop_orders';
 
@@ -36,6 +36,7 @@ class Order extends Model
         'price',
         'shop_id',
         'pay_parts',
+        'creator_id',
     ];
 
     public function address(): MorphOne
@@ -71,7 +72,7 @@ class Order extends Model
 
     public function products(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class, 'shop_order_product', 'shop_order_id', 'shop_product_id');
+        return $this->belongsToMany(Product::class, 'shop_order_product', 'shop_order_id', 'shop_product_id')->withPivot('count', 'unit_price');
     }
 
     public function payments(): HasMany

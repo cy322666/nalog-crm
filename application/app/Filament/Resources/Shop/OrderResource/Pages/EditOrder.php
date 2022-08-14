@@ -29,6 +29,11 @@ class EditOrder extends EditRecord
         return $data;
     }
 
+    protected function getRedirectUrl(): string
+    {
+        return OrderResource::getUrl();
+    }
+
     protected function afterSave(): void
     {
         event(new EntityEvent(
@@ -36,11 +41,6 @@ class EditOrder extends EditRecord
             $this->getMountedActionFormModel(),
             EventManager::orderUpdated(),
         ));
-    }
-
-    protected function getRedirectUrl(): string
-    {
-        return OrderResource::getUrl();
     }
 
     protected function getActions(): array

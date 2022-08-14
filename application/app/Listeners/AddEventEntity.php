@@ -8,6 +8,7 @@ use App\Models\Shop\Shop;
 use App\Services\Event\EventDto;
 use Filament\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Log;
 
 class AddEventEntity implements ShouldQueue
 {

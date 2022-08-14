@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Shop;
 use App\Filament\Resources\Shop;
 use App\Models\Shop\Event;
 use App\Services\CacheService;
+use App\Services\Helpers\ModelHelper;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -35,15 +36,18 @@ class EventResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('model')
                     ->label('Объект')
-                    ->getStateUsing(fn ($record): ?string => (new ($record->model))::$entity)
-                    ->url(fn ($record) => $record->link)
+                    ->getStateUsing(function (Event $record) {
+
+                        $modelName = ModelHelper::getEntityType($record->model);
+
+                        $model = $modelName::find($record->model_id)?->first();
+
+                        return $model->name ?? '';
+                    })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('title')
-                    ->label('Название')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('text')
                     ->label('Событие')
-                    ->sortable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('author_name')
                     ->label('Автор')
                     ->sortable(),
@@ -62,9 +66,7 @@ class EventResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array

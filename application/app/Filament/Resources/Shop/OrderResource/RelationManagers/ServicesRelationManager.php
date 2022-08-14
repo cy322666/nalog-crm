@@ -59,8 +59,7 @@ class ServicesRelationManager extends HasManyRelationManager
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Название')
-                    ->searchable(),
+                    ->label('Название'),
 
                 Tables\Columns\TextColumn::make('price')
                     ->label('Стоимость')
@@ -74,7 +73,6 @@ class ServicesRelationManager extends HasManyRelationManager
             ->filters([])
             ->actions([])
             ->headerActions([
-
                 AttachAction::make(),
             ]);
     }

@@ -2,10 +2,13 @@
 
 namespace App\Filament\Resources\Shop\TaskResource\Pages;
 
+use App\Events\Shop\EntityEvent;
 use App\Filament\Resources\Shop\TaskResource;
+use App\Services\Event\EventManager;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class EditTask extends EditRecord
 {
@@ -24,4 +27,13 @@ class EditTask extends EditRecord
 //
 //        return $record;
 //    }
+
+    protected function afterSave(): void
+    {
+        event(new EntityEvent(
+            Auth::user(),
+            $this->getMountedActionFormModel(),
+            EventManager::taskUpdated(),
+        ));
+    }
 }

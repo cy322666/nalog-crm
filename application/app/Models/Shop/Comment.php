@@ -11,6 +11,8 @@ class Comment extends Model
 {
     use HasFactory;
 
+    public const TYPE = 7;
+
     protected $table = 'comments';
 
     protected $guarded = [];

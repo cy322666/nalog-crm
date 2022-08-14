@@ -11,8 +11,6 @@ class OrderStatus extends Model
 
     protected $table = 'shop_order_statuses';
 
-    static string $externalId = 'status_id';
-
     public const NEW_STATUS_ID = 101;
     public const WIN_STATUS_ID = 102;
     public const LOST_STATUS_ID = 103;

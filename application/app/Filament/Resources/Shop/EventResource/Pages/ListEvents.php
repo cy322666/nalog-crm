@@ -22,6 +22,6 @@ class ListEvents extends ListRecords
 
     protected function getTableRecordsPerPageSelectOptions(): array
     {
-        return [50, 100, 150];
+        return [25, 50, 100];
     }
 }

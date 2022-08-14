@@ -2,9 +2,12 @@
 
 namespace App\Observers\Shop;
 
+use App\Events\Shop\EntityEvent;
 use App\Jobs\Shop\TaskCheckFailed;
 use App\Jobs\Shop\TaskCheckStarting;
 use App\Models\Shop\Task;
+use App\Models\User;
+use App\Services\Event\EventManager;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
@@ -18,6 +21,12 @@ class TaskObserver
      */
     public function created(Task $task)
     {
+        event(new EntityEvent(
+            User::query()->find($task->creator_id)->first(),
+            $task,
+            EventManager::taskCreated(),
+        ));
+
         $secToFail  = Carbon::parse($task->execute_to)->diff(Carbon::now())->s;
         $secToStart = Carbon::parse($task->execute_at)->diff(Carbon::now())->s;
 

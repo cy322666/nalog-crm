@@ -19,10 +19,12 @@ class OrderProduct extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'created_at',
+        'updated_at',
         'sort',
         'shop_product_id',
         'shop_order_id',
-        'qty',
+        'count',
         'unit_price',
     ];
 

@@ -209,11 +209,22 @@ class PaymentResource extends Resource
             ]);
     }
 
+    /**
+     * @throws Exception
+     */
+    public static function createActions(array &$data)
+    {
+        $data['payment_id'] = ModelHelper::generateId(Payment::class, 'payment_id');
+
+        if (empty($data['name'])) {
+
+            $data['name'] = 'Платеж #'.$data['payment_id'];
+        }
+    }
+
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array

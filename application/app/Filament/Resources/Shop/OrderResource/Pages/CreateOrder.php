@@ -25,15 +25,6 @@ class CreateOrder extends CreateRecord
         return $data;
     }
 
-    protected function afterCreate(): void
-    {
-        event(new EntityEvent(
-            Auth::user(),
-            $this->record,
-            EventManager::orderCreated(),
-        ));
-    }
-
     protected function getRedirectUrl(): string
     {
         return OrderResource::getUrl();

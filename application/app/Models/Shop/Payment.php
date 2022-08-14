@@ -10,6 +10,8 @@ class Payment extends Model
 {
     use HasFactory;
 
+    public const TYPE = 4;
+
     protected $table = 'shop_payments';
 
     protected $guarded = [];
@@ -19,9 +21,12 @@ class Payment extends Model
         'order_id',
         'name',
         'amount',
-        'amount_payed',
-        'steps',
         'status_id',
+        'payed',
+        'payment_id',
+        'method_id',
+        'provider_id',
+        'creator_id',
     ];
 
     public function order(): BelongsTo
@@ -29,24 +34,24 @@ class Payment extends Model
         return $this->belongsTo(Order::class, 'order_id', 'id');
     }
 
-    public function providers()
+    public function provider(): BelongsTo
     {
-        return $this->hasMany(PaymentProvider::class, 'id', 'payment_id')
+        return $this
+            ->belongsTo(PaymentProvider::class)
             ->orWhere('shop_id', 0);
     }
 
-    public function provider()
+    public function method(): BelongsTo
     {
-        return $this->hasOne(PaymentProvider::class, 'id', 'payment_id');
+        return $this
+            ->belongsTo(PaymentMethod::class)
+            ->orWhere('shop_id', 0);
     }
 
-//    public function method()
-//    {
-//
-//    }
-
-    public function status()
+    public function status(): BelongsTo
     {
-
+        return $this
+            ->belongsTo(PaymentStatus::class)
+            ->orWhere('shop_id', 0);
     }
 }

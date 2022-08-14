@@ -15,6 +15,8 @@ class Product extends Model implements HasMedia
     use HasFactory;
     use InteractsWithMedia;
 
+    public const TYPE = 5;
+
     /**
      * @var string
      */
@@ -54,6 +56,7 @@ class Product extends Model implements HasMedia
         'volume_unit',
         'product_id',
         'shop_id',
+        'creator_id',
     ];
 
     /**
@@ -79,6 +82,6 @@ class Product extends Model implements HasMedia
 
     public function orders(): BelongsToMany
     {
-        return $this->belongsToMany(Order::class, 'shop_order_product', 'shop_product_id', 'shop_order_id');
+        return $this->belongsToMany(Order::class, 'shop_order_product', 'shop_product_id', 'shop_order_id')->withPivot('count', 'unit_price');
     }
 }

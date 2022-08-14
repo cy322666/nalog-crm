@@ -14,7 +14,7 @@ class Customer extends Model
 {
     use HasFactory, HasTags;
 
-    public const TYPE = 1;
+    public const TYPE = 2;
 
     protected $table = 'shop_customers';
 
@@ -36,6 +36,7 @@ class Customer extends Model
         'inn',
         'kpp',
         'rs',
+        'creator_id',
     ];
 
     static public string $entity = 'Клиент';
