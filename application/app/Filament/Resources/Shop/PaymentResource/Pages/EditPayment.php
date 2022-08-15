@@ -17,29 +17,20 @@ class EditPayment extends EditRecord
 
     protected function getRedirectUrl(): string
     {
-        return OrderResource::getUrl();
+        return PaymentResource::getUrl();
     }
 
-    protected function afterSave(): void
+    protected function mutateFormDataBeforeSave(array $data): array
     {
-        event(new EntityEvent(
-            Auth::user(),
-            $this->getMountedActionFormModel(),
-            EventManager::paymentUpdated(),
-        ));
+
+
+        return $data;
     }
 
     protected function getActions(): array
     {
         return [
-            DeleteAction::make()
-                ->after(function () {
-                    event(new EntityEvent(
-                        Auth::user(),
-                        $this->getMountedActionFormModel(),
-                        EventManager::paymentDeleted(),
-                    ));
-                })
+            DeleteAction::make(),
         ];
     }
 }

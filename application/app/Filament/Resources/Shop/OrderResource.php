@@ -84,24 +84,15 @@ class OrderResource extends Resource
                                     ->schema([
 
                                         Forms\Components\TextInput::make('name')
-                                            ->label('Название')
-                                            ->columnSpan(1),
+                                            ->label('Название'),
 
                                         Forms\Components\Select::make('status_id')
                                             ->label('Статус')
-                                            ->options(
-                                                OrderStatus::query()
-                                                    ->where('shop_id', CacheService::getAccountId())
-                                                    ->orWhere('shop_id', 0)
-                                                    ->pluck('name', 'id')
-                                                    ->toArray()
-                                            )
-                                            ->default(2),//TODO оставить?
+                                            ->relationship('statuses', 'name'),
 
                                         Forms\Components\TextInput::make('price')
                                             ->hint('Pубли')
-                                            ->label('Бюджет')
-                                            ->columnSpan(1),
+                                            ->label('Бюджет'),
 
                                         Forms\Components\Select::make('source_id')
                                             ->label('Источник')
@@ -120,26 +111,26 @@ class OrderResource extends Resource
                                             ->required(),
 
                                         //TODO обязательность при закрытии как то сделать
-                                        Forms\Components\Select::make('reasons')
+                                        Forms\Components\Select::make('reason')
                                             ->label('Причина отказа')
-                                            ->options(
-                                                Shop::query()->find(CacheService::getAccountId())->reasons->pluck('name', 'reason_id')->toArray()
-                                            ),
+                                            ->relationship('reason', 'name'),
 
-                                        Forms\Components\Select::make('responsible_id')
+                                        Forms\Components\Select::make('responsible')
                                             ->label('Ответственный')
                                             ->required()
-                                            ->options(
-                                                CacheService::getAccount()
-                                                    ->users
-                                                    ->pluck('name', 'id')
-                                                    ->toArray(),
-                                            ),
-                                        Forms\Components\TextInput::make('parts_pay')
+                                            ->relationship('responsible', 'name'),
+
+                                        Forms\Components\Select::make('pay_parts')
                                             ->label('Платежей')
-                                            ->numeric()
-                                            ->default(1)
-                                            ->columnSpan(1),
+                                            ->options([
+                                                1 => 1,
+                                                2 => 2,
+                                                3 => 3,
+                                                4 => 4,
+                                                5 => 5,
+                                            ])
+                                        ->default(1)
+                                        ->required(),
 
                                         //нижняя часть основной
                                         //TODO сделать тут custom поля
@@ -218,10 +209,13 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('order_id')
                     ->label('ID')
                     ->searchable()
-                    ->toggleable()
-                    ->toggledHiddenByDefault()
+                    ->toggledHiddenByDefault(true)
                     ->searchable()
                     ->sortable(),
+
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Название')
+                    ->searchable(),
 
                 Tables\Columns\TextColumn::make('customer.name')
                     ->label('Клиент')
@@ -251,9 +245,8 @@ class OrderResource extends Resource
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('pay_parts')
-                    ->label('Частей')
+                    ->label('Платежей')
                     ->toggleable()
-                    ->toggledHiddenByDefault()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('responsible.name')
@@ -270,8 +263,8 @@ class OrderResource extends Resource
                     ->label('Обновлен')
                     ->dateTime()
                     ->sortable()
-                    ->toggledHiddenByDefault()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->toggledHiddenByDefault(true),
 
                 Tables\Columns\TextColumn::make('source.name')
                     ->label('Источник')
@@ -281,8 +274,7 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('reason.name')
                     ->label('Причина отказа')
                     ->sortable()
-                    ->toggledHiddenByDefault(true)
-                    ->toggleable(true),
+                    ->toggledHiddenByDefault(true),
             ])
             ->filters([
                 Tables\Filters\Filter::make('is_work')

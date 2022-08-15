@@ -13,7 +13,7 @@ class PaymentObserver
     {
         event(new EntityEvent(
             User::query()->find($payment->creator_id)->first(),
-            $payment,
+            $payment->refresh(),//TODO?
             EventManager::paymentCreated(),
         ));
     }

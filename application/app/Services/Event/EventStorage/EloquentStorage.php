@@ -4,6 +4,7 @@ namespace App\Services\Event\EventStorage;
 
 use App\Models\Shop\Event;
 use App\Services\Event\EventDto;
+use Illuminate\Support\Facades\Log;
 
 class EloquentStorage implements EventStorageInterface
 {
@@ -25,6 +26,7 @@ class EloquentStorage implements EventStorageInterface
                 'shop_id'  => $event->shopId,
                 'type'     => $event->typeId,
                 'author_name' => $event->authorName,
+                'model_name'  => $event->modelName,
             ]);
     }
 

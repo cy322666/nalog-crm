@@ -27,7 +27,6 @@ class Order extends Model
         'status_id',
         'lost_reasons_id',
         'source_id',
-        'responsible_id',
         'shipping_price',
         'shipping_method',
         'description',

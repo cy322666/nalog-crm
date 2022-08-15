@@ -2,13 +2,11 @@
 
 namespace App\Filament\Resources\Shop;
 
-use App\Events\Shop\Push\Task\TaskCreated;
 use App\Filament\Resources\Shop\ImportResource\Pages;
 use App\Models\Shop\Import;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;

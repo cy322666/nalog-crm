@@ -62,8 +62,7 @@ class CategoryResource extends Resource
                                 Forms\Components\TextInput::make('name')
                                     ->label('Название')
                                     ->required()
-                                    ->reactive()
-                                    ->afterStateUpdated(fn ($state, callable $set) => $set('slug', Str::slug($state))),
+                                    ->reactive(),
                             ]),
                         Forms\Components\MarkdownEditor::make('description')
                             ->label('Описание'),
@@ -130,9 +129,9 @@ class CategoryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCategories::route('/'),
+            'index'  => Pages\ListCategories::route('/'),
             'create' => Pages\CreateCategory::route('/create'),
-            'edit' => Pages\EditCategory::route('/{record}/edit'),
+            'edit'   => Pages\EditCategory::route('/{record}/edit'),
         ];
     }
 }

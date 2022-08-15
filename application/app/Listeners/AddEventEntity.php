@@ -27,6 +27,7 @@ class AddEventEntity implements ShouldQueue
             $event->entity->account->id ?? Shop::query()->first()->id,
             $event->info['type'],
             $event->author->name,
+            $event->entity->name ?? $event->entity->title,
         ));
     }
 }

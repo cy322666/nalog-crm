@@ -38,8 +38,6 @@ class PaymentsRelationManager extends HasManyRelationManager
      */
     public static function form(Form $form): Form
     {
-        $name = 'Платеж #'.ModelHelper::generateId(Payment::class, 'payment_id');
-
         $methods   = PaymentMethod::all()->pluck('name', 'id');
         $providers = PaymentProvider::all()->pluck('name', 'id');
         $statuses  = PaymentStatus::all()->pluck('name', 'id');
@@ -48,7 +46,9 @@ class PaymentsRelationManager extends HasManyRelationManager
             Forms\Components\Card::make()
                 ->schema([
                     Forms\Components\TextInput::make('name')
-                        ->placeholder($name)
+                        ->placeholder(
+                            'Платеж #'.ModelHelper::generateId(Payment::class, 'payment_id'),
+                        )
                         ->label('Название'),
                     Forms\Components\Select::make('status_id')
                         ->label('Статус')
@@ -97,8 +97,6 @@ class PaymentsRelationManager extends HasManyRelationManager
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         PaymentResource::createActions($data);
-
-
 
         return $data;
     }

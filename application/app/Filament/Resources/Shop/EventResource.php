@@ -34,16 +34,8 @@ class EventResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('model')
+                Tables\Columns\TextColumn::make('model_name')
                     ->label('Объект')
-                    ->getStateUsing(function (Event $record) {
-
-                        $modelName = ModelHelper::getEntityType($record->model);
-
-                        $model = $modelName::find($record->model_id)?->first();
-
-                        return $model->name ?? '';
-                    })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('title')
                     ->label('Событие')

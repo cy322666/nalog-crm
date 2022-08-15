@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Filament\Navigations\Sidebar\NavigationMap;
+use App\Filament\Pages\Profile;
 use App\Filament\Pages\Shops;
 use App\Filament\Resources\Shop\ImportResource;
 use App\Filament\Resources\Shop\ShopResource;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\View;
+use JeffGreco13\FilamentBreezy\Pages\MyProfile;
 
 class CrmServiceProvider extends ServiceProvider
 {
@@ -59,6 +61,8 @@ class CrmServiceProvider extends ServiceProvider
 
             //user menu
             Filament::registerUserMenuItems([
+
+//                UserMenuItem::make()->url(MyProfile::getUrl()),
 
                 UserMenuItem::make()
                     ->label('Аккаунты')

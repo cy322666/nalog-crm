@@ -222,8 +222,9 @@ class ProductResource extends Resource
                         ->label('Обновлен')
                         ->content(fn (?Product $record): string => $record ? $record->updated_at->diffForHumans() : '-'),
 
-                    Forms\Components\FileUpload::make('image')
+                    Forms\Components\SpatieMediaLibraryFileUpload::make('image')
                         ->label('Картинка')
+                        ->collection('product-images')
                         ->image(),
                 ])
                 ->columnSpan(1),

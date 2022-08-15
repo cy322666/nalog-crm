@@ -4,8 +4,12 @@ namespace App\Filament\Resources\Shop;
 
 use App\Filament\Resources\Shop\PaymentResource\Pages;
 use App\Filament\Resources\Shop\PaymentResource\RelationManagers;
+use App\Models\Shop\Customer;
 use App\Models\Shop\Order;
 use App\Models\Shop\Payment;
+use App\Models\Shop\PaymentMethod;
+use App\Models\Shop\PaymentProvider;
+use App\Models\Shop\PaymentStatus;
 use App\Services\CacheService;
 use App\Services\Helpers\ModelHelper;
 use Carbon\Carbon;
@@ -17,6 +21,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class PaymentResource extends Resource
 {
@@ -30,7 +35,7 @@ class PaymentResource extends Resource
 
     protected static ?string $pluralLabel = 'Платежи';
 
-    protected static ?string $modelLabel = 'Платежа';
+    protected static ?string $modelLabel = 'Платеж';
 
     protected static ?string $navigationIcon = 'heroicon-o-cash';
 
@@ -62,93 +67,78 @@ class PaymentResource extends Resource
      */
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
+        $name = 'Платеж #'.ModelHelper::generateId(Payment::class, 'payment_id');
+
+        $methods   = PaymentMethod::all()->pluck('name', 'id');
+        $providers = PaymentProvider::all()->pluck('name', 'id');
+        $statuses  = PaymentStatus::all()->pluck('name', 'id');
+
+        return $form->schema([
+            Forms\Components\Card::make()
+                ->schema([
+                    Forms\Components\TextInput::make('name')
+                        ->placeholder($name)
+                        ->label('Название')
+                        ->default(
+                            'Платеж #'.ModelHelper::generateId(Payment::class, 'payment_id')
+                        ),
+                    Forms\Components\Select::make('status_id')
+                        ->label('Статус')
+                        ->options($statuses),
+                    Forms\Components\TextInput::make('amount')
+                        ->hint('Pубли')
+                        ->label('Сумма')
+                        ->required()
+                        ->columnSpan(1),
+                    Forms\Components\Select::make('method_id')
+                        ->label('Способ оплаты')
+                        ->required()
+                        ->options($methods),
+                    Forms\Components\Select::make('provider_id')
+                        ->label('Платежная система')
+                        ->required()
+                        ->options($providers),
+
+                    Forms\Components\Select::make('order_id')
+                        ->label('Заказ')
+                        ->relationship('order', 'name')
+                        ->searchable()
+                        ->getOptionLabelUsing(fn ($value): ?string => Order::query()->find($value)?->name)
+                        ->required(),
+
+                    Forms\Components\Hidden::make('shop_id')
+                        ->default(CacheService::getAccountId()),
+
+                    Forms\Components\Hidden::make('creator_id')
+                        ->default(Auth::user()->id),
+            ])->columns([
+                'sm' => 2
+                ])
+            ->columnSpan([
+                'sm' => 2
+            ]),
+            Forms\Components\Group::make([
                 Forms\Components\Card::make()
                     ->schema([
-                        Forms\Components\TextInput::make('name')
-                            ->label('Название')
-                            ->required(),
-                        Forms\Components\Select::make('status.name')
-                            ->label('Статус')
-                            ->options([]
-//                                OrderStatus::query()
-//                                    ->where('shop_id', CacheService::getAccountId())
-//                                    ->orWhere('shop_id', 0)
-//                                    ->pluck('name', 'id')
-//                                    ->toArray()
+                        Forms\Components\TextInput::make('payment_id')
+                            ->label('ID')
+                            ->default(
+                                ModelHelper::generateId(self::$model, 'payment_id')
                             )
-                            ->default(101),
-
-                        Forms\Components\TextInput::make('amount')
-                            ->hint('Pубли')
-                            ->label('Сумма')
-                            ->columnSpan(1),
-
-                        Forms\Components\TextInput::make('amount_payed')
-                            ->hint('Pубли')
-                            ->label('Оплачено')
-                            ->columnSpan(1),
-
-                        Forms\Components\Checkbox::make('payed')
-                            ->label('Оплачено полностью')
-                            ->default(false)
-                            ->columnSpan(1),
+                            ->disabled(),
+                        Forms\Components\Placeholder::make('created_at')
+                            ->label('Создан')
+                            ->content(fn (?Payment $record): string => $record ? $record->created_at->diffForHumans() : '-'),
+                        Forms\Components\Placeholder::make('updated_at')
+                            ->label('Последнее изменение')
+                            ->content(fn (?Payment $record): string => $record ? $record->updated_at->diffForHumans() : '-'),
+                        Forms\Components\Placeholder::make('')
+                            ->label('Дней в работе')
+                            ->content(fn (?Payment $record): string => $record ? (Carbon::now())->diffInDays() : 0)
                     ])
-                    ->columns([
-                        'sm' => 2,
-                    ])
-                    ->columnSpan([
-                        'sm' => 2,
-                    ]),
-                Forms\Components\Group::make([
-                    Forms\Components\Card::make()
-                        ->schema([
-                            Forms\Components\TextInput::make('payment_id')
-                                ->label('ID')
-                                ->default(
-                                    ModelHelper::generateId(self::$model, 'payment_id')
-                                )
-                                ->disabled(),
-
-                            Forms\Components\Placeholder::make('created_at')
-                                ->label('Создан')
-                                ->content(fn (?Payment $record): string => $record ? $record->created_at->diffForHumans() : '-'),
-                            Forms\Components\Placeholder::make('updated_at')
-                                ->label('Последнее обновление')
-                                ->content(fn (?Payment $record): string => $record ? $record->updated_at->diffForHumans() : '-'),
-
-                            Forms\Components\Placeholder::make('')
-                                ->label('Дней в работе')
-                                ->content(fn (?Payment $record): string => $record ? (Carbon::now())->diffInDays() : 0)
-                        ])
-                        ->columnSpan(1),
-                    Forms\Components\Card::make()
-                        ->schema([
-                            Forms\Components\Select::make('order.name')
-                                ->label('Заказ')
-                                ->relationship('order', 'name')
-                                ->searchable()
-                                ->getSearchResultsUsing(function (string $query) {
-
-                                    return Order::query()
-                                        ->where('shop_id', CacheService::getAccountId())
-                                        ->where('name', 'like', "%{$query}%")
-                                        ->pluck('name', 'id')
-                                        ->toArray();
-                                })
-                                ->getOptionLabelUsing(fn ($value): ?string => Order::query()->find($value)?->name)
-                                ->required(),
-
-                            //TODO краткая инфа заказа!
-                        ])
-                        ->columnSpan(1),
+                    ->columnSpan(1),
                 ]),
-            ])
-            ->columns([
-                'sm' => 3,
-                'lg' => null,
-            ]);
+        ])->columns(3);
     }
 
     public static function table(Table $table): Table
@@ -171,28 +161,29 @@ class PaymentResource extends Resource
                     ->searchable()
                     ->sortable(),
 
+                Tables\Columns\BadgeColumn::make('status.name')
+                    ->label('Статус')
+                    ->colors([
+                        'primary' => fn ($state): bool => true,
+                        'danger'  => fn ($state): bool => $state === PaymentStatus::LOST_STATUS_NAME,
+                        'warning' => fn ($state): bool => $state === PaymentStatus::NEW_STATUS_NAME,
+                        'success' => fn ($state): bool => $state === PaymentStatus::WIN_STATUS_NAME,
+                    ])
+                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('order.name')
                     ->label('Заказ')
                     ->url(fn ($record) => OrderResource::getUrl('edit', [$record->order]))//TODO view?
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('provider')
+                Tables\Columns\TextColumn::make('provider.name')
                     ->label('Платежная система')
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('method')
+                Tables\Columns\TextColumn::make('method.name')
                     ->label('Способ оплаты')
                     ->sortable(),
 //TODO дата оплаты добавить
-                Tables\Columns\BooleanColumn::make('payed')
-                    ->label('Оплачен полнстью')//TODO bool
-                    ->toggleable(true)
-                    ->sortable(),
-
-//                Tables\Columns\TextColumn::make('currency')
-//                    ->label('Валюта')
-//                    ->searchable()
-//                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Создан')
@@ -200,9 +191,7 @@ class PaymentResource extends Resource
                     ->toggleable(true)
                     ->sortable(),
             ])
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->actions([])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
@@ -230,9 +219,9 @@ class PaymentResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPayments::route('/'),
+            'index'  => Pages\ListPayments::route('/'),
             'create' => Pages\CreatePayment::route('/create'),
-            'edit' => Pages\EditPayment::route('/{record}/edit'),
+            'edit'   => Pages\EditPayment::route('/{record}/edit'),
         ];
     }
 }

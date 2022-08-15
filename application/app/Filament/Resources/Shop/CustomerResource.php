@@ -95,11 +95,11 @@ class CustomerResource extends Resource
                         ])
                         ->columnSpan(1),
 
-                    Forms\Components\Card::make()
-                        ->schema([
-                            Forms\Components\SpatieTagsInput::make('tags')->type('customers'),
-                        ])
-                        ->columnSpan(1),
+//                    Forms\Components\Card::make()
+//                        ->schema([
+//                            Forms\Components\SpatieTagsInput::make('tags')->type('customers'),
+//                        ])
+//                        ->columnSpan(1),
                 ]),
             ])
             ->columns([
@@ -127,9 +127,9 @@ class CustomerResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\SpatieTagsColumn::make('tags')
-                    ->label('Теги')
-                    ->type('customers'),
+//                Tables\Columns\SpatieTagsColumn::make('tags')
+//                    ->label('Теги')
+//                    ->type('customers'),
                 Tables\Columns\TextColumn::make('phone')
                     ->label('Телефон')
                     ->searchable()

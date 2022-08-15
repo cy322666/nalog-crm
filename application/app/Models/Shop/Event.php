@@ -20,5 +20,6 @@ class Event extends Model
         'shop_id',
         'type',
         'author_name',
+        'model_name',
     ];
 }
