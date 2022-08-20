@@ -5,9 +5,6 @@ namespace App\Filament\Resources\Shop\ShopResource\Pages;
 use App\Filament\Resources\Shop\ShopResource;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Illuminate\Contracts\View\View;
-use Illuminate\Database\Eloquent\Builder;
-use Phpsa\FilamentFeed\Widgets\FeedWidget;
 
 class ListShops extends ListRecords
 {
@@ -38,5 +35,15 @@ class ListShops extends ListRecords
     public function isTableSearchable(): bool
     {
         return false;
+    }
+
+    protected function getDefaultTableSortColumn(): ?string
+    {
+        return 'expired_at';
+    }
+
+    protected function getDefaultTableSortDirection(): ?string
+    {
+        return 'desc';
     }
 }

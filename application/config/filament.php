@@ -1,5 +1,8 @@
 <?php
 
+use App\Modules\Analytics\Widgets\ActiveUsersOneDayWidget;
+use App\Modules\Analytics\Widgets\PageViewsWidget;
+use App\Modules\Analytics\Widgets\SessionsByDeviceWidget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Http\Middleware\MirrorConfigToSubpackages;
@@ -71,8 +74,7 @@ return [
         'namespace' => 'App\\Filament\\Pages',
         'path' => app_path('Filament/Pages'),
         'register' => [
-            \App\Filament\Pages\Shops::class,
-            //Pages\Dashboard::class,
+//            \App\Filament\Pages\Shops::class,
         ],
     ],
 
@@ -90,7 +92,7 @@ return [
         'namespace' => 'App\\Filament\\Resources',
         'path' => app_path('Filament/Resources'),
         'register' => [
-            \App\Filament\Resources\Shop\ShopResource::class,//TODO need?
+//            \App\Filament\Resources\Shop\ShopResource::class,//TODO need?
         ],
     ],
 
@@ -108,9 +110,9 @@ return [
         'namespace' => 'App\\Filament\\Widgets',
         'path' => app_path('Filament/Widgets'),
         'register' => [
-//            App\Filament\Widgets\ListShopsWidget::class,//TODO check
-//            Widgets\AccountWidget::class,
-//            Widgets\FilamentInfoWidget::class,
+            PageViewsWidget::class,
+            ActiveUsersOneDayWidget::class,
+            SessionsByDeviceWidget::class,
         ],
     ],
 
@@ -192,7 +194,7 @@ return [
 
     'middleware' => [
         'auth' => [
-            Authenticate::class,
+            Authenticate::class,//TODO need?
             'verified:filament.verification.notice'
         ],
         'base' => [

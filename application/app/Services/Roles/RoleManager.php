@@ -57,7 +57,7 @@ class RoleManager
             'permissions' => ['view_categories', 'create_categories', 'delete_categories', 'update_categories'],
             'titles' => [
                 'view_categories'   => 'Просмотр',
-                'create_categories'  => 'Создание',
+                'create_categories' => 'Создание',
                 'delete_categories' => 'Удаление',
                 'update_categories' => 'Обновление'
             ],
@@ -68,7 +68,7 @@ class RoleManager
             'permissions' => ['view_stocks', 'create_stocks', 'delete_stocks', 'update_stocks'],
             'titles' => [
                 'view_stocks'   => 'Просмотр',
-                'create_stocks'  => 'Создание',
+                'create_stocks' => 'Создание',
                 'delete_stocks' => 'Удаление',
                 'update_stocks' => 'Обновление'
             ],
@@ -80,7 +80,7 @@ class RoleManager
             'permissions' => ['view_clients', 'create_clients', 'delete_clients', 'update_clients'],
             'titles' => [
                 'view_clients'   => 'Просмотр',
-                'create_clients'  => 'Создание',
+                'create_clients' => 'Создание',
                 'delete_clients' => 'Удаление',
                 'update_clients' => 'Обновление'
             ],
@@ -96,28 +96,28 @@ class RoleManager
                 'update_tasks' => 'Обновление'
             ],
         ], [
-        'model'    => 'users',
-        'resource' => EmployeeResource::class,
-        'label'    => 'Сотрудники',
-        'permissions' => ['view_users', 'create_users', 'delete_users', 'update_users'],
-        'titles' => [
-            'view_users'   => 'Просмотр',
-            'create_users'  => 'Создание',
-            'delete_users' => 'Удаление',
-            'update_users' => 'Обновление'
-        ],
-    ], [
-        'model'    => 'roles',
-        'resource' => RoleResource::class,
-        'label'    => 'Роли и права',
-        'permissions' => ['view_roles', 'create_roles', 'delete_roles', 'update_roles'],
-        'titles' => [
-            'view_roles'   => 'Просмотр',
-            'create_roles'  => 'Создание',
-            'delete_roles' => 'Удаление',
-            'update_roles' => 'Обновление'
-        ],
-    ]];
+            'model'    => 'users',
+            'resource' => EmployeeResource::class,
+            'label'    => 'Сотрудники',
+            'permissions' => ['view_users', 'create_users', 'delete_users', 'update_users'],
+            'titles' => [
+                'view_users'   => 'Просмотр',
+                'create_users' => 'Создание',
+                'delete_users' => 'Удаление',
+                'update_users' => 'Обновление'
+            ],
+        ], [
+            'model'    => 'roles',
+            'resource' => RoleResource::class,
+            'label'    => 'Роли и права',
+            'permissions' => ['view_roles', 'create_roles', 'delete_roles', 'update_roles'],
+            'titles' => [
+                'view_roles'   => 'Просмотр',
+                'create_roles'  => 'Создание',
+                'delete_roles' => 'Удаление',
+                'update_roles' => 'Обновление'
+            ],
+        ]];
 
     public static array $pages = [];
 

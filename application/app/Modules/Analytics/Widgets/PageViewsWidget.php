@@ -1,9 +1,6 @@
 <?php
 
 namespace App\Modules\Analytics\Widgets;
-
-use BezhanSalleh\FilamentGoogleAnalytics\FilamentGoogleAnalytics;
-use BezhanSalleh\FilamentGoogleAnalytics\Traits;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Arr;
 
@@ -65,7 +62,7 @@ class PageViewsWidget extends Widget
             ],
         );
 
-        return FilamentGoogleAnalytics::for($data['result'] ?? 'ok')
+        return \App\Modules\Analytics\FilamentGoogleAnalytics::for($data['result'] ?? 'ok')
             ->previous($data['previous'] ?? 1)
             ->format('%');
     }

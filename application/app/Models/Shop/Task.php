@@ -66,14 +66,8 @@ class Task extends Model
         return (new $this->model_type)->find($this->model_id)->$propertyName;
     }
 
-    //TODO no use
-    public function type()
+    public function shop()
     {
-        return $this->hasOne(TaskType::class, 'id', 'type_id');
-    }
-
-    public static function generateId(): int
-    {
-        return rand(100000, 999999);
+        return $this->belongsTo(Shop::class);
     }
 }

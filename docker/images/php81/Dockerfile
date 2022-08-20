@@ -1,4 +1,4 @@
-FROM php:8.0-cli-alpine3.13
+FROM php:8.1-cli-alpine
 
 WORKDIR /app
 
@@ -17,14 +17,23 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin -
 
 # PHP: Install php extensions
 RUN pecl channel-update pecl.php.net
-RUN pecl install pcov swoole ssh2
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-RUN docker-php-ext-install mbstring xml iconv pcntl gd zip sockets pdo pdo_pgsql bcmath soap
-RUN docker-php-ext-enable mbstring xml gd iconv zip swoole pcov pcntl sockets bcmath pdo pdo_pgsql soap
+RUN pecl install pcov
+RUN pecl install swoole
+
+#RUN docker-php-ext-configure gd --with-freetype --with-jpeg
+
+#gd sockets iconv
+RUN docker-php-ext-install mbstring xml pcntl zip pdo pdo_pgsql bcmath soap
+
+#sockets gd iconv
+RUN docker-php-ext-enable mbstring xml zip swoole pcov pcntl bcmath pdo pdo_pgsql soap
 
 RUN docker-php-ext-install exif
 
-RUN docker-php-ext-install intl opcache pdo pdo_mysql \
+RUN docker-php-ext-install -j "$(nproc)" gd
+
+#pdo_mysql
+RUN docker-php-ext-install intl opcache \
     && pecl install apcu \
     && docker-php-ext-enable apcu \
     && docker-php-ext-configure zip \
@@ -47,7 +56,7 @@ ENV SWOOLE_WORKERS "auto"
 
 RUN chown -R www-data:www-data /app
 
-RUN #chmod -R 777 storage/
+#RUN chmod -R 777 storage/
 
 COPY ./start.sh /
 RUN chmod +x /start.sh

@@ -3,6 +3,7 @@
 namespace App\Models\Shop;
 
 use App\Models\Currency;
+use App\Models\Role;
 use App\Models\Timezone;
 use App\Models\User;
 use App\Services\Helpers\ModelHelper;
@@ -33,6 +34,11 @@ class Shop extends Model
         return $this->hasMany(Product::class, 'shop_id', 'id');
     }
 
+    public function customers()
+    {
+        return $this->hasMany(Customer::class, 'shop_id', 'id');
+    }
+
     public function status()
     {
         return $this->hasOne(OrderStatus::class, 'shop_id', 'id');
@@ -43,10 +49,14 @@ class Shop extends Model
         return $this->hasOne(Tariff::class, 'id', 'tariff_id');
     }
 
-    //TODO employee -> user
-    public function employees(): HasMany
+    public function users(): BelongsToMany
     {
-        return $this->hasMany(User::class, 'id', 'employee_id');
+        return $this->belongsToMany(User::class, 'shop_user', 'shop_id', 'user_id')->withPivot(['expired_at', 'active']);
+    }
+
+    public function getUsersQuery()
+    {
+
     }
 
     public function timezone(): BelongsTo
@@ -59,14 +69,24 @@ class Shop extends Model
         return $this->belongsTo(Currency::class, 'currency_id', 'id');
     }
 
-    public function users(): BelongsToMany
+//    public function users(): BelongsToMany
+//    {
+//        return $this->belongsToMany(User::class);
+//    }
+
+    public function stocks()
     {
-        return $this->belongsToMany(User::class);
+        return $this->hasMany(Stock::class, 'shop_id', 'id');
     }
 
     public function sources(): BelongsToMany
     {
         return $this->belongsToMany(OrderSource::class)->orWhere('shop_id', 0);
+    }
+
+    public function roles()
+    {
+        return $this->hasMany(Role::class, 'shop_id', 'id');
     }
 
     public function reasons(): HasMany

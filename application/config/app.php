@@ -179,7 +179,6 @@ return [
 
         App\Providers\CrmServiceProvider::class,
 //        App\Providers\NotificationProvider::class,
-        App\Providers\AnalyticsProvider::class,
 
         Maatwebsite\Excel\ExcelServiceProvider::class,
     ],

@@ -6,6 +6,7 @@ use App\Filament\Resources\Shop;
 use App\Filament\Resources\Shop\TaskResource\Widgets\TaskStats;
 use App\Models\Shop\Task;
 use App\Services\CacheService;
+use App\Services\Helpers\ModelHelper;
 use Exception;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\DatePicker;
@@ -138,12 +139,14 @@ class TaskResource extends Resource
                     ->label('Объект')
                     ->url(function ($record) {
 
-                        return $record->model_type::$resource::getUrl('edit', [$record->model_id]);//TODO refactoring
+                        $resource = ModelHelper::getEntityResource($record->model_type);
+
+                        return $resource::getUrl('edit', [$record->model_id]);
                     })
                     ->sortable()
                     ->getStateUsing(function ($record) {
 
-                        return ($record->model_type::query()->find($record->model_id)->name);
+                        return ModelHelper::getEntityClass($record->model_type)::query()->find($record->model_id)->name;
                     }),
                 Tables\Columns\TextColumn::make('responsible.name')
                     ->label('Исполнитель')
@@ -192,13 +195,14 @@ class TaskResource extends Resource
 
                 Tables\Filters\TernaryFilter::make('status')
                     ->label('Статус')
-                    ->placeholder('В работе')
+                    ->default(null)
+                    ->placeholder('Вcе')
                     ->trueLabel('Выполнено')
                     ->falseLabel('Просрочено')
                     ->queries(
-                        true:  fn (Builder $query) => $query->where('is_execute', false),
-                        false: fn (Builder $query) => $query->where('is_execute', true),
-                        blank: fn (Builder $query) => $query->where('is_failed', true)
+                        true:  fn (Builder $query) => $query->where('is_execute', true),
+                        false: fn (Builder $query) => $query->where('is_failed', true),
+                        blank: fn (Builder $query) => $query,
                     ),
 
                 Tables\Filters\Filter::make('created_at')

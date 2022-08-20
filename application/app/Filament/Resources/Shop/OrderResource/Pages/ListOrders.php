@@ -23,6 +23,7 @@ class ListOrders extends ListRecords
                 ->label('Настроить')
                 ->color('secondary')
                 ->url(OrderResource::getUrl('settings')),
+
             CreateAction::make(),
         ];
     }

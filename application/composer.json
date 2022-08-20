@@ -18,6 +18,7 @@
         "guzzlehttp/guzzle": "^7.2",
         "invaders-xx/filament-kanban-board": "0.2.6",
         "jeffgreco13/filament-breezy": "v1.3.12",
+        "jonquihote/filament-static-chart-widgets": "^1.0",
         "laravel/framework": "v9.0.0",
         "laravel/octane": "^1.2",
         "laravel/sanctum": "^2.14",

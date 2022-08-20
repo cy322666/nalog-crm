@@ -2,6 +2,8 @@
 
 namespace App\Filament\Tables\Actions;
 
+use App\Filament\Resources\Shop\TaskResource;
+use App\Services\CacheService;
 use Filament\Forms\ComponentContainer;
 use Filament\Tables\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +12,7 @@ use Illuminate\Support\Facades\Session;
 
 class ButtonActionShopView extends Action
 {
-    protected ?\Closure $mutateRecordDataUsing = null;
+//    protected ?\Closure $mutateRecordDataUsing = null;
 
     public static function make(string|null $name = 'click'): static
     {
@@ -29,9 +31,11 @@ class ButtonActionShopView extends Action
 
         $this->mountUsing(function (ComponentContainer $form, Model $record): void {
 
-            Session::put('shop', $record->uuid);
+//            Session::put('shop', $record->uuid);
 
-            $this->redirect(route('filament.resources.tasks.index'));
+            CacheService::setAccountId($record->id);
+
+            $this->redirect(TaskResource::getUrl());
         });
 
         $this->action(static function (): void {});

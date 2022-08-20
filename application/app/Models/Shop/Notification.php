@@ -25,4 +25,9 @@ class Notification extends Model
     {
         $this->read_at = Carbon::now()->format('Y-m-d');
     }
+
+    public function shop()
+    {
+        return $this->belongsTo(Shop::class);
+    }
 }

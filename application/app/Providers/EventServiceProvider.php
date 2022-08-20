@@ -15,6 +15,7 @@ use App\Observers\Shop\CategoryObserver;
 use App\Observers\Shop\CustomerObserver;
 use App\Observers\Shop\OrderObserver;
 use App\Observers\Shop\PaymentObserver;
+use App\Observers\Shop\ProductObserver;
 use App\Observers\Shop\ServiceObserver;
 use App\Observers\Shop\TaskObserver;
 use Illuminate\Auth\Events\Registered;
@@ -41,13 +42,13 @@ class EventServiceProvider extends ServiceProvider
     ];
 
     protected $observers = [
-        Task::class     => [TaskObserver::class],
-        Payment::class  => [PaymentObserver::class],
-        Order::class    => [OrderObserver::class],
-        Category::class => [CategoryObserver::class],
-        Product::class  => [PaymentObserver::class],
-        Customer::class => [CustomerObserver::class],
-        Service::class  => [ServiceObserver::class],
+//        Task::class     => [TaskObserver::class],
+//        Payment::class  => [PaymentObserver::class],
+//        Order::class    => [OrderObserver::class],
+//        Category::class => [CategoryObserver::class],
+//        Product::class  => [ProductObserver::class],
+//        Customer::class => [CustomerObserver::class],
+//        Service::class  => [ServiceObserver::class],
     ];
 
     /**

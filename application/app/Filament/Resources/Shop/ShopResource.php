@@ -22,6 +22,7 @@ use Filament\Forms\Components\View;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -32,32 +33,48 @@ class ShopResource extends Resource
 
     protected static ?string $slug = 'shops';
 
-    public static function form(Form $form): Form
-    {
-        return $form
-            ->schema(static::getFormSchema(Card::class))
-            ->columns([
-                'sm' => 3,
-                'lg' => null,
-            ]);
-    }
-
-    //TODO optimize queries shop + tariffs
+    //TODO в list дофига запросов
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('shop_id')->label('ID'),
-                TextColumn::make('name')->label('Название'),
-                TextColumn::make('expired_at')->label('Оплачен до'),
-                TextColumn::make('tariff.name')->label('Тариф'),//TODO тут ссылка на страницу
-                //TODO тут статус аккаунта
+                TextColumn::make('shop_id')
+                    ->sortable()
+                    ->label('ID'),
+
+                TextColumn::make('name')
+                    ->label('Название'),
+
+                TextColumn::make('expired_at')
+                    ->sortable()
+                    ->label('Активен до'),
+
+                TextColumn::make('tariff.name')
+                    ->sortable()
+                    ->label('Тариф'),//TODO тут ссылка на страницу
+
+                BadgeColumn::make('active')
+                    ->sortable()
+                    ->label('Статус')
+                    ->enum([
+                        false => 'Не активен',
+                        true  => 'Активен',
+                    ])
+                    ->colors([
+                        'danger'  => false,
+                        'success' => true,
+                    ])
+                    ->icons([
+                        'heroicon-o-ban' => fn ($state): bool => $state === false,
+                        'heroicon-o-badge-check'  => fn ($state): bool => $state === true,
+                    ]),
             ])
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->actions([
-                ButtonActionShopView::make('Перейти'),
+                ButtonActionShopView::make('Перейти')->hidden(function (Shop $record) {
+
+                    return CacheService::getAccountId() == $record->id;
+                }),
                 ButtonActionShopPay::make('Оплатить'),
             ])
             ->bulkActions([]);
@@ -65,9 +82,7 @@ class ShopResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
@@ -77,103 +92,5 @@ class ShopResource extends Resource
             'create' => CreateShop::route('/create'),
             'edit'   => EditShop::route('/{record}/edit'),
         ];
-    }
-
-    public static function getFormSchema(string $layout = Grid::class): array
-    {
-        return [
-
-            Section::make('Настройки')
-                ->schema([
-
-            Tabs::make('Heading')
-                ->tabs([
-                    Tabs\Tab::make('Общие')
-                        ->schema([
-                            TextInput::make('name')
-                                ->label('Название')
-                                ->required()
-                                ->reactive(),
-                            Placeholder::make('')
-                                ->content('*Видно только коллегам'),
-
-                            Select::make('Часовой пояс')
-                                ->relationship('timezone', 'text')
-                                ->searchable()
-                                ->getSearchResultsUsing(fn (string $query) => Timezone::query()->where('text', 'like', "%{$query}%")->pluck('text', 'id'))
-                                ->required(),
-
-                            Placeholder::make(''),
-
-                            //TODO select
-                            Select::make('Основная валюта')
-                                ->relationship('currency', 'name')
-                                ->searchable()
-                                ->getSearchResultsUsing(fn (string $query) => Currency::query()->where('name', 'like', "%{$query}%")->pluck('name', 'id'))
-                                ->required(),
-
-                            Placeholder::make(''),
-
-                        ])->columns(2),
-
-
-                    Tabs\Tab::make('Оплата')
-                        ->schema([
-
-                            Placeholder::make('')
-                                ->content(fn (?Shop $record): string => $record->expired_at ? 'Ваш тариф '.$record->tariff->name.' оплачен до '.$record->expired_at : 'Тестовый период'),
-
-                            Placeholder::make(''),
-
-                            View::make('forms.buttons.settings-pay'),
-
-                        ])->columns(2),
-
-
-                    Tabs\Tab::make('Сотрудники')
-                        ->schema([
-                            View::make('forms.buttons.settings-employees'),
-                        ]),
-
-//TODO раздел
-
-//                    Tabs\Tab::make('Услуги')
-//                        ->schema([
-//                            TextInput::make('shop_id')
-//                                ->label('Список услуг'),
-////                                ->isDisabled(),
-//                            TextInput::make('name')
-//                                ->label('Список услуг')
-//                                ->required()
-//                                ->reactive(),
-//                        ]),
-
-                    Tabs\Tab::make('Автоматизация')
-                        ->schema([
-                            Placeholder::make('')
-                                ->label('В разработке'),
-                        ]),
-
-                    Tabs\Tab::make('Интеграции')
-                        ->schema([
-                            Placeholder::make('')
-                                ->label('В разработке'),
-                        ]),
-                ]),
-
-            ])->columnSpan(2),
-
-            Card::make()
-                ->schema([
-                    Placeholder::make('')
-                        ->label('ID аккаунта')
-                        ->content(fn (?Shop $record): string => $record->shop_id),
-
-                    View::make('forms.buttons.settings-support'),
-
-//                    View::make('forms.buttons.settings-employees'),
-                ])
-                ->columnSpan(1),
-            ];
     }
 }

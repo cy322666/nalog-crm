@@ -25,6 +25,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class OrderResource extends Resource
 {
@@ -45,13 +46,6 @@ class OrderResource extends Resource
     protected static ?int $navigationSort = 2;
 
     //TODO подгружать отношения
-    //TODO заменить билдеры на отношения
-    public $shop;
-
-    public function __construct()
-    {
-        $this->shop = Shop::query()->find(CacheService::getAccountId());
-    }
 
     public static function getEloquentQuery(): Builder
     {
@@ -72,7 +66,6 @@ class OrderResource extends Resource
     public static function form(Form $form): Form
     {
         //TODO customer.type
-        //TODO услуги
         return $form
             ->schema([
                 Tabs::make('')
@@ -209,6 +202,7 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('order_id')
                     ->label('ID')
                     ->searchable()
+                    ->toggleable()
                     ->toggledHiddenByDefault(true)
                     ->searchable()
                     ->sortable(),
@@ -247,7 +241,8 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('pay_parts')
                     ->label('Платежей')
                     ->toggleable()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggledHiddenByDefault(true),
 
                 Tables\Columns\TextColumn::make('responsible.name')
                     ->label('Ответственный')
@@ -257,7 +252,8 @@ class OrderResource extends Resource
                     ->label('Создан')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable()
+                    ->toggledHiddenByDefault(true),
 
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('Обновлен')
@@ -269,11 +265,13 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('source.name')
                     ->label('Источник')
                     ->sortable()
-                    ->toggleable(true),
+                    ->toggleable()
+                    ->toggledHiddenByDefault(true),
 
                 Tables\Columns\TextColumn::make('reason.name')
                     ->label('Причина отказа')
                     ->sortable()
+                    ->toggleable(true)
                     ->toggledHiddenByDefault(true),
             ])
             ->filters([
@@ -281,10 +279,16 @@ class OrderResource extends Resource
                     ->label('В работе')
                     ->query(fn (Builder $query): Builder => $query->where('closed', false))
                     ->default(),
+
+                Tables\Filters\SelectFilter::make('responsible')
+                    ->label('Ответственный')
+                    ->relationship('responsible', 'name')
+                    ->default(Auth::user()->id),
+
                 Tables\Filters\Filter::make('created_at')
                     ->form([
                         Forms\Components\DatePicker::make('created_from')
-                            ->placeholder(fn ($state): string => 'Dec 18, ' . now()->subYear()->format('Y')),
+                            ->placeholder(fn ($state): string => 'Dec 18, ' . now()->subYear()->format('Y')),//TODO check
                         Forms\Components\DatePicker::make('created_until')
                             ->placeholder(fn ($state): string => now()->format('M d, Y')),
                     ])

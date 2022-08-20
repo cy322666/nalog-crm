@@ -17,7 +17,7 @@ class OrderPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->can('view_any_shop::order');
+        return $user->isAdmin() || $user->hasPermission('view_orders');
     }
 
     /**
@@ -28,7 +28,7 @@ class OrderPolicy
      */
     public function view(User $user)
     {
-        return $user->can('view_shop::order');
+        return $user->isAdmin() || $user->hasPermission('view_orders');
     }
 
     /**
@@ -39,7 +39,7 @@ class OrderPolicy
      */
     public function create(User $user)
     {
-        return $user->can('create_shop::order');
+        return $user->isAdmin() || $user->hasPermission('create_orders');
     }
 
     /**
@@ -50,7 +50,7 @@ class OrderPolicy
      */
     public function update(User $user)
     {
-        return $user->can('update_shop::order');
+        return $user->isAdmin() || $user->hasPermission('update_orders');
     }
 
     /**
@@ -61,7 +61,7 @@ class OrderPolicy
      */
     public function delete(User $user)
     {
-        return $user->can('delete_shop::order');
+        return $user->isAdmin() || $user->hasPermission('delete_orders');
     }
 
     /**
@@ -72,7 +72,7 @@ class OrderPolicy
      */
     public function deleteAny(User $user)
     {
-        return $user->can('delete_any_shop::order');
+        return $user->isAdmin() || $user->hasPermission('delete_orders');
     }
 
     /**
@@ -83,7 +83,7 @@ class OrderPolicy
      */
     public function forceDelete(User $user)
     {
-        return $user->can('{{ ForceDelete }}');
+        return $user->isAdmin() || $user->hasPermission('delete_orders');
     }
 
     /**
@@ -94,7 +94,7 @@ class OrderPolicy
      */
     public function forceDeleteAny(User $user)
     {
-        return $user->can('{{ ForceDeleteAny }}');
+        return $user->isAdmin() || $user->hasPermission('delete_orders');
     }
 
     /**

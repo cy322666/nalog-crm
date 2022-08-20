@@ -10,7 +10,7 @@ class TimeZonesTableSeeder extends Seeder
 {
 
     /**
-     * Run the database seeds.
+     * Это рабочее
      *
      * @return  void
      */

@@ -15,10 +15,6 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 
-//use App\Models\Blog\Author;
-//use App\Models\Blog\Category as BlogCategory;
-//use App\Models\Blog\Post;
-
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
@@ -26,67 +22,46 @@ class DatabaseSeeder extends Seeder
         // Clear images
         Storage::deleteDirectory('public');
 
-        // Admin
-        User::factory()->create([
-            'name' => 'Demo User',
-            'email' => 'admin@filamentphp.com',
+        $this->call([
+
+            //справочники:
+
+            LaraworldSeeder::class,   //валюты, зоны, языки
+            OrderStatusSeeder::class, //статусы заказов
+            OrderSourceSeeder::class, //источники заказов
+            OrderLostReasonsSeeder::class, //причины отказа
+            PaymentStatusSeeder::class, //статусы платежей
+            PaymentMethodsSeeder::class, //способы оплаты
+            //-методы оплаты
+
+            //юзеры права и шопы
+
+            TariffSeeder::class, // тарифы
+            RoleSeeder::class, // роли
+            PermissionsSeeder::class, // права + связка с ролями
+            ShopSeeder::class, // шопы + роли для них
+            UserSeeder::class, // юзеры + релейшены к шопам + права и роли
+
+            CustomerSeeder::class, // клиенты
+            StockSeeder::class, // склады
+
+            ProductSeeder::class, // товары + связи со складами
+
+            OrderSeeder::class, // заказы + связи с продуктами
+            PaymentSeeder::class, // оплаты
+
+            ServiceSeeder::class, // услуги + связи с заказами
+            CategorySeeder::class, // категории + связи с продуктами
+
+            TaskSeeder::class, // задачи
+
+
+        //уведомления
+
         ]);
-        $this->command->info('Admin user created.');
 
-        // Shop
-        $categories = ShopCategory::factory()->count(20)
-            ->has(
-                ShopCategory::factory()->count(3),
-                'children'
-            )->create();
-        $this->command->info('Shop categories created.');
-
-        $brands = Brand::factory()->count(20)
-            ->has(Address::factory()->count(rand(1, 3)))
-            ->create();
-        $this->command->info('Shop brands created.');
-
-        $customers = Customer::factory()->count(1000)
-            ->has(Address::factory()->count(rand(1, 3)))
-            ->create();
-        $this->command->info('Shop customers created.');
-
-        $products = Product::factory()->count(50)
-            ->sequence(fn ($sequence) => ['shop_brand_id' => $brands->random(1)->first()->id])
-            ->hasAttached($categories->random(rand(3, 6)), ['created_at' => now(), 'updated_at' => now()])
-            ->has(
-                Comment::factory()->count(rand(10, 20))
-                    ->state(fn (array $attributes, Product $product) => ['customer_id' => $customers->random(1)->first()->id]),
-            )
-            ->create();
-        $this->command->info('Shop products created.');
-
-        Order::factory()->count(1000)
-            ->sequence(fn ($sequence) => ['shop_customer_id' => $customers->random(1)->first()->id])
-            ->has(Payment::factory()->count(rand(1, 3)))
-            ->has(
-                OrderProduct::factory()->count(rand(2, 5))
-                    ->state(fn (array $attributes, Order $order) => ['shop_product_id' => $products->random(1)->first()->id]),
-                'items'
-            )
-            ->create();
-        $this->command->info('Shop orders created.');
-
-        // Blog
-//        $blogCategories = BlogCategory::factory()->count(20)->create();
-        $this->command->info('Blog categories created.');
-
-//        Author::factory()->count(20)
-//            ->has(
-//                Post::factory()->count(5)
-//                    ->has(
-//                        Comment::factory()->count(rand(5, 10))
-//                            ->state(fn (array $attributes, Post $post) => ['customer_id' => $customers->random(1)->first()->id]),
-//                    )
-//                    ->state(fn (array $attributes, Author $author) => ['blog_category_id' => $blogCategories->random(1)->first()->id]),
-//                'posts'
-//            )
-//            ->create();
-        $this->command->info('Blog authors and posts created.');
+//            CommentSeeder::class,
+        //комменты?
+        //события??
     }
 }

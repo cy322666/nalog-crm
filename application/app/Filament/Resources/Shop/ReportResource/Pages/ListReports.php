@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Shop\ReportResource\Pages;
 
 use App\Filament\Resources\Shop\ReportResource;
+use App\Filament\Widgets\Analytics\CakeCompositionChart;
 use App\Filament\Widgets\Analytics\EmployeeOrdersChart;
 use App\Filament\Widgets\Analytics\EmployeeTasksChart;
 use App\Filament\Widgets\Analytics\LostOrdersChart;
@@ -50,36 +51,15 @@ class ListReports extends ListRecords
         return [
             PageViewsWidget::class,
             ActiveUsersOneDayWidget::class,
-            PaymentsChart::class,
+//            SessionsByDeviceWidget::class,
+
             OrdersChart::class,
             StatusOrder::class,
-            EmployeeOrder::class,
-
-            SessionsByDeviceWidget::class,
             StatsOverviewWidget::class,
-
-            OrderSource::class,
-            EmployeeOrder::class,
-
-//            EmployeeFailTask::class,
-
+//            OrderSource::class,
             EmployeeSaleOrder::class,
 
-//            SourceOrdersChart::class,
-//            LostOrdersChart::class,
-//            EmployeeTasksChart::class,
-//            EmployeeOrdersChart::class,
-
-//            VisitorsWidget::class,
-//            ActiveUsersSevenDayWidget::class,
-//            ActiveUsersFourteenDayWidget::class,
-//            ActiveUsersTwentyEightDayWidget::class,
-//            SessionsWidget::class,
-//            SessionsDurationWidget::class,
-//            SessionsByCountryWidget::class,
-//            MostVisitedPagesWidget::class,
-
-            TopReferrersListWidget::class,
+            CakeCompositionChart::class,
         ];
     }
 }

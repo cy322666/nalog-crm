@@ -70,14 +70,24 @@ class Product extends Model implements HasMedia
         'published_at'      => 'date',
     ];
 
-    public function brand(): BelongsTo
+    public function stocks(): BelongsToMany
     {
-        return $this->belongsTo(Brand::class, 'shop_brand_id');
+        return $this->belongsToMany(Stock::class, 'shop_stock_product', 'product_id', 'stock_id');
     }
+
+//    public function brand(): BelongsTo
+//    {
+//        return $this->belongsTo(Brand::class, 'shop_brand_id');
+//    }
 
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class, 'shop_category_product',  'shop_product_id', 'shop_category_id');
+    }
+
+    public function shop()
+    {
+        return $this->belongsTo(Shop::class);
     }
 
     public function orders(): BelongsToMany

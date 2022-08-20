@@ -79,12 +79,19 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     {
         return $this->belongsToMany(Role::class,'users_roles');
     }
+
+    public function role()
+    {
+        return $this->belongsToMany(Role::class,'users_roles')
+            ->where('shop_id', CacheService::getAccountId());
+    }
+
     /**
      * @return mixed
      */
     public function permissions() : belongsToMany
     {
-        return $this->belongsToMany(Permission::class,'users_permissions');
+        return $this->belongsToMany(Permission::class,'shop_users_permissions');
     }
 
     public function isAdmin(): bool

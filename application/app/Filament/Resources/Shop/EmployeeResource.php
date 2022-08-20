@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Shop;
 use App\Filament\Resources\Shop\EmployeeResource\Pages;
 use App\Models\Shop\TaskType;
 use App\Models\User;
+use App\Services\CacheService;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Grid;
@@ -14,6 +15,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Columns\BadgeColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -67,36 +69,48 @@ class EmployeeResource extends Resource
             ]);
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->join('shop_user', 'users.id', '=', 'shop_user.user_id')
+            ->where('shop_user.shop_id', CacheService::getAccountId());
+    }
+
+    protected static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->join('shop_user', 'users.id', '=', 'shop_user.user_id')
+            ->where('shop_user.shop_id', CacheService::getAccountId());
+    }
+
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label('Название')
-                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('email')
                     ->label('Почта')
-                    ->searchable()
                     ->sortable(),
-                Tables\Columns\BooleanColumn::make('active')
-                    ->label('Активность')
+                BadgeColumn::make('active')
                     ->sortable()
-                    ->default(true),//TODO change real soft delete
-                Tables\Columns\TextColumn::make('sd')
+                    ->label('Статус')
+                    ->enum([
+                        false => 'Не активен',
+                        true  => 'Активен',
+                    ])
+                    ->colors([
+                        'danger'  => false,
+                        'success' => true,
+                    ]),
+                Tables\Columns\TextColumn::make('role.name')
                     ->label('Роль')
-                    ->searchable()
                     ->sortable(),
             ])
-            ->filters([
-                //
-            ])
-            ->actions([
-
-            ])
-            ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
-            ]);
+            ->filters([])
+            ->actions([])
+            ->bulkActions([]);
     }
 
     public static function getRelations(): array

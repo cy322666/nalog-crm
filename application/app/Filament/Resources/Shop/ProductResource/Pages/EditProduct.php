@@ -31,14 +31,7 @@ class EditProduct extends EditRecord
     protected function getActions(): array
     {
         return [
-            DeleteAction::make()
-                ->after(function () {
-                    event(new EntityEvent(
-                        Auth::user(),
-                        $this->getMountedActionFormModel(),
-                        EventManager::productDeleted(),
-                    ));
-                })
+            DeleteAction::make(),
         ];
     }
 

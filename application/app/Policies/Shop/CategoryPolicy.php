@@ -17,7 +17,7 @@ class CategoryPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->can('view_any_shop::category');
+        return $user->isAdmin() || $user->hasPermission('view_categories');
     }
 
     /**
@@ -28,7 +28,7 @@ class CategoryPolicy
      */
     public function view(User $user)
     {
-        return $user->can('view_shop::category');
+        return $user->isAdmin() || $user->hasPermission('view_categories');
     }
 
     /**
@@ -39,7 +39,7 @@ class CategoryPolicy
      */
     public function create(User $user)
     {
-        return $user->can('create_shop::category');
+        return $user->isAdmin() || $user->hasPermission('create_categories');
     }
 
     /**
@@ -50,7 +50,7 @@ class CategoryPolicy
      */
     public function update(User $user)
     {
-        return $user->can('update_shop::category');
+        return $user->isAdmin() || $user->hasPermission('update_categories');
     }
 
     /**
@@ -61,7 +61,7 @@ class CategoryPolicy
      */
     public function delete(User $user)
     {
-        return $user->can('delete_shop::category');
+        return $user->isAdmin() || $user->hasPermission('delete_categories');
     }
 
     /**
@@ -72,7 +72,7 @@ class CategoryPolicy
      */
     public function deleteAny(User $user)
     {
-        return $user->can('delete_any_shop::category');
+        return $user->isAdmin() || $user->hasPermission('delete_categories');
     }
 
     /**
@@ -83,7 +83,7 @@ class CategoryPolicy
      */
     public function forceDelete(User $user)
     {
-        return $user->can('{{ ForceDelete }}');
+        return $user->isAdmin() || $user->hasPermission('delete_categories');
     }
 
     /**
@@ -94,7 +94,7 @@ class CategoryPolicy
      */
     public function forceDeleteAny(User $user)
     {
-        return $user->can('{{ ForceDeleteAny }}');
+        return $user->isAdmin() || $user->hasPermission('delete_categories');
     }
 
     /**

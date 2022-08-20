@@ -17,7 +17,7 @@ class PaymentPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->can('view_any_shop::payment');
+        return $user->isAdmin() || $user->hasPermission('view_payments');
     }
 
     /**
@@ -28,7 +28,7 @@ class PaymentPolicy
      */
     public function view(User $user)
     {
-        return $user->can('view_shop::payment');
+        return $user->isAdmin() || $user->hasPermission('view_payments');
     }
 
     /**
@@ -39,7 +39,7 @@ class PaymentPolicy
      */
     public function create(User $user)
     {
-        return $user->can('create_shop::payment');
+        return $user->isAdmin() || $user->hasPermission('create_payments');
     }
 
     /**
@@ -50,7 +50,7 @@ class PaymentPolicy
      */
     public function update(User $user)
     {
-        return $user->can('update_shop::payment');
+        return $user->isAdmin() || $user->hasPermission('update_payments');
     }
 
     /**
@@ -61,7 +61,7 @@ class PaymentPolicy
      */
     public function delete(User $user)
     {
-        return $user->can('delete_shop::payment');
+        return $user->isAdmin() || $user->hasPermission('delete_payments');
     }
 
     /**
@@ -72,7 +72,7 @@ class PaymentPolicy
      */
     public function deleteAny(User $user)
     {
-        return $user->can('delete_any_shop::payment');
+        return $user->isAdmin() || $user->hasPermission('delete_payments');
     }
 
     /**
@@ -83,7 +83,7 @@ class PaymentPolicy
      */
     public function forceDelete(User $user)
     {
-        return $user->can('{{ ForceDelete }}');
+        return $user->isAdmin() || $user->hasPermission('delete_payments');
     }
 
     /**
@@ -94,7 +94,7 @@ class PaymentPolicy
      */
     public function forceDeleteAny(User $user)
     {
-        return $user->can('{{ ForceDeleteAny }}');
+        return $user->isAdmin() || $user->hasPermission('delete_payments');
     }
 
     /**

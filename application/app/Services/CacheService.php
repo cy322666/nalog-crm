@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Filament\Resources\Shop\ShopResource;
 use App\Models\Shop\Shop;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -24,16 +25,23 @@ class CacheService
 
         if (!$accountId) {
 
-            redirect(route('filament.auth.login'));
+            redirect(ShopResource::getUrl());//route('filament.auth.login')
         } else
             return $accountId;
     }
 
     public static function getAccount()
     {
+        $accountId = Cache::get('user_'.Auth::user()->id.'_account');
+
+        if (!$accountId) {
+
+            redirect(ShopResource::getUrl());
+        }
+
         return Shop::query()
-            ->find(Cache::get('user_'.Auth::user()->id.'_account'))
-            ->first();
+            ->find($accountId)
+            ->first();//TODO debug
     }
 
     public static function getRole()

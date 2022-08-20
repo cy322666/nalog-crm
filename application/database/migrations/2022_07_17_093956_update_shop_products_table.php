@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::table('shop_products', function (Blueprint $table) {
             $table->dropColumn('slug');
-            $table->dropColumn('is_visible');
-            $table->dropColumn('backorder');
+//            $table->dropColumn('is_visible');
+//            $table->dropColumn('backorder');
             $table->dropColumn('shop_brand_id');
-            $table->dropColumn('featured');
-            $table->dropColumn('published_at');
-            $table->dropColumn('seo_description');
+//            $table->dropColumn('featured');
+//            $table->dropColumn('published_at');
+//            $table->dropColumn('seo_description');
             $table->dropColumn('type');
 
             $table->integer('product_id')->nullable();

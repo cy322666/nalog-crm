@@ -2,7 +2,7 @@
 
 namespace App\Modules\Analytics\Widgets;
 
-use BezhanSalleh\FilamentGoogleAnalytics\FilamentGoogleAnalytics;
+use App\Modules\Analytics\FilamentGoogleAnalytics;
 use BezhanSalleh\FilamentGoogleAnalytics\Traits;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Arr;

@@ -11,11 +11,11 @@ class ProductObserver
 {
     public function created(Payment $payment)
     {
-        event(new EntityEvent(
-            User::query()->find($payment->creator_id)->first(),
-            $payment,
-            EventManager::productCreated(),
-        ));
+//        event(new EntityEvent(
+//            User::query()->find($payment->creator_id)->first(),
+//            $payment,
+//            EventManager::productCreated(),
+//        ));
     }
 
     public function updated(Payment $payment)

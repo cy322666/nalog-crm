@@ -19,7 +19,7 @@ class CustomerPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isAdmin() || $user->hasPermission('view_customers');
+        return $user->isAdmin() || $user->hasPermission('view_clients');
     }
 
     /**
@@ -30,7 +30,7 @@ class CustomerPolicy
      */
     public function view(User $user): bool
     {
-        return true;//$user->can('view_shop::customer');
+        return $user->isAdmin() || $user->hasPermission('view_clients');
     }
 
     /**
@@ -41,7 +41,7 @@ class CustomerPolicy
      */
     public function create(User $user)
     {
-        return $user->can('create_shop::customer');
+        return $user->isAdmin() || $user->hasPermission('create_clients');
     }
 
     /**
@@ -52,19 +52,18 @@ class CustomerPolicy
      */
     public function update(User $user)
     {
-        return true;//$user->can('update_shop::customer');
+        return $user->isAdmin() || $user->hasPermission('update_clients');
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param User $user
-     * @return Response|bool
+     * @return bool
      */
     public function delete(User $user)
     {
-        Log::info(__METHOD__);
-        return $user->can('delete_shop::customer');
+        return $user->isAdmin() || $user->hasPermission('delete_clients');
     }
 
     /**
@@ -73,10 +72,9 @@ class CustomerPolicy
      * @param User $user
      * @return Response|bool
      */
-    public function deleteAny(User $user)
+    public function deleteAny(User $user): Response|bool
     {
-        Log::info(__METHOD__);
-        return $user->can('delete_any_shop::customer');
+        return $user->isAdmin() || $user->hasPermission('delete_clients');
     }
 
     /**
@@ -87,20 +85,18 @@ class CustomerPolicy
      */
     public function forceDelete(User $user)
     {
-        Log::info(__METHOD__);
-        return $user->can('{{ ForceDelete }}');
+        return $user->isAdmin() || $user->hasPermission('delete_clients');
     }
 
     /**
      * Determine whether the user can permanently bulk delete.
      *
      * @param User $user
-     * @return Response|bool
+     * @return bool
      */
-    public function forceDeleteAny(User $user)
+    public function forceDeleteAny(User $user): bool
     {
-        Log::info(__METHOD__);
-        return $user->can('{{ ForceDeleteAny }}');
+        return $user->isAdmin() || $user->hasPermission('delete_clients');
     }
 
     /**

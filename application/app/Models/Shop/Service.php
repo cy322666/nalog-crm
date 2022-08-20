@@ -24,4 +24,9 @@ class Service extends Model
     {
         return $this->belongsToMany(Order::class, 'shop_order_service', 'service_id', 'order_id');
     }
+
+    public function shop()
+    {
+        return $this->belongsTo(Shop::class);
+    }
 }

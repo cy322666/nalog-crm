@@ -38,10 +38,15 @@ class Order extends Model
         'creator_id',
     ];
 
-    public function address(): MorphOne
+    public function shop()
     {
-        return $this->morphOne(OrderAddress::class, 'addressable');
+        return $this->belongsTo(Shop::class);
     }
+
+//    public function address(): MorphOne
+//    {
+//        return $this->morphOne(OrderAddress::class, 'addressable');
+//    }
 
     public function customer(): BelongsTo
     {
@@ -60,7 +65,7 @@ class Order extends Model
 
     public function responsible(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'responsible_id');
+        return $this->belongsTo(User::class, 'responsible_id', 'id');
     }
 
     public function statuses(): BelongsTo

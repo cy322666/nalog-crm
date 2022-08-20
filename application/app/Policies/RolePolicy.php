@@ -29,7 +29,7 @@ class RolePolicy
      */
     public function view(User $user): bool
     {
-        return $user->isAdmin() || $user->hasPermission('view_role');
+        return $user->isAdmin() || $user->hasPermission('view_roles');
     }
 
     /**
@@ -40,7 +40,7 @@ class RolePolicy
      */
     public function create(User $user): bool
     {
-        return $user->isAdmin() || $user->hasPermission('create_role');
+        return $user->isAdmin() || $user->hasPermission('create_roles');
     }
 
     /**
@@ -51,7 +51,7 @@ class RolePolicy
      */
     public function update(User $user)
     {
-        return $user->isAdmin() || $user->hasPermission('update_role');
+        return $user->isAdmin() || $user->hasPermission('update_roles');
     }
 
     /**
@@ -62,7 +62,7 @@ class RolePolicy
      */
     public function delete(User $user)
     {
-        return $user->isAdmin() || $user->hasPermission('delete_role');
+        return $user->isAdmin() || $user->hasPermission('delete_roles');
     }
 
     /**
@@ -73,7 +73,7 @@ class RolePolicy
      */
     public function deleteAny(User $user)
     {
-        return $user->isAdmin() || $user->hasPermission('delete_role');
+        return $user->isAdmin() || $user->hasPermission('delete_roles');
     }
 
     /**
@@ -84,7 +84,7 @@ class RolePolicy
      */
     public function forceDelete(User $user): Response|bool
     {
-        return $user->isAdmin() || $user->hasPermission('delete_role');
+        return $user->isAdmin() || $user->hasPermission('delete_roles');
     }
 
     /**
@@ -95,7 +95,7 @@ class RolePolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->isAdmin() || $user->hasPermission('delete_role');
+        return $user->isAdmin() || $user->hasPermission('delete_roles');
     }
 
     /**

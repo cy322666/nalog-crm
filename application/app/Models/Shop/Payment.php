@@ -54,4 +54,9 @@ class Payment extends Model
             ->belongsTo(PaymentStatus::class)
             ->orWhere('shop_id', 0);
     }
+
+    public function shop()
+    {
+        return $this->belongsTo(Shop::class);
+    }
 }

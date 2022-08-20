@@ -13,6 +13,8 @@ class LaraworldSeeder extends Seeder
      */
     public function run()
     {
+        //вроде надо
+
         // Seed the countries
         $this->call(\Database\Seeders\CountriesTableSeeder::class);
 
@@ -21,5 +23,9 @@ class LaraworldSeeder extends Seeder
 
         // Seed the Languages
         $this->call(\Database\Seeders\LanguagesTableSeeder::class);
+
+        $this->call(\Database\Seeders\CurrencySeeder::class);
+
+        $this->command->info('Справочники языки + зоны + валюты созданы');
     }
 }

@@ -12,7 +12,17 @@ class Login extends \Filament\Http\Livewire\Auth\Login
 {
     public function mount(): void
     {
+        //TODO эт че
         if (Filament::auth()->check()) {
+
+//            $shops = Auth::user()->shops();
+//
+//            if ($shops->count() > 1) {
+//
+//
+//            }
+
+//            CacheService::setAccountId(1);
 
             CacheService::setAccountId(Auth::user()
                 ->shops()
