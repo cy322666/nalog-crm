@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b9c49ae8df61ce243e996876fef78c77",
+    "content-hash": "26493016fd4e13c6ce98583f63356b08",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -2259,6 +2259,81 @@
                 }
             ],
             "time": "2022-06-20T21:43:11+00:00"
+        },
+        {
+            "name": "icetalker/filament-stepper",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/icetalker/filament-stepper.git",
+                "reference": "47a5f440d5ad392874b358811e61a99181fc036d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/icetalker/filament-stepper/zipball/47a5f440d5ad392874b358811e61a99181fc036d",
+                "reference": "47a5f440d5ad392874b358811e61a99181fc036d",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^2.0",
+                "illuminate/contracts": "^8.6|^9.0",
+                "php": "^8.0",
+                "spatie/laravel-package-tools": "^1.9.2"
+            },
+            "require-dev": {
+                "nunomaduro/collision": "^6.0",
+                "orchestra/testbench": "^7.0",
+                "pestphp/pest": "^1.21",
+                "pestphp/pest-plugin-laravel": "^1.1",
+                "phpunit/phpunit": "^9.5",
+                "spatie/laravel-ray": "^1.26"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Icetalker\\FilamentStepper\\FilamentStepperServiceProvider"
+                    ],
+                    "aliases": {
+                        "FilamentStepper": "Icetalker\\FilamentStepper\\Facades\\FilamentStepper"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Icetalker\\FilamentStepper\\": "src",
+                    "Icetalker\\FilamentStepper\\Database\\Factories\\": "database/factories"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Martin Hwang",
+                    "email": "martin.hwang@outlook.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Filament Form Component for Number Input Field ",
+            "homepage": "https://github.com/icetalker/filament-stepper",
+            "keywords": [
+                "filament-stepper",
+                "icetalker",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/icetalker/filament-stepper/issues",
+                "source": "https://github.com/icetalker/filament-stepper/tree/v1.0.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/icetalker",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-08-25T19:39:24+00:00"
         },
         {
             "name": "intervention/image",
@@ -8604,6 +8679,66 @@
                 "source": "https://github.com/webmozarts/assert/tree/1.11.0"
             },
             "time": "2022-06-03T18:03:27+00:00"
+        },
+        {
+            "name": "ysfkaya/filament-phone-input",
+            "version": "v1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ysfkaya/filament-phone-input.git",
+                "reference": "c26aaf058cb1074a9ec062468f05d1c1a32672be"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ysfkaya/filament-phone-input/zipball/c26aaf058cb1074a9ec062468f05d1c1a32672be",
+                "reference": "c26aaf058cb1074a9ec062468f05d1c1a32672be",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^2.0",
+                "illuminate/contracts": "^9.0",
+                "php": "^8.0",
+                "spatie/laravel-package-tools": "^1.12"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "nunomaduro/collision": "^6.0",
+                "nunomaduro/larastan": "^2.0.1",
+                "orchestra/testbench": "^7.0",
+                "pestphp/pest": "^1.21",
+                "pestphp/pest-plugin-laravel": "^1.1",
+                "pestphp/pest-plugin-livewire": "^1.0",
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan-deprecation-rules": "^1.0",
+                "phpstan/phpstan-phpunit": "^1.0",
+                "phpunit/phpunit": "^9.5"
+            },
+            "suggest": {
+                "propaganistas/laravel-phone": "It is required to use the validation phone rule."
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Ysfkaya\\FilamentPhoneInput\\FilamentPhoneInputServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Ysfkaya\\FilamentPhoneInput\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A phone input component for Laravel Filament",
+            "support": {
+                "issues": "https://github.com/ysfkaya/filament-phone-input/issues",
+                "source": "https://github.com/ysfkaya/filament-phone-input/tree/v1.1.2"
+            },
+            "time": "2022-10-22T19:43:59+00:00"
         }
     ],
     "packages-dev": [

@@ -50,9 +50,6 @@ class RoleResource extends Resource
 
                                 Forms\Components\Hidden::make('shop_id')
                                     ->default(CacheService::getAccountId()),
-
-                                Forms\Components\Hidden::make('guard_name')
-                                    ->default('web'),
                             ])
                             ->columns([
                                 'sm' => 2,
@@ -147,9 +144,9 @@ class RoleResource extends Resource
 
                         //проверка наличия такого права у этой роли
                         $set($permission, (bool)$record
-                            ->permissions()
+                            ?->permissions()
                             ->where('slug', $permission)
-                            ->exists());
+                            ->exists() ?? false);
                     });
 
                 return $permissions;

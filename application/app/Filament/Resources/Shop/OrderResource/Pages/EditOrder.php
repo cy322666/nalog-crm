@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Shop\OrderResource\Pages;
 
-use Ably\Log;
 use App\Events\Shop\EntityEvent;
 use App\Filament\Resources\Shop\OrderResource;
 use App\Models\Shop\Order;

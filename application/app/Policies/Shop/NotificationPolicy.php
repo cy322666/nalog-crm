@@ -17,7 +17,7 @@ class NotificationPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->can('view_any_shop::notification');
+        return true;
     }
 
     /**
@@ -28,7 +28,7 @@ class NotificationPolicy
      */
     public function view(User $user)
     {
-        return $user->can('view_shop::notification');
+        return true;
     }
 
     /**
@@ -39,7 +39,7 @@ class NotificationPolicy
      */
     public function create(User $user)
     {
-        return $user->can('create_shop::notification');
+        return false;
     }
 
     /**
@@ -50,7 +50,7 @@ class NotificationPolicy
      */
     public function update(User $user)
     {
-        return $user->can('update_shop::notification');
+        return false;
     }
 
     /**
@@ -61,7 +61,7 @@ class NotificationPolicy
      */
     public function delete(User $user)
     {
-        return $user->can('delete_shop::notification');
+        return true;
     }
 
     /**
@@ -72,7 +72,7 @@ class NotificationPolicy
      */
     public function deleteAny(User $user)
     {
-        return $user->can('delete_any_shop::notification');
+        return true;
     }
 
     /**
@@ -83,7 +83,7 @@ class NotificationPolicy
      */
     public function forceDelete(User $user)
     {
-        return $user->can('{{ ForceDelete }}');
+        return true;
     }
 
     /**
@@ -94,7 +94,7 @@ class NotificationPolicy
      */
     public function forceDeleteAny(User $user)
     {
-        return $user->can('{{ ForceDeleteAny }}');
+        return true;
     }
 
     /**

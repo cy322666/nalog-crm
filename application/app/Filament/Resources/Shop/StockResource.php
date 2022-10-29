@@ -6,6 +6,7 @@ use App\Filament\Resources\Shop\StockResource\Pages;
 use App\Models\Shop\Stock;
 use App\Services\CacheService;
 use App\Services\Helpers\ModelHelper;
+use Exception;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -49,7 +50,7 @@ class StockResource extends Resource
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public static function form(Form $form): Form
     {

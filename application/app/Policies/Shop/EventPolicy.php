@@ -17,7 +17,7 @@ class EventPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->can('view_any_shop::event');
+        return $user->isAdmin() || $user->hasPermission('view_events');
     }
 
     /**
@@ -28,7 +28,7 @@ class EventPolicy
      */
     public function view(User $user)
     {
-        return $user->can('view_shop::event');
+        return $user->isAdmin() || $user->hasPermission('view_events');
     }
 
     /**
@@ -39,7 +39,7 @@ class EventPolicy
      */
     public function create(User $user)
     {
-        return $user->can('create_shop::event');
+        return false;
     }
 
     /**
@@ -50,7 +50,7 @@ class EventPolicy
      */
     public function update(User $user)
     {
-        return $user->can('update_shop::event');
+        return false;
     }
 
     /**
@@ -61,7 +61,7 @@ class EventPolicy
      */
     public function delete(User $user)
     {
-        return $user->can('delete_shop::event');
+        return $user->isAdmin() || $user->hasPermission('delete_events');
     }
 
     /**
@@ -72,7 +72,7 @@ class EventPolicy
      */
     public function deleteAny(User $user)
     {
-        return $user->can('delete_any_shop::event');
+        return $user->isAdmin() || $user->hasPermission('delete_events');
     }
 
     /**
@@ -83,7 +83,7 @@ class EventPolicy
      */
     public function forceDelete(User $user)
     {
-        return $user->can('{{ ForceDelete }}');
+        return $user->isAdmin() || $user->hasPermission('delete_events');
     }
 
     /**
@@ -94,7 +94,7 @@ class EventPolicy
      */
     public function forceDeleteAny(User $user)
     {
-        return $user->can('{{ ForceDeleteAny }}');
+        return $user->isAdmin() || $user->hasPermission('delete_events');
     }
 
     /**

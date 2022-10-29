@@ -1,9 +1,10 @@
 FROM php:8.1-cli-alpine
 
-WORKDIR /app
+
+WORKDIR /var/www/html/
 
 # PHP: Copy configuration files & remove dist files
-RUN #mkdir /phpIni
+#RUN mkdir /phpIni
 #COPY files/bin /usr/local/bin/
 COPY files/php/php.ini /usr/local/etc/php/conf.d/php.ini
 #COPY files/php/ext /phpIni
@@ -32,7 +33,7 @@ RUN docker-php-ext-install exif
 
 RUN docker-php-ext-install -j "$(nproc)" gd
 
-#pdo_mysql
+
 RUN docker-php-ext-install intl opcache \
     && pecl install apcu \
     && docker-php-ext-enable apcu \
@@ -49,14 +50,12 @@ RUN apk add --no-cache nodejs npm && \
     npm config set prefix "/home/www-data/.npm-global/" && \
     npm install -g chokidar
 
-ENV SWOOLE_MAX_REQUESTS "500"
-ENV SWOOLE_TASK_WORKERS "auto"
+ENV SWOOLE_MAX_REQUESTS "100"
+ENV SWOOLE_TASK_WORKERS "1"
 ENV SWOOLE_WATCH $true
-ENV SWOOLE_WORKERS "auto"
+ENV SWOOLE_WORKERS "10"
 
-RUN chown -R www-data:www-data /app
-
-#RUN chmod -R 777 storage/
+RUN chown -R www-data:www-data /var/www/html/
 
 COPY ./start.sh /
 RUN chmod +x /start.sh

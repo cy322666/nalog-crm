@@ -37,15 +37,12 @@ class Payment extends Model
     public function provider(): BelongsTo
     {
         return $this
-            ->belongsTo(PaymentProvider::class)
-            ->orWhere('shop_id', 0);
+            ->belongsTo(PaymentProvider::class);
     }
 
     public function method(): BelongsTo
     {
-        return $this
-            ->belongsTo(PaymentMethod::class)
-            ->orWhere('shop_id', 0);
+        return $this->belongsTo(PaymentMethod::class, 'method_id');
     }
 
     public function status(): BelongsTo

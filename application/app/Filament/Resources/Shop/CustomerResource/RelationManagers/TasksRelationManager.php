@@ -32,6 +32,8 @@ class TasksRelationManager extends HasManyThroughRelationManager
 
     protected static ?string $title = 'Задачи';
 
+    protected static ?string $label = 'задачу';
+
     //TODO check double
     //protected bool $allowsDuplicates = true;
 

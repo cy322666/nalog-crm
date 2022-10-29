@@ -1,26 +1,10 @@
 version: '3.5'
 
 services:
-    nginx:
-        build: ./docker/images/nginx
-        ports:
-            - "8080:80"
-            - "443:443"
-        volumes:
-            - ./docker/hosts:/etc/nginx/conf.d
-            - ./docker/images/nginx/default.conf:/etc/nginx/conf.d/default.conf
-            - ./application:/var/www/html
-            - ./logs:/var/log/nginx
-            - ./letsencrypt:/etc/letsencrypt
-            - ./acme-challenge:/var/lib/certbot/.well-known/acme-challenge
-        networks:
-            - cluster
-        links:
-            - app
     app:
         build: ./docker/images/php81
         volumes:
-            - ./application:/app
+            - ./application:/var/www/html
         ports:
             - "80:8000"
         links:
@@ -28,29 +12,39 @@ services:
             - redis
         networks:
             - cluster
-#        working_dir: /var/www/html
-#        volumes:
-#            - ./application:/var/www/html
+        working_dir: /var/www/html
     postgresql:
-        image: postgres:9.6.21-alpine
+        image: postgres:14.1-alpine
         ports:
             - "5431:5432"
         networks:
             - cluster
-        volumes:
-            - ./database:/var/lib/postgresql
         environment:
             POSTGRES_USER: root
             POSTGRES_PASSWORD: pQLkm8NOkS0gOBox
             POSTGRES_DB: clever
-
+        volumes:
+            - ./docker/images/postgres/files/postgresql.conf:/etc/postgresql.conf
+        command: ["postgres", "-c", "config_file=/etc/postgresql.conf"]
+        restart: always
     redis:
-        image: redis:alpine
-        restart: unless-stopped
+        image: bitnami/redis:latest
         ports:
             - "6379:6379"
         environment:
             - ALLOW_EMPTY_PASSWORD=yes
+        networks:
+            - cluster
+        restart: always
+    supervisor:
+        build: ./docker/images/supervisor
+        working_dir: /var/www/html
+        restart: unless-stopped
+        volumes:
+            - ./application:/var/www/html
+            - ./docker/images/supervisor/files:/etc/supervisor/conf.d/
+        ports:
+            - "8008:8008"
         networks:
             - cluster
 networks:

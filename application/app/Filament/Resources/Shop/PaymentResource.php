@@ -67,7 +67,7 @@ class PaymentResource extends Resource
      */
     public static function form(Form $form): Form
     {
-        $name = 'Платеж #'.ModelHelper::generateId(Payment::class, 'payment_id');
+        $paymentId = ModelHelper::generateId(self::$model, 'payment_id');
 
         $methods   = PaymentMethod::all()->pluck('name', 'id');
         $providers = PaymentProvider::all()->pluck('name', 'id');
@@ -77,10 +77,9 @@ class PaymentResource extends Resource
             Forms\Components\Card::make()
                 ->schema([
                     Forms\Components\TextInput::make('name')
-                        ->placeholder($name)
                         ->label('Название')
                         ->default(
-                            'Платеж #'.ModelHelper::generateId(Payment::class, 'payment_id')
+                            'Платеж #'.$paymentId
                         ),
                     Forms\Components\Select::make('status_id')
                         ->label('Статус')
@@ -122,9 +121,7 @@ class PaymentResource extends Resource
                     ->schema([
                         Forms\Components\TextInput::make('payment_id')
                             ->label('ID')
-                            ->default(
-                                ModelHelper::generateId(self::$model, 'payment_id')
-                            )
+                            ->default($paymentId)
                             ->disabled(),
                         Forms\Components\Placeholder::make('created_at')
                             ->label('Создан')
@@ -169,6 +166,7 @@ class PaymentResource extends Resource
                         'warning' => fn ($state): bool => $state === PaymentStatus::NEW_STATUS_NAME,
                         'success' => fn ($state): bool => $state === PaymentStatus::WIN_STATUS_NAME,
                     ])
+                    ->alignCenter()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('order.name')
@@ -180,6 +178,7 @@ class PaymentResource extends Resource
                     ->label('Платежная система')
                     ->sortable(),
 
+                //TODO хули не воркает
                 Tables\Columns\TextColumn::make('method.name')
                     ->label('Способ оплаты')
                     ->sortable(),

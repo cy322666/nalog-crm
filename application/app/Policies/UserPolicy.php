@@ -29,7 +29,7 @@ class UserPolicy
      */
     public function view(User $user)
     {
-        return $user->can('view_shop::employee');
+        return $user->isAdmin() || $user->hasPermission('view_users');
     }
 
     /**

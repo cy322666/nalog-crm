@@ -13,7 +13,6 @@ class Role extends Model
 
     protected $fillable = [
         'name',
-        'guard_name',
         'is_system',
         'shop_id',
     ];
@@ -21,5 +20,13 @@ class Role extends Model
     public function permissions(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Permission::class,'roles_permissions',  'role_id', 'permission_id');
+    }
+
+    public function detachPermissions()
+    {
+        foreach ($this->permissions as $permission) {
+
+            $this->permissions()->detach($permission->id);
+        }
     }
 }

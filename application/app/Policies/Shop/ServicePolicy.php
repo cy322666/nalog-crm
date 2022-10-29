@@ -17,7 +17,7 @@ class ServicePolicy
      */
     public function viewAny(User $user)
     {
-        return $user->can('view_any_shop::service');
+        return $user->isAdmin() || $user->hasPermission('view_services');
     }
 
     /**
@@ -28,7 +28,7 @@ class ServicePolicy
      */
     public function view(User $user)
     {
-        return $user->can('view_shop::service');
+        return $user->isAdmin() || $user->hasPermission('view_services');
     }
 
     /**
@@ -39,7 +39,7 @@ class ServicePolicy
      */
     public function create(User $user)
     {
-        return $user->can('create_shop::service');
+        return $user->isAdmin() || $user->hasPermission('create_services');
     }
 
     /**
@@ -50,7 +50,7 @@ class ServicePolicy
      */
     public function update(User $user)
     {
-        return $user->can('update_shop::service');
+        return $user->isAdmin() || $user->hasPermission('update_services');
     }
 
     /**
@@ -61,7 +61,7 @@ class ServicePolicy
      */
     public function delete(User $user)
     {
-        return $user->can('delete_shop::service');
+        return $user->isAdmin() || $user->hasPermission('delete_services');
     }
 
     /**
@@ -72,7 +72,7 @@ class ServicePolicy
      */
     public function deleteAny(User $user)
     {
-        return $user->can('delete_any_shop::service');
+        return $user->isAdmin() || $user->hasPermission('delete_services');
     }
 
     /**
@@ -83,7 +83,7 @@ class ServicePolicy
      */
     public function forceDelete(User $user)
     {
-        return $user->can('{{ ForceDelete }}');
+        return $user->isAdmin() || $user->hasPermission('delete_services');
     }
 
     /**
@@ -94,7 +94,7 @@ class ServicePolicy
      */
     public function forceDeleteAny(User $user)
     {
-        return $user->can('{{ ForceDeleteAny }}');
+        return $user->isAdmin() || $user->hasPermission('delete_services');
     }
 
     /**

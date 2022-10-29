@@ -43,11 +43,11 @@ class EditCustomer extends EditRecord
     protected function getActions(): array
     {
         return [
-            Action::make('history')
-                ->label('История')
-                ->action('history')
-                ->modalHeading('История клиента')
-                ->modalContent(view('history.customer')),
+//            Action::make('history')
+//                ->label('История')
+//                ->action('history')
+//                ->modalHeading('История клиента')
+//                ->modalContent(view('history.customer')),
 
             DeleteAction::make()
                //TODO ->visible(fn (Customer $record): bool => auth()->user()->can('delete', $record))

@@ -96,6 +96,7 @@ class OrdersRelationManager extends MorphToManyRelationManager
             ->filters([])
             ->actions([])
             ->headerActions([
+                Tables\Actions\CreateAction::make(),
                 Tables\Actions\AttachAction::make(),
             ]);
     }

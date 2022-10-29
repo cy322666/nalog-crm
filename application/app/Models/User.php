@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Shop\Notification;
 use App\Models\Shop\Shop;
+use App\Models\Shop\Task;
 use App\Policies\Traits\HasRolesAndPermissions;
 use App\Services\CacheService;
 use Filament\Models\Contracts\FilamentUser;
@@ -51,6 +52,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 
     public function canAccessFilament(): bool
     {
+        //TODO эт шо
         return true;
         //return str_ends_with($this->email, '@yourdomain.com') && $this->hasVerifiedEmail();
     }
@@ -58,6 +60,16 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     public function shops(): BelongsToMany
     {
         return $this->belongsToMany(Shop::class);
+    }
+
+    public function shop(): BelongsToMany
+    {
+        return $this->belongsToMany(Shop::class);
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class, 'responsible_id', 'id');
     }
 
     public function notifications(): \Illuminate\Database\Eloquent\Relations\HasMany
@@ -82,7 +94,8 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 
     public function role()
     {
-        return $this->belongsToMany(Role::class,'users_roles')
+        return $this
+            ->belongsToMany(Role::class,'users_roles')
             ->where('shop_id', CacheService::getAccountId());
     }
 

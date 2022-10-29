@@ -6,6 +6,7 @@ use App\Filament\Resources\Shop\StockResource;
 use App\Models\Shop\Stock;
 use App\Services\CacheService;
 use Closure;
+use Exception;
 use Filament\Tables;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
@@ -49,7 +50,7 @@ class StockList extends BaseWidget
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getTableActions(): array
     {

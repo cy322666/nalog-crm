@@ -6,6 +6,7 @@ use App\Filament\Resources\Shop\CategoryResource\Pages;
 use App\Filament\Resources\Shop\CategoryResource\RelationManagers;
 use App\Models\Shop\Category;
 use App\Services\CacheService;
+use App\Services\Helpers\ModelHelper;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -13,13 +14,14 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
 
-    protected static ?string $slug = 'shop/categories';
+    protected static ?string $slug = 'categories';
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -72,6 +74,12 @@ class CategoryResource extends Resource
                     ]),
                 Forms\Components\Card::make()
                     ->schema([
+                        Forms\Components\TextInput::make('category_id')
+                            ->label('ID')
+                            ->default(
+                                ModelHelper::generateId(self::$model, 'category_id')
+                            )
+                            ->disabled(),
                         Forms\Components\Placeholder::make('created_at')
                             ->label('Создана')
                             ->content(fn (?Category $record): string => $record ? $record->created_at->diffForHumans() : '-'),
@@ -80,6 +88,12 @@ class CategoryResource extends Resource
                             ->content(fn (?Category $record): string => $record ? $record->updated_at->diffForHumans() : '-'),
                     ])
                     ->columnSpan(1),
+
+                Forms\Components\Hidden::make('shop_id')
+                    ->default(CacheService::getAccountId()),
+
+                Forms\Components\Hidden::make('creator_id')
+                    ->default(Auth::user()->id),
             ])
             ->columns([
                 'sm' => 3,
@@ -89,8 +103,6 @@ class CategoryResource extends Resource
 
     public static function table(Table $table): Table
     {
-        //TODO товаров
-
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('category_id')
@@ -114,9 +126,7 @@ class CategoryResource extends Resource
                     ->date()
                     ->sortable(),
             ])
-            ->filters([
-                //
-            ]);
+            ->filters([]);
     }
 
     public static function getRelations(): array

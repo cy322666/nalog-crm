@@ -2,14 +2,13 @@
 
 namespace App\Filament\Resources\Shop\OrderResource\RelationManagers;
 
-use Akaunting\Money\Currency;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\HasManyRelationManager;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Actions\AttachAction;
-use Illuminate\Support\Str;
+use Filament\Tables\Actions\CreateAction;
 
 class ServicesRelationManager extends HasManyRelationManager
 {
@@ -25,29 +24,14 @@ class ServicesRelationManager extends HasManyRelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('reference')
-                    ->columnSpan(2)
+                Forms\Components\TextInput::make('name')
+                    ->label('Название')
                     ->required(),
-
-                Forms\Components\TextInput::make('amount')
-                    ->numeric()
-                    ->required(),
-
-                Forms\Components\Select::make('provider')
-                    ->options([
-                        'stripe' => 'Stripe',
-                        'paypal' => 'PayPal',
-                    ])
-                    ->required(),
-
-                Forms\Components\Select::make('method')
-                    ->options([
-                        'credit_card' => 'Credit card',
-                        'bank_transfer' => 'Bank transfer',
-                        'paypal' => 'PayPal',
-                    ])
-                    ->required(),
-            ]);
+                Forms\Components\TextInput::make('price')
+                    ->label('Стоимость')
+                    ->required()//TODO check validate
+            ])
+            ->columns(['md' => 1]);
     }
 
     public static function table(Table $table): Table
@@ -74,6 +58,7 @@ class ServicesRelationManager extends HasManyRelationManager
             ->actions([])
             ->headerActions([
                 AttachAction::make(),
+                CreateAction::make(),
             ]);
     }
 }

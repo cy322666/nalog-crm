@@ -37,16 +37,18 @@ class EmployeeResource extends Resource
                                     ->label('Имя')
                                     ->required()
                                     ->reactive(),
-                                //TODO select icons
                                 TextInput::make('email')
                                     ->label('Почта')
                                     ->required()
                                     ->reactive(),
-                                //TODO select color
                                 TextInput::make('password')
                                     ->label('Пароль')
-                                    ->password()
-                                //TODO avatar
+                                    ->password(),
+                                  Forms\Components\Select::make('password')
+                                      ->label('Роль')
+                                      ->options(CacheService::getAccount()->roles->pluck('name', 'id'))
+//                                      ->default('')
+                                      ->required()
                             ]),
                     ])
                     ->columnSpan([
@@ -55,10 +57,10 @@ class EmployeeResource extends Resource
                 Card::make()
                     ->schema([
                         Placeholder::make('created_at')
-                            ->label('Created at')
+                            ->label('Создан')
                             ->content(fn (?User $record): string => $record ? $record->created_at->diffForHumans() : '-'),
                         Placeholder::make('updated_at')
-                            ->label('Last modified at')
+                            ->label('Обновлен')
                             ->content(fn (?User $record): string => $record ? $record->updated_at->diffForHumans() : '-'),
                     ])
                     ->columnSpan(1),
@@ -69,18 +71,21 @@ class EmployeeResource extends Resource
             ]);
     }
 
+    //TODO не сейвит роль
+
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
-            ->join('shop_user', 'users.id', '=', 'shop_user.user_id')
-            ->where('shop_user.shop_id', CacheService::getAccountId());
+        //TODO какаааака
+        return parent::getEloquentQuery();//->whereBelongsTo(CacheService::getAccount(), 'shop');//->where('shop_id', CacheService::getAccountId());//CacheService::getAccount();//->users()->getQuery();
     }
 
     protected static function getGlobalSearchEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
-            ->join('shop_user', 'users.id', '=', 'shop_user.user_id')
-            ->where('shop_user.shop_id', CacheService::getAccountId());
+        return CacheService::getAccount()->users()->getQuery();
+
+//            parent::getEloquentQuery()
+//            ->join('shop_user', 'users.id', '=', 'shop_user.user_id')
+//            ->where('shop_user.shop_id', CacheService::getAccountId());
     }
 
     public static function table(Table $table): Table
@@ -123,9 +128,9 @@ class EmployeeResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListEmployees::route('/'),
+            'index'  => Pages\ListEmployees::route('/'),
             'create' => Pages\CreateEmployee::route('/create'),
-            'edit' => Pages\EditEmployee::route('/{record}/edit'),
+            'edit'   => Pages\EditEmployee::route('/{record}/edit'),
         ];
     }
 }

@@ -17,7 +17,7 @@ class ReportPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->can('view_any_shop::report');
+        return true;
     }
 
     /**
@@ -28,7 +28,7 @@ class ReportPolicy
      */
     public function view(User $user)
     {
-        return $user->can('view_shop::report');
+        return true;
     }
 
     /**
@@ -39,7 +39,7 @@ class ReportPolicy
      */
     public function create(User $user)
     {
-        return $user->can('create_shop::report');
+        return false;
     }
 
     /**
@@ -50,7 +50,7 @@ class ReportPolicy
      */
     public function update(User $user)
     {
-        return $user->can('update_shop::report');
+        return false;
     }
 
     /**
@@ -61,7 +61,7 @@ class ReportPolicy
      */
     public function delete(User $user)
     {
-        return $user->can('delete_shop::report');
+        return false;
     }
 
     /**
@@ -72,7 +72,7 @@ class ReportPolicy
      */
     public function deleteAny(User $user)
     {
-        return $user->can('delete_any_shop::report');
+        return false;
     }
 
     /**
@@ -83,7 +83,7 @@ class ReportPolicy
      */
     public function forceDelete(User $user)
     {
-        return $user->can('{{ ForceDelete }}');
+        return false;
     }
 
     /**
@@ -94,7 +94,7 @@ class ReportPolicy
      */
     public function forceDeleteAny(User $user)
     {
-        return $user->can('{{ ForceDeleteAny }}');
+        return false;
     }
 
     /**

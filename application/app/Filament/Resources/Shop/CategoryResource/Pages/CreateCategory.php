@@ -14,12 +14,8 @@ class CreateCategory extends CreateRecord
 {
     protected static string $resource = CategoryResource::class;
 
-    protected function afterCreate(): void
+    protected function getRedirectUrl(): string
     {
-        event(new EntityEvent(
-            Auth::user(),
-            $this->record,
-            EventManager::categoryCreated(),
-        ));
+        return CategoryResource::getUrl();
     }
 }

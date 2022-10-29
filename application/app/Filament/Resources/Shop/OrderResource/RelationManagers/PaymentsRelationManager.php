@@ -46,9 +46,7 @@ class PaymentsRelationManager extends HasManyRelationManager
             Forms\Components\Card::make()
                 ->schema([
                     Forms\Components\TextInput::make('name')
-                        ->placeholder(
-                            'Платеж #'.ModelHelper::generateId(Payment::class, 'payment_id'),
-                        )
+                        ->default('Платеж #'.ModelHelper::generateId(Payment::class, 'payment_id'))
                         ->label('Название'),
                     Forms\Components\Select::make('status_id')
                         ->label('Статус')

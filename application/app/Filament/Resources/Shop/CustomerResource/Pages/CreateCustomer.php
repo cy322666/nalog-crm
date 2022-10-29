@@ -17,15 +17,6 @@ class CreateCustomer extends CreateRecord
         return 'Создать клиента';
     }
 
-    protected function afterCreate(): void
-    {
-        event(new EntityEvent(
-            Auth::user(),
-            $this->record,
-            EventManager::clientCreated(),
-        ));
-    }
-
     protected function getRedirectUrl(): string
     {
         return CustomerResource::getUrl();

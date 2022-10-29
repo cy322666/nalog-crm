@@ -33,6 +33,8 @@ class ButtonActionShopView extends Action
 
 //            Session::put('shop', $record->uuid);
 
+            CacheService::deleteAccountId();
+
             CacheService::setAccountId($record->id);
 
             $this->redirect(TaskResource::getUrl());

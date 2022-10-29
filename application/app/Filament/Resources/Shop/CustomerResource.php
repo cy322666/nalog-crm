@@ -7,6 +7,7 @@ use App\Filament\Resources\Shop\CustomerResource\Pages;
 use App\Filament\Resources\Shop\CustomerResource\RelationManagers;
 use App\Models\Shop\Customer;
 use App\Services\CacheService;
+use App\Services\Helpers\ModelHelper;
 use Filament\Forms;
 use Filament\Forms\Components\ViewField;
 use Filament\Resources\Form;
@@ -18,6 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Squire\Models\Country;
+use Ysfkaya\FilamentPhoneInput\PhoneInput;
 
 class CustomerResource extends Resource
 {
@@ -55,6 +57,9 @@ class CustomerResource extends Resource
         return $record->name;
     }
 
+    /**
+     * @throws \Exception
+     */
     public static function form(Form $form): Form
     {
         return $form
@@ -68,12 +73,10 @@ class CustomerResource extends Resource
                             ->label('Почта')
                             ->email()
                             ->unique(Customer::class, 'email', fn ($record) => $record),
-                        Forms\Components\TextInput::make('phone')
-                            ->minValue(11)
-                            ->maxValue(18)
-                            ->mask(
-                                fn ($mask) => $mask->pattern('+{7}(000)000-00-00')//TODO msk
-                            ),
+
+                        PhoneInput::make('phone')
+                            ->onlyCountries(['ru']),
+
                         Forms\Components\DatePicker::make('birthday')
                             ->label('Дата рождения'),
                     ])
@@ -86,6 +89,12 @@ class CustomerResource extends Resource
                 Forms\Components\Group::make([
                     Forms\Components\Card::make()
                         ->schema([
+                            Forms\Components\TextInput::make('customer_id')
+                                ->label('ID')
+                                ->default(
+                                    ModelHelper::generateId(self::$model, 'customer_id')
+                                )
+                                ->disabled(),
                             Forms\Components\Placeholder::make('created_at')
                                 ->label('Создан')
                                 ->content(fn (?Customer $record): string => $record ? $record->created_at->diffForHumans() : '-'),

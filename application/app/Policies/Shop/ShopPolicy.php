@@ -17,7 +17,7 @@ class ShopPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->can('view_any_shop::shop');
+        return true;
     }
 
     /**
@@ -28,7 +28,7 @@ class ShopPolicy
      */
     public function view(User $user)
     {
-        return $user->can('view_shop::shop');
+        return true;
     }
 
     /**
@@ -39,7 +39,7 @@ class ShopPolicy
      */
     public function create(User $user)
     {
-        return $user->can('create_shop::shop');
+        return $user->isAdmin() || $user->hasPermission('create_shops');
     }
 
     /**
@@ -50,7 +50,7 @@ class ShopPolicy
      */
     public function update(User $user)
     {
-        return $user->can('update_shop::shop');
+        return $user->isAdmin() || $user->hasPermission('update_shops');
     }
 
     /**
@@ -61,7 +61,7 @@ class ShopPolicy
      */
     public function delete(User $user)
     {
-        return $user->can('delete_shop::shop');
+        return $user->isAdmin() || $user->hasPermission('delete_shops');
     }
 
     /**
@@ -72,7 +72,7 @@ class ShopPolicy
      */
     public function deleteAny(User $user)
     {
-        return $user->can('delete_any_shop::shop');
+        return $user->isAdmin() || $user->hasPermission('delete_shops');
     }
 
     /**
@@ -83,7 +83,7 @@ class ShopPolicy
      */
     public function forceDelete(User $user)
     {
-        return $user->can('{{ ForceDelete }}');
+        return $user->isAdmin() || $user->hasPermission('delete_shops');
     }
 
     /**
@@ -94,7 +94,7 @@ class ShopPolicy
      */
     public function forceDeleteAny(User $user)
     {
-        return $user->can('{{ ForceDeleteAny }}');
+        return $user->isAdmin() || $user->hasPermission('delete_shops');
     }
 
     /**

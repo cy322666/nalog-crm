@@ -10,8 +10,11 @@ use App\Filament\Resources\Shop\PaymentResource;
 use App\Filament\Resources\Shop\ProductResource;
 use App\Filament\Resources\Shop\ReportResource;
 use App\Filament\Resources\Shop\ServiceResource;
+use App\Filament\Resources\Shop\ShopResource;
 use App\Filament\Resources\Shop\StockResource;
 use App\Filament\Resources\Shop\TaskResource;
+use App\Services\CacheService;
+use Filament\Navigation\NavigationItem;
 
 abstract class NavigationMap
 {
@@ -28,8 +31,13 @@ abstract class NavigationMap
                 ServiceResource::getNavigationItems()[0],
             ],
             'Аналитика' => [
-                ReportResource::getNavigationItems()[0],
+//                ReportResource::getNavigationItems()[0],
                 EventResource::getNavigationItems()[0],
+            ],
+            'Настройки' => [
+                NavigationItem::make('Настройки')
+                    ->url(ShopResource::getUrl('settings', ['record' => CacheService::getAccountId() ?? 1]))
+                    ->icon('heroicon-o-cog'),
             ],
 //            'Автоматизация' => [
 //                //TODO v2 автоматизация?
@@ -42,7 +50,7 @@ abstract class NavigationMap
     {
         return [
             OrderResource::getNavigationItems()[0],
-            TaskResource::getNavigationItems()[0],
+//            TaskResource::getNavigationItems()[0],
             CustomerResource::getNavigationItems()[0],
             PaymentResource::getNavigationItems()[0],
         ];

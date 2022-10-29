@@ -11,11 +11,11 @@ class CustomerObserver
 {
     public function created(Customer $customer)
     {
-//        event(new EntityEvent(
-//            User::query()->find($customer->creator_id)->first(),
-//            $customer,
-//            EventManager::clientCreated(),
-//        ));
+        event(new EntityEvent(
+            User::query()->find($customer->creator_id)->first(),
+            $customer,
+            EventManager::clientCreated(),
+        ));
     }
 
     public function updated(Customer $customer)

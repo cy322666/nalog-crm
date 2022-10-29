@@ -36,7 +36,7 @@ class TaskResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clock';
 
-    protected static ?string $recordTitleAttribute = 'title';
+    protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?string $navigationLabel = 'Задачи';
 
@@ -127,14 +127,43 @@ class TaskResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('title')
+                Tables\Columns\TextColumn::make('task_id')
+                    ->label('ID')
+                    ->toggleable(true)
+                    ->toggledHiddenByDefault(),
+                Tables\Columns\TextColumn::make('name')
                     ->label('Название')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('text')
+                Tables\Columns\BadgeColumn::make('is_execute')
+                    ->label('Статус')
+                    ->getStateUsing(function (Task $task) {
+
+                        if ($task->is_failed  == true) return 'fail';
+                        if ($task->is_execute == true) return 'success';
+
+                        return 'work';
+                    })
+                    ->enum([
+                        'work' => 'Р',
+                        'fail' => 'Просрочена',
+                        'success'  => 'Выполнена',
+                    ])
+                    ->icons([
+                        'heroicon-o-ban' => fn ($state) => $state == 'work',
+                        'heroicon-o-badge-check'  => fn ($state): bool => $state === true,
+                    ])
+                    ->colors([
+                        'danger'  => 'fail',
+                        'success' => 'success',
+                        'primary' => 'work',
+                    ])
+                    ->description(fn (Task $record): string => $record->name, position: 'above')
+                    ->extraAttributes(['class' => 'w-40']),
+                Tables\Columns\TextColumn::make('description')
                     ->label('Описание')
                     ->searchable()
-                    ->getStateUsing(fn($record): ?string => mb_strimwidth($record->text, 0, 50, "...")),
+                    ->getStateUsing(fn($record): ?string => mb_strimwidth($record->description, 0, 50, "...")),
                 Tables\Columns\TextColumn::make('model')
                     ->label('Объект')
                     ->url(function ($record) {
@@ -154,22 +183,20 @@ class TaskResource extends Resource
                 Tables\Columns\TextColumn::make('author.name')
                     ->label('Автор')
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable(true)
+                    ->toggledHiddenByDefault(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Создана')
                     ->sortable()
-                    ->date()
-                    ->toggledHiddenByDefault(true),
+                    ->dateTime()
+                    ->toggleable(true)
+                    ->toggledHiddenByDefault(),
                 Tables\Columns\TextColumn::make('execute_at')
                     ->label('Дата выполнения')
                     ->sortable()
+                    ->toggleable(true)
+                    ->toggledHiddenByDefault()
                     ->dateTime(),
-                Tables\Columns\BooleanColumn::make('is_execute')
-                    ->label('Статус')
-                    ->trueColor('success')
-                    ->falseColor('primary')
-                    ->trueIcon('heroicon-o-badge-check')//TODO поменять на IconColumn
-                    ->falseIcon('heroicon-o-x-circle'),
             ])
             ->filters([
 
@@ -184,9 +211,10 @@ class TaskResource extends Resource
                         blank: fn (Builder $query) => $query->where('execute_to', '!=', null),
                     ),
 
-                Tables\Filters\SelectFilter::make('responsible')
-                    ->label('Ответственный')
-                    ->relationship('responsible', 'name')
+                Tables\Filters\SelectFilter::make('responsible_id')
+                    ->label('Исполнитель')
+                    ->options(CacheService::getAccount()->users->pluck('name', 'id'))
+                    //->relationship('responsible', 'name')
                     ->default(Auth::user()->id),
 
                 Tables\Filters\SelectFilter::make('author')

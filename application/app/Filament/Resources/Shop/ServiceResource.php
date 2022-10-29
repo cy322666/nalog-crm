@@ -95,9 +95,11 @@ class ServiceResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('service_id')
-                    ->label('ID'),
+                    ->label('ID')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Название'),
+                    ->label('Название')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('price')
                     ->label('Стоимость'),
                 Tables\Columns\TextColumn::make('created_at')

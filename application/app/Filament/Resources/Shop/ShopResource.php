@@ -11,6 +11,7 @@ use App\Models\Currency;
 use App\Models\Shop\Shop;
 use App\Models\Timezone;
 use App\Services\CacheService;
+use App\Services\Roles\RoleManager;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
@@ -26,6 +27,7 @@ use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class ShopResource extends Resource
 {
@@ -71,10 +73,19 @@ class ShopResource extends Resource
             ])
             ->filters([])
             ->actions([
-                ButtonActionShopView::make('Перейти')->hidden(function (Shop $record) {
+                ButtonActionShopView::make('Перейти')
+                    ->action(function (Shop $shop) {
 
-                    return CacheService::getAccountId() == $record->id;
-                }),
+                        //TODO сюда справочники сохранять
+
+                        CacheService::reset();
+
+                        CacheService::setRole(RoleManager::map($shop));
+
+                        CacheService::setAccountId($shop->id);
+
+                        redirect(OrderResource::getUrl());
+                    }),
                 ButtonActionShopPay::make('Оплатить'),
             ])
             ->bulkActions([]);
@@ -90,7 +101,7 @@ class ShopResource extends Resource
         return [
             'index'  => ListShops::route('list/'),
             'create' => CreateShop::route('/create'),
-            'edit'   => EditShop::route('/{record}/edit'),
+            'settings' => EditShop::route('/{record}/edit'),
         ];
     }
 }

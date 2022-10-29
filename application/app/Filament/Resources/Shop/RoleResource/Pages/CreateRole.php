@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Shop\RoleResource\Pages;
 
 use App\Filament\Resources\Shop\RoleResource;
+use App\Services\CacheService;
 use App\Services\Roles\RoleManager;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Arr;
@@ -17,30 +18,24 @@ class CreateRole extends CreateRecord
 
     public Collection $permissions;
 
-    protected function mutateFormDataBeforeCreate(array $data): array
-    {
-        return '';
-        //TODO shop + guard
-    }
-
-    protected function afterCreate(): void
-    {
-//        $this->record->detach();
-
-        foreach ($this->data as $key => $datum) {
-
-            if ($datum === true) {
-
-                $this
-                    ->record
-                    ->permissions()
-                    ->attach(
-                        Permission::query()
-                            ->where('slug', $key)
-                            ->first()
-                            ->id
-                    );
-            }
-        }
-    }
+//    protected function afterCreate(): void
+//    {
+////        $this->record->detach();
+//
+//        foreach ($this->data as $key => $datum) {
+//
+//            if ($datum === true) {
+//
+//                $this
+//                    ->record
+//                    ->permissions()
+//                    ->attach(
+//                        Permission::query()
+//                            ->where('slug', $key)
+//                            ->first()
+//                            ->id
+//                    );
+//            }
+//        }
+//    }
 }

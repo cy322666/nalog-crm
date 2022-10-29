@@ -13,7 +13,10 @@ use App\Filament\Resources\Shop\StockResource;
 use App\Filament\Resources\Shop\TaskResource;
 use App\Models\Shop\Customer;
 use App\Models\Shop\Order;
+use App\Models\Shop\Shop;
 use App\Models\Shop\Task;
+use App\Services\CacheService;
+use Illuminate\Support\Facades\Auth;
 
 class RoleManager
 {
@@ -122,4 +125,19 @@ class RoleManager
     public static array $pages = [];
 
     private static array $actions = [];
+
+    public static function map(Shop $shop): string
+    {
+        $roleName = Auth::user()
+            ->roles()
+            ->where('shop_id', $shop->id)
+            ->first()
+            ->name ?? null;
+
+        return match ($roleName) {
+            'root' => 'root',
+            'Администратор', 'Админ' => 'admin',
+            default => 'manager',
+        };
+    }
 }

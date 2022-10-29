@@ -3,11 +3,13 @@
 namespace App\Filament\Widgets;
 
 use App\Filament\Resources\Shop\ProductResource;
+use App\Models\Shop\Product;
 use App\Models\Shop\Stock;
 use App\Services\CacheService;
 use Filament\Tables;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 
 class StockListProducts extends BaseWidget
@@ -28,35 +30,36 @@ class StockListProducts extends BaseWidget
 
     protected function getTableQuery(): Builder
     {
-        $query = CacheService::getAccount();
+        $defaultStock = CacheService::getAccount()->stocks->first();
 
-        $stockQuery = Request::query('stock');
+        $stockIdQuery = Request::query('stock') ?? $defaultStock->id;
 
-        if ($stockQuery) {
+        $stock = Stock::query()
+            ->where('stock_id', $stockIdQuery)
+            ->where('stock_id', CacheService::getAccountId())
+            ->first();
 
-            $query->where('stock_id',  $stockQuery);
+        if ($stock) {
+
+            return $stock->products()->getQuery();
         }
 
-        return $query->first()->products()->getQuery();
+        return $defaultStock->products()->getQuery();
     }
 
     protected function getTableActions(): array
     {
-        return [
-            Tables\Actions\Action::make('add')
-                ->label('')
-                ->icon('heroicon-o-plus')
-                ->modalContent(view('history.customer')), //TODO пополнение
-        ];
+        return [];
     }
 
     protected function getTableRecordsPerPageSelectOptions(): array
     {
-        return [15, 30, 50, 100];
+        return [15, 30, 50];
     }
 
     protected function getTableColumns(): array
     {
+        //TODO защищенный остаток
         return [
             Tables\Columns\SpatieMediaLibraryImageColumn::make('product-image')
                 ->label('Картинка')
@@ -78,10 +81,5 @@ class StockListProducts extends BaseWidget
                 ->label('Остаток')
                 ->sortable(),
         ];
-    }
-
-    public function add_products()
-    {
-        echo 'puk';
     }
 }

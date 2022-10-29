@@ -16,6 +16,7 @@
         "flowframe/laravel-trend": "^0.1.1",
         "fruitcake/laravel-cors": "^2.0.5",
         "guzzlehttp/guzzle": "^7.2",
+        "icetalker/filament-stepper": "^1.0",
         "invaders-xx/filament-kanban-board": "0.2.6",
         "jeffgreco13/filament-breezy": "v1.3.12",
         "jonquihote/filament-static-chart-widgets": "^1.0",
@@ -25,7 +26,8 @@
         "laravel/tinker": "^2.7",
         "maatwebsite/excel": "^3.1",
         "predis/predis": "^2.0",
-        "psr/simple-cache": "^2.0"
+        "psr/simple-cache": "^2.0",
+        "ysfkaya/filament-phone-input": "^1.1"
     },
     "require-dev": {
         "laravel/telescope": "^4.9",

@@ -17,7 +17,7 @@ class StockPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->isAdmin() || $user->hasPermission('view_clients');
+        return $user->isAdmin() || $user->hasPermission('view_stocks');
     }
 
     /**
@@ -28,7 +28,7 @@ class StockPolicy
      */
     public function view(User $user)
     {
-        return $user->isAdmin() || $user->hasPermission('view_clients');
+        return $user->isAdmin() || $user->hasPermission('view_stocks');
     }
 
     /**

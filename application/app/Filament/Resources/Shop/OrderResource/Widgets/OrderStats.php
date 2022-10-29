@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Shop\OrderResource\Widgets;
 
 use App\Models\Shop\Order;
 use App\Services\CacheService;
+use Carbon\Carbon;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Card;
 use Flowframe\Trend\Trend;
@@ -19,12 +20,8 @@ class OrderStats extends BaseWidget
         $shop = CacheService::getAccount();
 
         return [
-            //TODO оплаченно на сумму
-            Card::make('without_tasks', Order::query()//TODO
-                ->where('shop_id', CacheService::getAccountId())
-                ->count())
-                ->color('warning')
-                ->label('Заказов без задачи'),
+            Card::make('without_tasks', $shop->orders()->whereDate('created_at', date('Y-m-d'))->count())
+                ->label('Заказов сегодня'),
 
             Card::make('in_work_count', $shop->orders()->where('closed', false)->count())
                 ->label('В работе'),
