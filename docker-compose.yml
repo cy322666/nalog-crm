@@ -6,7 +6,7 @@ services:
         volumes:
             - ./application:/var/www/html
         ports:
-            - "80:8000"
+            - "2121:8000"
         links:
             - postgresql
             - redis
@@ -16,7 +16,7 @@ services:
     postgresql:
         image: postgres:14.1-alpine
         ports:
-            - "5431:5432"
+            - "5425:5432"
         networks:
             - cluster
         environment:
@@ -30,7 +30,7 @@ services:
     redis:
         image: bitnami/redis:latest
         ports:
-            - "6379:6379"
+            - "6369:6379"
         environment:
             - ALLOW_EMPTY_PASSWORD=yes
         networks:
@@ -44,7 +44,7 @@ services:
             - ./application:/var/www/html
             - ./docker/images/supervisor/files:/etc/supervisor/conf.d/
         ports:
-            - "8008:8008"
+            - "8007:8008"
         networks:
             - cluster
 networks:
