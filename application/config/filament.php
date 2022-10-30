@@ -111,8 +111,8 @@ return [
         'path' => app_path('Filament/Widgets'),
         'register' => [
             PageViewsWidget::class,
-            ActiveUsersOneDayWidget::class,
-            SessionsByDeviceWidget::class,
+//            ActiveUsersOneDayWidget::class,
+//            SessionsByDeviceWidget::class,
         ],
     ],
 
@@ -141,10 +141,10 @@ return [
     */
 
     'layout' => [
-        'max_content_width' => null,
+        'max_content_width' => 'full',
         'sidebar' => [
-            'is_collapsible_on_desktop' => true,
-//            'width' => '13px',
+            'is_collapsible_on_desktop' => false,
+            'width' => '180px',
         ],
         'notifications' => [
             'vertical_alignment' => 'top',
@@ -209,5 +209,4 @@ return [
             MirrorConfigToSubpackages::class,
         ],
     ],
-
 ];

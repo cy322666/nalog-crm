@@ -68,7 +68,8 @@ class TaskResource extends Resource
 
     public static function getGloballySearchableAttributes(): array
     {
-        return ['title', 'text', 'task_id'];
+        return [];
+//        return ['title', 'text', 'task_id'];
     }
 
     public static function form(Form $form): Form

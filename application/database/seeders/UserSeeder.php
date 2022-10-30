@@ -6,6 +6,7 @@ use App\Models\Role;
 use App\Models\Shop\Shop;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Throwable;
 
 class UserSeeder extends Seeder
 {
@@ -42,11 +43,25 @@ class UserSeeder extends Seeder
 
                     $role = $shop->roles->random();
 
-                    $user->roles()->attach($role->id);
+                    try {
+
+                        $user->roles()->attach($role->id);
+
+                    } catch (Throwable $exception) {
+
+                        print_r($exception->getMessage());
+                    }
 
                     foreach ($role->permissions as $permission) {
 
-                        $user->permissions()->attach($permission->id, ['shop_id' => $shop->id]);
+                        try {
+
+                            $user->permissions()->attach($permission->id, ['shop_id' => $shop->id]);
+
+                        } catch (Throwable $exception) {
+
+                            print_r($exception->getMessage());
+                        }
                     }
                 }
             }
