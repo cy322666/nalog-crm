@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Shop\Notification;
 use App\Models\Shop\Shop;
 use App\Models\Shop\Task;
 use App\Policies\Traits\HasRolesAndPermissions;
@@ -12,10 +11,9 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\HasDatabaseNotifications;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasPermissions;
-use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
@@ -23,6 +21,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     use HasFactory;
     use Notifiable;
     use HasRolesAndPermissions;
+    use HasDatabaseNotifications;
 //    use HasRoles;
 //    use HasPermissions;
 
@@ -70,21 +69,6 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     public function tasks()
     {
         return $this->hasMany(Task::class, 'responsible_id', 'id');
-    }
-
-    public function notifications(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this
-            ->hasMany(Notification::class, 'notifiable_id', 'id')
-            ->where('notifiable_type', __CLASS__);
-    }
-
-    public function unreadNotifications(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this
-            ->hasMany(Notification::class, 'notifiable_id', 'id')
-            ->where('notifiable_type', __CLASS__)
-            ->where('is_read', false);
     }
 
     public function roles() : belongsToMany

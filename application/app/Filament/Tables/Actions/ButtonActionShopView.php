@@ -2,6 +2,7 @@
 
 namespace App\Filament\Tables\Actions;
 
+use App\Filament\Resources\Shop\OrderResource;
 use App\Filament\Resources\Shop\TaskResource;
 use App\Services\CacheService;
 use Filament\Forms\ComponentContainer;
@@ -37,7 +38,7 @@ class ButtonActionShopView extends Action
 
             CacheService::setAccountId($record->id);
 
-            $this->redirect(TaskResource::getUrl());
+            $this->redirect(OrderResource::getUrl());
         });
 
         $this->action(static function (): void {});

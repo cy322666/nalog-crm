@@ -39,7 +39,7 @@ abstract class ModelHelper
 
     public static function generateName(string $className, string $column) : string
     {
-
+        return $className;//TODO?
     }
 
     public static function clearPhone(?string $phone): array|string|null

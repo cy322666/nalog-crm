@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Shop\CustomerResource\Pages;
 
 use App\Events\Shop\EntityEvent;
-use App\Facades\EventLogger;
 use App\Filament\Resources\Shop\CustomerResource;
 use App\Models\Shop\Customer;
 use App\Services\CacheService;
@@ -52,11 +51,6 @@ class EditCustomer extends EditRecord
             DeleteAction::make()
                //TODO ->visible(fn (Customer $record): bool => auth()->user()->can('delete', $record))
         ];
-    }
-
-    public function history()
-    {
-         return true;//TODO добавление коммента
     }
 }
 

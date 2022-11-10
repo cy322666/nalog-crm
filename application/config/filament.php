@@ -1,8 +1,5 @@
 <?php
 
-use App\Modules\Analytics\Widgets\ActiveUsersOneDayWidget;
-use App\Modules\Analytics\Widgets\PageViewsWidget;
-use App\Modules\Analytics\Widgets\SessionsByDeviceWidget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Http\Middleware\MirrorConfigToSubpackages;
@@ -16,6 +13,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use JeffGreco13\FilamentBreezy\Http\Livewire\Auth\Login;
 
 return [
 
@@ -56,7 +54,7 @@ return [
     'auth' => [
         'guard' => env('FILAMENT_AUTH_GUARD', 'web'),
         'pages' => [
-            'login' => \App\Filament\Pages\Auth\Login::class,
+            'login' =>  Login::class,
         ],
     ],
 
@@ -110,7 +108,7 @@ return [
         'namespace' => 'App\\Filament\\Widgets',
         'path' => app_path('Filament/Widgets'),
         'register' => [
-            PageViewsWidget::class,
+//            PageViewsWidget::class,
 //            ActiveUsersOneDayWidget::class,
 //            SessionsByDeviceWidget::class,
         ],

@@ -94,6 +94,22 @@ class Shop extends Model
         return $this->HasMany(OrderLostReasons::class)->orWhere('shop_id', 0);
     }
 
+    public function paymentMethods(): HasMany
+    {
+        return $this->HasMany(PaymentMethod::class)->orWhere('shop_id', 0);
+    }
+
+    public function paymentProviders(): HasMany
+    {
+        return $this->HasMany(PaymentProvider::class)->orWhere('shop_id', 0);
+    }
+
+    public function paymentStatuses(): HasMany
+    {
+        return $this->HasMany(PaymentStatus::class)->orWhere('shop_id', 0);
+    }
+
+
     /**
      * Получает статусы с формы в настройках заказов,
      * переопределяет order (очередность)

@@ -3,8 +3,6 @@
 namespace App\Filament\Resources\Shop;
 
 use App\Filament\Resources\Shop\PaymentResource\Pages;
-use App\Filament\Resources\Shop\PaymentResource\RelationManagers;
-use App\Models\Shop\Customer;
 use App\Models\Shop\Order;
 use App\Models\Shop\Payment;
 use App\Models\Shop\PaymentMethod;
@@ -69,9 +67,9 @@ class PaymentResource extends Resource
     {
         $paymentId = ModelHelper::generateId(self::$model, 'payment_id');
 
-        $methods   = PaymentMethod::all()->pluck('name', 'id');
-        $providers = PaymentProvider::all()->pluck('name', 'id');
-        $statuses  = PaymentStatus::all()->pluck('name', 'id');
+        $methods = PaymentMethod::cacheAll()->pluck('name', 'id');
+        $providers = PaymentProvider::cacheAll()->pluck('name', 'id');
+        $statuses = PaymentStatus::cacheAll()->pluck('name', 'id');
 
         return $form->schema([
             Forms\Components\Card::make()

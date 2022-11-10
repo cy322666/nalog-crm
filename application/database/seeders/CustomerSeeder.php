@@ -17,11 +17,12 @@ class CustomerSeeder extends Seeder
      */
     public function run()
     {
-        $customers = Customer::factory(1000)->create();
+        $customers = Customer::factory(500)->create();
 
         foreach ($customers as $customer) {
 
             $customer->type = rand(1,2);
+            $customer->shop_id = Shop::query()->get()->random()->id;
 
             if ($customer->type == 2) {
 

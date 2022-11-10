@@ -74,8 +74,8 @@ class CustomerResource extends Resource
                             ->email()
                             ->unique(Customer::class, 'email', fn ($record) => $record),
 
-                        PhoneInput::make('phone')
-                            ->onlyCountries(['ru']),
+                        Forms\Components\TextInput::make('phone'),
+//                            ->onlyCountries(['ru']),
 
                         Forms\Components\DatePicker::make('birthday')
                             ->label('Дата рождения'),
@@ -173,11 +173,11 @@ class CustomerResource extends Resource
             ->bulkActions([
 
                 //TODO mass actions
-                Tables\Actions\BulkAction::make('actions')
-//                    ->action(fn (Collection $records) => $records->each->activate())
-//                    ->requiresConfirmation()
-                    ->color('warning')
-                    ->icon('heroicon-o-check'),
+//                Tables\Actions\BulkAction::make('actions')
+////                    ->action(fn (Collection $records) => $records->each->activate())
+////                    ->requiresConfirmation()
+//                    ->color('warning')
+//                    ->icon('heroicon-o-check'),
             ]);
     }
 
@@ -195,7 +195,6 @@ class CustomerResource extends Resource
     {
         return [
             RelationManagers\OrdersRelationManager::class,
-            RelationManagers\TasksRelationManager::class,
             RelationManagers\PaymentsRelationManager::class,
         ];
     }

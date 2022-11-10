@@ -10,7 +10,6 @@ use App\Filament\Resources\Shop\PaymentResource;
 use App\Filament\Resources\Shop\ProductResource;
 use App\Filament\Resources\Shop\RoleResource;
 use App\Filament\Resources\Shop\StockResource;
-use App\Filament\Resources\Shop\TaskResource;
 use App\Models\Shop\Customer;
 use App\Models\Shop\Order;
 use App\Models\Shop\Shop;
@@ -126,11 +125,11 @@ class RoleManager
 
     private static array $actions = [];
 
-    public static function map(Shop $shop): string
+    public static function map(?Shop $shop): string
     {
         $roleName = Auth::user()
             ->roles()
-            ->where('shop_id', $shop->id)
+            ->where('shop_id', $shop->id ?? Shop::query()->first()->id)
             ->first()
             ->name ?? null;
 

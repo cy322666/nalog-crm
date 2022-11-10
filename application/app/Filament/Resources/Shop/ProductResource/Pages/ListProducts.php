@@ -26,7 +26,8 @@ class ListProducts extends ListRecords
 
     protected function getHeaderWidgets(): array
     {
-        return ProductResource::getWidgets();
+        return [];
+//        return ProductResource::getWidgets();
     }
 
     protected function getTableRecordsPerPageSelectOptions(): array

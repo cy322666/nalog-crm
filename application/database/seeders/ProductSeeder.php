@@ -15,12 +15,12 @@ class ProductSeeder extends Seeder
      */
     public function run()
     {
-        $products = Product::factory()->count(10000)->create();
+        $products = Product::factory()->count(100)->create();
 
         $latest = Product::query()->latest()->first();
 
-        $sku     = $latest ? $latest->sku++ : 1;
-        $barcode = $latest ? $latest->barcode++ : 1;
+        $sku     = ++$latest->sku ? ++$latest->sku : 2;
+        $barcode = ++$latest->barcode ? ++$latest->barcode : 1;
 
         foreach ($products as $product) {
 
@@ -34,9 +34,9 @@ class ProductSeeder extends Seeder
 
             foreach ($product->shop->stocks as $stock) {
 
-                if (rand(0,1) == 1) {
+                if (rand(0, 1) == 1) {
 
-                    $stock->products()->attach($product->id, ['count' => rand(1,20)]);
+                    $stock->products()->attach($product->id, ['count' => rand(1, 20)]);
                 }
             }
         }

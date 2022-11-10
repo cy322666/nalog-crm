@@ -34,11 +34,11 @@ class CacheService
 
             if (!$accountId) {
 
-                //redirect(ShopResource::getUrl());//route('filament.auth.login')
+                redirect(ShopResource::getUrl());//route('filament.auth.login')
             } else
                 return $accountId;
         } else {
-//            redirect(env('APP_URL').'/login');
+            redirect(route('login'));
         }
     }
 
@@ -51,9 +51,12 @@ class CacheService
             redirect(ShopResource::getUrl());
         } else {
 
-            return Shop::query()
-                ->find($accountId)
-                ->first();//TODO debug
+            $shop = Shop::query()->find($accountId);
+
+            if ($shop === null)
+                redirect(ShopResource::getUrl());
+
+            return $shop;
         }
     }
 

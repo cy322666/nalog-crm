@@ -13,6 +13,7 @@ use App\Filament\Resources\Shop\ServiceResource;
 use App\Filament\Resources\Shop\ShopResource;
 use App\Filament\Resources\Shop\StockResource;
 use App\Filament\Resources\Shop\TaskResource;
+use App\Models\Shop\Shop;
 use App\Services\CacheService;
 use Filament\Navigation\NavigationItem;
 
@@ -36,7 +37,7 @@ abstract class NavigationMap
             ],
             'Настройки' => [
                 NavigationItem::make('Настройки')
-                    ->url(ShopResource::getUrl('settings', ['record' => CacheService::getAccountId() ?? 1]))
+                    ->url(ShopResource::getUrl('settings', ['record' => CacheService::getAccountId() ?? Shop::query()->first()->id]))
                     ->icon('heroicon-o-cog'),
             ],
 //            'Автоматизация' => [
