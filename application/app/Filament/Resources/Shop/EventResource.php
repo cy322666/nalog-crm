@@ -27,7 +27,7 @@ class EventResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return Event::query()->where('shop_id', CacheService::getAccountId());
+        return Event::query()->where('shop_id', CacheService::getAccount()->id);
     }
 
     public static function table(Table $table): Table

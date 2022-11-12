@@ -11,6 +11,8 @@ use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
+use Filament\Tables\Actions\CreateAction;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -32,7 +34,9 @@ class StockResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccountId());
+        return parent::getEloquentQuery()
+            ->where('shop_id', CacheService::getAccount()->id)
+            ->where('parent_stock_id', null);
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
@@ -66,7 +70,7 @@ class StockResource extends Resource
                             ->label('Основной склад')
                             ->options(
                                 Stock::query()
-                                    ->where('shop_id', CacheService::getAccountId())
+                                    ->where('shop_id', CacheService::getAccount()->id)
                                     ->where('parent_stock_id', null)
                                     ->pluck('name', 'id')
                                     ->toArray()
@@ -103,11 +107,26 @@ class StockResource extends Resource
     {
         return $this->getResource()::getUrl('index');
     }
-
+//TODO релейшен к остаткам
+//TODO а потом и поставщикам
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([])
+            ->columns([
+                TextColumn::make('stock_id')
+                    ->label('ID')
+                    ->searchable(),
+                TextColumn::make('name')
+                    ->label('Название')
+                    ->url(fn ($record) => StockResource::getUrl('edit', ['record' => $record->id]))
+                    ->searchable(),
+                TextColumn::make('created_at')
+                    ->label('Дата создания')
+                    ->date()
+                    ->sortable(),
+            ])->headerActions([
+//                CreateAction::make()
+            ])
             ->filters([])
             ->actions([])
             ->bulkActions([]);
@@ -121,7 +140,7 @@ class StockResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\StockProduct::route('/'),
+            'index'  => Pages\ListStock::route('/'),
             'create' => Pages\CreateStock::route('/create'),
             'edit'   => Pages\EditStock::route('/{record}/edit'),
         ];

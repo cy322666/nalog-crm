@@ -125,13 +125,13 @@ class RoleManager
 
     private static array $actions = [];
 
-    public static function map(?Shop $shop): string
+    public static function map(Shop $shop): string
     {
         $roleName = Auth::user()
             ->roles()
-            ->where('shop_id', $shop->id ?? Shop::query()->first()->id)
+            ->where('shop_id', $shop->id)
             ->first()
-            ->name ?? null;
+            ->name ?? 'root';//TODO
 
         return match ($roleName) {
             'root' => 'root',

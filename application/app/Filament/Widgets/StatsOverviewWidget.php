@@ -9,6 +9,7 @@ class StatsOverviewWidget extends BaseWidget
 {
     protected static ?int $sort = 0;
 
+    //TODO example
     protected function getCards(): array
     {
         return [

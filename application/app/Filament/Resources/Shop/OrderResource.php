@@ -49,7 +49,7 @@ class OrderResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccountId());
+        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccount()->id);
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
@@ -93,10 +93,10 @@ class OrderResource extends Resource
                                             ->searchable()
                                             ->getSearchResultsUsing(function (string $query) {
 
-                                                return OrderSource::query()
-                                                    ->where('shop_id', CacheService::getAccountId())
+                                                return CacheService::getAccount()
+                                                    ->sources()
                                                     ->orWhere('shop_id', 0)
-                                                    ->where('name', 'like', "%{$query}%")
+                                                    ->where('name', 'like', "%$query%")
                                                     ->pluck('name', 'id')
                                                     ->toArray();
                                             })
@@ -169,8 +169,8 @@ class OrderResource extends Resource
                                 ->searchable()
                                 ->getSearchResultsUsing(function (string $query) {
 
-                                    return Customer::query()
-                                        ->where('shop_id', CacheService::getAccountId())
+                                    return CacheService::getAccount()
+                                        ->customers()
                                         ->where('name', 'like', "%{$query}%")
                                         ->pluck('name', 'id')
                                         ->toArray();
@@ -203,7 +203,7 @@ class OrderResource extends Resource
                     ->label('ID')
                     ->searchable()
                     ->toggleable()
-                    ->toggledHiddenByDefault(true)
+//                    ->toggledHiddenByDefault(true)
                     ->searchable()
                     ->sortable(),
 
@@ -252,8 +252,7 @@ class OrderResource extends Resource
                     ->label('Создан')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable()
-                    ->toggledHiddenByDefault(true),
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('Обновлен')

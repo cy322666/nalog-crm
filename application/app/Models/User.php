@@ -10,9 +10,11 @@ use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\HasDatabaseNotifications;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail
@@ -22,8 +24,6 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     use Notifiable;
     use HasRolesAndPermissions;
     use HasDatabaseNotifications;
-//    use HasRoles;
-//    use HasPermissions;
 
     /**
      * @var array<int, string>
@@ -61,12 +61,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         return $this->belongsToMany(Shop::class);
     }
 
-    public function shop(): BelongsToMany
-    {
-        return $this->belongsToMany(Shop::class);
-    }
-
-    public function tasks()
+    public function tasks(): HasMany
     {
         return $this->hasMany(Task::class, 'responsible_id', 'id');
     }
@@ -80,7 +75,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     {
         return $this
             ->belongsToMany(Role::class,'users_roles')
-            ->where('shop_id', CacheService::getAccountId());
+            ->where('shop_id', CacheService::getAccount()->id);
     }
 
     /**
@@ -94,5 +89,21 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     public function isAdmin(): bool
     {
         return (bool)CacheService::getRole() == ('admin' || 'root');//TODO root?
+    }
+
+    public static function cacheAll()
+    {
+        $shop = CacheService::getAccount();
+
+        $collections = Cache::get('users_shop_'.$shop->id);
+
+        if (!$collections) {
+
+            $collections = $shop->users;
+
+            Cache::put('users_shop_'.$shop->id, $collections);
+        }
+
+        return $collections;
     }
 }

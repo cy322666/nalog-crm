@@ -12,12 +12,12 @@ class CreateService extends CreateRecord
 {
     protected static string $resource = ServiceResource::class;
 
-    protected function handleRecordCreation(array $data): Service
-    {
-        $data['shop_id'] = CacheService::getAccountId();
-
-        return static::getModel()::create($data);
-    }
+//    protected function handleRecordCreation(array $data): Service
+//    {
+//        $data['shop_id'] = CacheService::getAccountId();
+//
+//        return static::getModel()::create($data);
+//    }
 
     protected function getRedirectUrl(): string
     {

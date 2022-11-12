@@ -23,7 +23,7 @@ class ProductsRelationManager extends BelongsToManyRelationManager
 
     protected function applySearchToTableQuery(Builder $query): Builder
     {
-        return  $query->where('shop_id', CacheService::getAccountId());
+        return  $query->where('shop_id', CacheService::getAccount()->id);
     }
 
     public static function table(Table $table): Table

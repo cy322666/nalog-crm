@@ -11,16 +11,6 @@ class CreatePayment extends CreateRecord
 {
     protected static string $resource = PaymentResource::class;
 
-    /**
-     * @throws Exception
-     */
-    protected function mutateFormDataBeforeCreate(array $data): array
-    {
-        //PaymentResource::createActions($data);
-
-        return $data;
-    }
-
     protected function getRedirectUrl(): string
     {
         return PaymentResource::getUrl();

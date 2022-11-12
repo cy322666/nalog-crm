@@ -23,7 +23,7 @@ class StatusResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return OrderStatus::query()
-            ->where('shop_id', CacheService::getAccountId())
+            ->where('shop_id', CacheService::getAccount()->id)
             ->orWhere('shop_id', 0);
     }
 

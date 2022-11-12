@@ -44,7 +44,7 @@ class CreateImport extends CreateRecord
                     $this->record,
                 ), $filePath)[0]);
 
-        $this->record->shop_id = CacheService::getAccountId();
+        $this->record->shop_id = CacheService::getAccount()->id;
         $this->record->save();
     }
 }

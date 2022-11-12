@@ -30,12 +30,12 @@ class ServiceResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccountId());
+        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccount()->id);
     }
 
     protected static function getGlobalSearchEloquentQuery(): Builder
     {
-        return parent::getGlobalSearchEloquentQuery()->where('shop_id', CacheService::getAccountId());
+        return parent::getGlobalSearchEloquentQuery()->where('shop_id', CacheService::getAccount()->id);
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array

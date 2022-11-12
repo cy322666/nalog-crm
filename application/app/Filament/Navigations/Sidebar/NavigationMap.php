@@ -35,11 +35,11 @@ abstract class NavigationMap
 //                ReportResource::getNavigationItems()[0],
                 EventResource::getNavigationItems()[0],
             ],
-            'Настройки' => [
-                NavigationItem::make('Настройки')
-                    ->url(ShopResource::getUrl('settings', ['record' => CacheService::getAccountId() ?? Shop::query()->first()->id]))
-                    ->icon('heroicon-o-cog'),
-            ],
+//            'Настройки' => [
+//                NavigationItem::make('Настройки')
+//                    ->url(ShopResource::getUrl('settings', ['record' => CacheService::getAccount()->id]))
+//                    ->icon('heroicon-o-cog'),
+//            ],
 //            'Автоматизация' => [
 //                //TODO v2 автоматизация?
 //                //TODO v1 settings page

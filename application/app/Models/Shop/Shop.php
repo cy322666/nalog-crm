@@ -20,8 +20,7 @@ class Shop extends Model
 
     public function statuses(): HasMany
     {
-        return $this->hasMany(OrderStatus::class, 'shop_id', 'id')
-            ->orWhere('shop_id', 0);
+        return $this->hasMany(OrderStatus::class, 'shop_id', 'id')->orWhere('shop_id', 0);
     }
 
     public function orders()
@@ -74,7 +73,7 @@ class Shop extends Model
 //        return $this->belongsToMany(User::class);
 //    }
 
-    public function stocks()
+    public function stocks(): HasMany
     {
         return $this->hasMany(Stock::class, 'shop_id', 'id');
     }
@@ -84,7 +83,7 @@ class Shop extends Model
         return $this->belongsToMany(OrderSource::class)->orWhere('shop_id', 0);
     }
 
-    public function roles()
+    public function roles(): HasMany
     {
         return $this->hasMany(Role::class, 'shop_id', 'id');
     }

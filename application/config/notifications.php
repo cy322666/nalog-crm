@@ -27,7 +27,7 @@ return [
     */
 
     'database' => [
-        'enabled' => true,
+        'enabled' => false,
         'trigger' => 'layouts.notification',
         'polling_interval' => '120s',
     ],

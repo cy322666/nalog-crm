@@ -39,12 +39,12 @@ class PaymentResource extends Resource
 
     protected static function getGlobalSearchEloquentQuery(): Builder
     {
-        return parent::getGlobalSearchEloquentQuery()->where('shop_id', CacheService::getAccountId());
+        return parent::getGlobalSearchEloquentQuery()->where('shop_id', CacheService::getAccount()->id);
     }
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccountId());
+        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccount()->id);
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
@@ -67,9 +67,9 @@ class PaymentResource extends Resource
     {
         $paymentId = ModelHelper::generateId(self::$model, 'payment_id');
 
-        $methods = PaymentMethod::cacheAll()->pluck('name', 'id');
+        $methods   = PaymentMethod::cacheAll()->pluck('name', 'id');
         $providers = PaymentProvider::cacheAll()->pluck('name', 'id');
-        $statuses = PaymentStatus::cacheAll()->pluck('name', 'id');
+        $statuses  = PaymentStatus::cacheAll()->pluck('name', 'id');
 
         return $form->schema([
             Forms\Components\Card::make()
@@ -93,24 +93,31 @@ class PaymentResource extends Resource
                         ->options($methods),
                     Forms\Components\Select::make('provider_id')
                         ->label('Платежная система')
-                        ->required()
+//                        ->required()
                         ->options($providers),
 
                     Forms\Components\Select::make('order_id')
                         ->label('Заказ')
                         ->relationship('order', 'name')
                         ->searchable()
+                        ->getSearchResultsUsing(function (string $query) {
+
+                            return CacheService::getAccount()->orders()
+                                ->where('name', 'like', "%$query%")
+                                ->pluck('name', 'id')
+                                ->toArray();
+                        })
                         ->getOptionLabelUsing(fn ($value): ?string => Order::query()->find($value)?->name)
                         ->required(),
 
                     Forms\Components\Hidden::make('shop_id')
-                        ->default(CacheService::getAccountId()),
+                        ->default(CacheService::getAccount()->id),
 
                     Forms\Components\Hidden::make('creator_id')
                         ->default(Auth::user()->id),
             ])->columns([
                 'sm' => 2
-                ])
+            ])
             ->columnSpan([
                 'sm' => 2
             ]),
@@ -188,7 +195,31 @@ class PaymentResource extends Resource
                     ->toggleable(true)
                     ->sortable(),
             ])
-            ->filters([])
+            ->filters([
+                Tables\Filters\Filter::make('created_at')
+                    ->form([
+                        Forms\Components\DatePicker::make('created_from')
+                            ->placeholder(fn ($state): string => 'Dec 18, ' . now()->subYear()->format('Y')),//TODO check
+                        Forms\Components\DatePicker::make('created_until')
+                            ->placeholder(fn ($state): string => now()->format('M d, Y')),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    }),
+
+                Tables\Filters\Filter::make('payed')
+                    ->label('Оплачен полностью')
+                    ->query(fn (Builder $query): Builder => $query->where('payed', true))
+                    ->default(),
+            ])
             ->actions([])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
@@ -198,19 +229,24 @@ class PaymentResource extends Resource
     /**
      * @throws Exception
      */
-    public static function createActions(array &$data)
-    {
-        $data['payment_id'] = ModelHelper::generateId(Payment::class, 'payment_id');
-
-        if (empty($data['name'])) {
-
-            $data['name'] = 'Платеж #'.$data['payment_id'];
-        }
-    }
+//    public static function createActions(array &$data)
+//    {
+//        $data['payment_id'] = ModelHelper::generateId(Payment::class, 'payment_id');
+//
+//        if (empty($data['name'])) {
+//
+//            $data['name'] = 'Платеж #'.$data['payment_id'];
+//        }
+//    }
 
     public static function getRelations(): array
     {
         return [];
+    }
+
+    public function hasCombinedRelationManagerTabsWithForm(): bool
+    {
+        return true;
     }
 
     public static function getPages(): array

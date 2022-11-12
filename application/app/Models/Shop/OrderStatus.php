@@ -2,8 +2,10 @@
 
 namespace App\Models\Shop;
 
+use App\Services\CacheService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class OrderStatus extends Model
 {
@@ -26,4 +28,20 @@ class OrderStatus extends Model
         'type',
         'order',
     ];
+
+    public static function cacheAll()
+    {
+        $shop = CacheService::getAccount();
+
+        $collections = Cache::get('order_statuses_shop_'.$shop->id);
+
+        if (!$collections) {
+
+            $collections = $shop->sources;
+
+            Cache::put('order_statuses_shop_'.$shop->id, $collections);
+        }
+
+        return $collections;
+    }
 }

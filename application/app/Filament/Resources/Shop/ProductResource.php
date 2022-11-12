@@ -99,12 +99,12 @@ class ProductResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccountId());
+        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccount()->id);
     }
 
     protected static function getGlobalSearchEloquentQuery(): Builder
     {
-        return self::getEloquentQuery()->where('shop_id', CacheService::getAccountId());
+        return self::getEloquentQuery()->where('shop_id', CacheService::getAccount()->id);
     }
 
     /**
@@ -129,7 +129,7 @@ class ProductResource extends Resource
                                 ->getSearchResultsUsing(function (string $query) {
 
                                     return Category::query()
-                                        ->where('shop_id', CacheService::getAccountId())
+                                        ->where('shop_id', CacheService::getAccount()->id)//TODO
                                         ->where('name', 'like', "%{$query}%")
                                         ->pluck('name', 'id')
                                         ->toArray();
@@ -200,7 +200,7 @@ class ProductResource extends Resource
                                         ->required(),
 
                                     Forms\Components\Hidden::make('shop_id')
-                                        ->default(CacheService::getAccountId())
+                                        ->default(CacheService::getAccount()->id)
                                 ]),
                         ]),
 
@@ -240,10 +240,10 @@ class ProductResource extends Resource
                 ->toggledHiddenByDefault()
                 ->searchable()
                 ->sortable(),
-            Tables\Columns\SpatieMediaLibraryImageColumn::make('product-image')
-                ->label('Картинка')
-                ->toggleable()
-                ->collection('product-images'),
+//            Tables\Columns\SpatieMediaLibraryImageColumn::make('product-image')
+//                ->label('Картинка')
+//                ->toggleable()
+//                ->collection('product-images'),
             Tables\Columns\TextColumn::make('name')
                 ->label('Название')
                 ->searchable(),
