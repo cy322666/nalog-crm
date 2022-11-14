@@ -13,13 +13,13 @@ class OrderStatus extends Model
 
     protected $table = 'shop_order_statuses';
 
-    public const NEW_STATUS_ID = 101;
-    public const WIN_STATUS_ID = 102;
+    public const NEW_STATUS_ID  = 101;
+    public const WIN_STATUS_ID  = 102;
     public const LOST_STATUS_ID = 103;
 
-    public const WIN_STATUS_NAME = 'Выиграно';
+    public const WIN_STATUS_NAME  = 'Выиграно';
     public const LOST_STATUS_NAME = 'Потеряно';
-    public const NEW_STATUS_NAME = 'Новый заказ';
+    public const NEW_STATUS_NAME  = 'Новый заказ';
 
     protected $fillable = [
         'status_id',
@@ -33,13 +33,13 @@ class OrderStatus extends Model
     {
         $shop = CacheService::getAccount();
 
-        $collections = Cache::get('order_statuses_shop_'.$shop->id);
+        $collections = Cache::get('order_statuses_'.$shop->id);
 
         if (!$collections) {
 
             $collections = $shop->sources;
 
-            Cache::put('order_statuses_shop_'.$shop->id, $collections);
+            Cache::put('order_statuses_'.$shop->id, $collections);
         }
 
         return $collections;

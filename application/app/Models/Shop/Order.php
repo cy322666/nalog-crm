@@ -84,11 +84,11 @@ class Order extends Model
         return $this->hasMany(Payment::class);
     }
 
-    public function tasks(): HasMany
-    {
-        return $this->hasMany(Task::class, 'model_id', 'id')
-            ->where('model_type', $this::class);
-    }
+//    public function tasks(): HasMany
+//    {
+//        return $this->hasMany(Task::class, 'model_id', 'id')
+//            ->where('model_type', $this::class);
+//    }
 
     public function comments()
     {

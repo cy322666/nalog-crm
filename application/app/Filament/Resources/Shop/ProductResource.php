@@ -18,6 +18,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class ProductResource extends Resource
 {
@@ -56,7 +57,29 @@ class ProductResource extends Resource
             ->columns(static::getTableColumns())
             ->actions([])
             ->filters([
-                //TODO
+                Tables\Filters\Filter::make('created_at')
+                    ->form([
+                        Forms\Components\DatePicker::make('created_from')
+                            ->placeholder(fn ($state): string => 'Dec 18, ' . now()->subYear()->format('Y')),//TODO check
+                        Forms\Components\DatePicker::make('created_until')
+                            ->placeholder(fn ($state): string => now()->format('M d, Y')),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    }),
+
+//                Tables\Filters\Filter::make('')
+//                    ->label('Оплачен полностью')
+//                    ->query(fn (Builder $query): Builder => $query->where('payed', true))
+//                    ->default(),
             ]);
     }
 
@@ -126,15 +149,8 @@ class ProductResource extends Resource
                                 ->label('Категория')
                                 ->relationship('categories', 'name')
                                 ->searchable()
-                                ->getSearchResultsUsing(function (string $query) {
-
-                                    return Category::query()
-                                        ->where('shop_id', CacheService::getAccount()->id)//TODO
-                                        ->where('name', 'like', "%{$query}%")
-                                        ->pluck('name', 'id')
-                                        ->toArray();
-                                })
-                                ->getOptionLabelUsing(fn ($value): ?string => Category::query()->find($value)?->name),
+                                ->options(CacheService::getAccount()->categories()->pluck('name', 'id')),
+//                                ->getOptionLabelUsing(fn ($value): ?string => Category::query()->find($value)?->name),
 
                             Forms\Components\MarkdownEditor::make('description')
                                 ->label('Описание')
@@ -200,7 +216,9 @@ class ProductResource extends Resource
                                         ->required(),
 
                                     Forms\Components\Hidden::make('shop_id')
-                                        ->default(CacheService::getAccount()->id)
+                                        ->default(CacheService::getAccount()->id),
+                                    Forms\Components\Hidden::make('creator_id')
+                                        ->default(Auth::user()->id)
                                 ]),
                         ]),
 
@@ -255,7 +273,7 @@ class ProductResource extends Resource
                 ->sortable()
                 ->toggleable(),
             Tables\Columns\TextColumn::make('qty')
-                ->label('Остаток')
+                ->label('Общий остаток')
                 ->sortable()
                 ->toggleable(),
             Tables\Columns\TextColumn::make('description')
@@ -283,7 +301,7 @@ class ProductResource extends Resource
     }
 
 
-    //TODO sho
+    //TODO это выводит количество в панели меню (колво например)
 //    protected static function getNavigationBadge(): ?string
 //    {
 //        return self::$model::whereColumn('qty', '<', 'security_stock')->count();

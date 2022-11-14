@@ -21,4 +21,9 @@ class ListStock extends ListRecords
             CreateAction::make(),
         ];
     }
+
+    protected function getTableRecordsPerPageSelectOptions(): array
+    {
+        return [15, 30, 50];
+    }
 }

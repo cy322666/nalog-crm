@@ -17,6 +17,7 @@ return new class extends Migration
 
             $table->dateTime('lost_at')->nullable();
             $table->dateTime('payed_at')->nullable();
+            $table->dropColumn('method');
         });
     }
 
@@ -31,6 +32,7 @@ return new class extends Migration
 
             $table->dropColumn('lost_at');
             $table->dropColumn('payed_at');
+            $table->string('method');
         });
     }
 };

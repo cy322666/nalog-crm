@@ -7,6 +7,7 @@ use App\Models\Role;
 use App\Models\Timezone;
 use App\Models\User;
 use App\Services\Helpers\ModelHelper;
+use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -23,24 +24,19 @@ class Shop extends Model
         return $this->hasMany(OrderStatus::class, 'shop_id', 'id')->orWhere('shop_id', 0);
     }
 
-    public function orders()
+    public function orders(): HasMany
     {
         return $this->hasMany(Order::class, 'shop_id', 'id');
     }
 
-    public function products()
+    public function products(): HasMany
     {
         return $this->hasMany(Product::class, 'shop_id', 'id');
     }
 
-    public function customers()
+    public function customers(): HasMany
     {
         return $this->hasMany(Customer::class, 'shop_id', 'id');
-    }
-
-    public function status()
-    {
-        return $this->hasOne(OrderStatus::class, 'shop_id', 'id');
     }
 
     public function tariff(): HasOne
@@ -53,11 +49,6 @@ class Shop extends Model
         return $this->belongsToMany(User::class, 'shop_user', 'shop_id', 'user_id')->withPivot(['expired_at', 'active']);
     }
 
-    public function getUsersQuery()
-    {
-
-    }
-
     public function timezone(): BelongsTo
     {
         return $this->belongsTo(Timezone::class, 'timezone_id', 'id');
@@ -68,19 +59,14 @@ class Shop extends Model
         return $this->belongsTo(Currency::class, 'currency_id', 'id');
     }
 
-//    public function users(): BelongsToMany
-//    {
-//        return $this->belongsToMany(User::class);
-//    }
-
     public function stocks(): HasMany
     {
         return $this->hasMany(Stock::class, 'shop_id', 'id');
     }
 
-    public function sources(): BelongsToMany
+    public function sources(): HasMany
     {
-        return $this->belongsToMany(OrderSource::class)->orWhere('shop_id', 0);
+        return $this->hasMany(OrderSource::class)->orWhere('shop_id', 0);
     }
 
     public function roles(): HasMany
@@ -91,6 +77,11 @@ class Shop extends Model
     public function reasons(): HasMany
     {
         return $this->HasMany(OrderLostReasons::class)->orWhere('shop_id', 0);
+    }
+
+    public function categories(): HasMany
+    {
+        return $this->HasMany(Category::class);
     }
 
     public function paymentMethods(): HasMany
@@ -117,6 +108,7 @@ class Shop extends Model
      * @param array $statuses
      * @param int $order очередность первого статуса (100 =+ 10)
      * @return void
+     * @throws Exception
      */
     public function setStatuses(array $statuses, int $order = 100)
     {

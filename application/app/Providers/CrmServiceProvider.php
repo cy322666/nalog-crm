@@ -44,6 +44,14 @@ class CrmServiceProvider extends ServiceProvider
 
             URL::forceScheme('http');//s
 
+            Filament::registerTheme(
+                asset('css/app.css')
+            );
+
+//            Filament::registerStyles([
+//                asset('css/crm.css')
+//            ]);
+
             //notification component
             Filament::registerRenderHook(
                 'global-search.end',
@@ -52,8 +60,6 @@ class CrmServiceProvider extends ServiceProvider
 
             //user menu
             Filament::registerUserMenuItems([
-
-                UserMenuItem::make()->url(MyProfile::getUrl()),
 
                 UserMenuItem::make()
                     ->label('Аккаунты')
@@ -74,10 +80,6 @@ class CrmServiceProvider extends ServiceProvider
             //TODO add in <head>
 //            Filament::pushMeta([
 //                new HtmlString('<link rel="manifest" href="/site.webmanifest" />'),
-//            ]);
-
-//            Filament::registerStyles([
-//                asset('css/crm.css'),
 //            ]);
         });
     }

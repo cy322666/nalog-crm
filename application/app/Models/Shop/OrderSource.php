@@ -24,13 +24,13 @@ class OrderSource extends Model
     {
         $shop = CacheService::getAccount();
 
-        $collections = Cache::get('order_sources_shop_'.$shop->id);
+        $collections = Cache::get('order_sources_'.$shop->id);
 
         if (!$collections) {
 
             $collections = $shop->sources;
 
-            Cache::put('order_sources_shop_'.$shop->id, $collections);
+            Cache::put('order_sources_'.$shop->id, $collections);
         }
 
         return $collections;

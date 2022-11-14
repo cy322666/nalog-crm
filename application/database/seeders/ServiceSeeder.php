@@ -28,7 +28,7 @@ class ServiceSeeder extends Seeder
             $service->service_id = $serviceId;
             $service->save();
 
-            $serviceId++;
+            ++$serviceId;
 
             $service->orders()->attach($shop->orders->random()->id);
         }

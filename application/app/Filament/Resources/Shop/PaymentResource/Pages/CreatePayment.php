@@ -15,4 +15,24 @@ class CreatePayment extends CreateRecord
     {
         return PaymentResource::getUrl();
     }
+
+    protected function beforeCreate(): void
+    {
+        Log::info(__METHOD__, [$this->data]);
+    }
+
+    protected function beforeValidate(): void
+    {
+        Log::info(__METHOD__, [$this->data]);
+    }
+
+    protected function afterValidate(): void
+    {
+        Log::info(__METHOD__, [$this->data]);
+    }
+
+    protected function afterCreate(): void
+    {
+        Log::info(__METHOD__, [$this->data]);
+    }
 }

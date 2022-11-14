@@ -21,13 +21,13 @@ class OrderLostReasons extends Model
     {
         $shop = CacheService::getAccount();
 
-        $collections = Cache::get('order_reasons_shop_'.$shop->id);
+        $collections = Cache::get('order_reasons_'.$shop->id);
 
         if (!$collections) {
 
             $collections = $shop->reasons;
 
-            Cache::put('order_reasons_shop_'.$shop->id, $collections);
+            Cache::put('order_reasons_'.$shop->id, $collections);
         }
 
         return $collections;

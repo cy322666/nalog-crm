@@ -41,6 +41,7 @@ class OrderRelationManager extends MorphManyRelationManager
     {
         return $table
             ->columns(OrderResource::table(new Table())->getColumns())
+            ->headerActions([])
             ->filters([])
             ->actions([]);
     }

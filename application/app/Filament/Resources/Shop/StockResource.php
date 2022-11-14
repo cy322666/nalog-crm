@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Shop;
 
 use App\Filament\Resources\Shop\StockResource\Pages;
+use App\Filament\Resources\Shop\StockResource\RelationManagers\ProductsRelationManager;
 use App\Models\Shop\Stock;
 use App\Services\CacheService;
 use App\Services\Helpers\ModelHelper;
@@ -34,9 +35,7 @@ class StockResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
-            ->where('shop_id', CacheService::getAccount()->id)
-            ->where('parent_stock_id', null);
+        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccount()->id);
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
@@ -114,27 +113,36 @@ class StockResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('stock_id')
-                    ->label('ID')
-                    ->searchable(),
+                    ->label('ID'),
                 TextColumn::make('name')
-                    ->label('Название')
-                    ->url(fn ($record) => StockResource::getUrl('edit', ['record' => $record->id]))
-                    ->searchable(),
+                    ->label('Название'),
                 TextColumn::make('created_at')
                     ->label('Дата создания')
                     ->date()
                     ->sortable(),
+                TextColumn::make('parent_stock_id')
+                    ->label('Тип')
+                    ->getStateUsing(fn(Stock $stock): string => $stock->parent_stock_id == null ? 'Основной' : 'Подсклад'),
+                TextColumn::make('products_count')
+                    ->counts('products')
+                    ->label('Остаток товаров')
+                    ->sortable(),
+                //TODO не показывает подсклад
             ])->headerActions([
 //                CreateAction::make()
             ])
             ->filters([])
-            ->actions([])
+            ->actions([
+                //TODO пополнение
+            ])
             ->bulkActions([]);
     }
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            ProductsRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

@@ -20,6 +20,7 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class PaymentResource extends Resource
 {
@@ -67,9 +68,9 @@ class PaymentResource extends Resource
     {
         $paymentId = ModelHelper::generateId(self::$model, 'payment_id');
 
-        $methods   = PaymentMethod::cacheAll()->pluck('name', 'id');
-        $providers = PaymentProvider::cacheAll()->pluck('name', 'id');
-        $statuses  = PaymentStatus::cacheAll()->pluck('name', 'id');
+//        $methods   = PaymentMethod::cacheAll()->pluck('name', 'id')->toArray();
+//        $providers = PaymentProvider::cacheAll()->pluck('name', 'id')->toArray();
+//        $statuses  = PaymentStatus::cacheAll()->pluck('name', 'id')->toArray();
 
         return $form->schema([
             Forms\Components\Card::make()
@@ -79,35 +80,36 @@ class PaymentResource extends Resource
                         ->default(
                             'Платеж #'.$paymentId
                         ),
-                    Forms\Components\Select::make('status_id')
-                        ->label('Статус')
-                        ->options($statuses),
+//                    Forms\Components\Select::make('status_id')
+//                        ->label('Статус')
+//                        ->options($statuses),
                     Forms\Components\TextInput::make('amount')
                         ->hint('Pубли')
                         ->label('Сумма')
                         ->required()
                         ->columnSpan(1),
-                    Forms\Components\Select::make('method_id')
-                        ->label('Способ оплаты')
-                        ->required()
-                        ->options($methods),
-                    Forms\Components\Select::make('provider_id')
-                        ->label('Платежная система')
+//                    Forms\Components\Select::make('method_id')
+//                        ->label('Способ оплаты')
 //                        ->required()
-                        ->options($providers),
+//                        ->options($methods),
+//                    Forms\Components\Select::make('provider_id')
+//                        ->label('Платежная система')
+////                        ->required()
+//                        ->options($providers),
 
                     Forms\Components\Select::make('order_id')
                         ->label('Заказ')
                         ->relationship('order', 'name')
                         ->searchable()
-                        ->getSearchResultsUsing(function (string $query) {
-
-                            return CacheService::getAccount()->orders()
-                                ->where('name', 'like', "%$query%")
-                                ->pluck('name', 'id')
-                                ->toArray();
-                        })
-                        ->getOptionLabelUsing(fn ($value): ?string => Order::query()->find($value)?->name)
+//                        ->getSearchResultsUsing(function (string $query) {
+//
+//                            return CacheService::getAccount()
+//                                ->orders()
+//                                ->where('name', 'like', "%$query%")
+//                                ->pluck('name', 'id')
+//                                ->toArray();
+//                        })
+//                        ->getOptionLabelUsing(fn ($value): ?string => Order::query()->find($value)?->name)
                         ->required(),
 
                     Forms\Components\Hidden::make('shop_id')
@@ -179,9 +181,9 @@ class PaymentResource extends Resource
                     ->url(fn ($record) => OrderResource::getUrl('edit', [$record->order]))//TODO view?
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('provider.name')
-                    ->label('Платежная система')
-                    ->sortable(),
+//                Tables\Columns\TextColumn::make('provider.name')
+//                    ->label('Платежная система')
+//                    ->sortable(),
 
                 //TODO хули не воркает
                 Tables\Columns\TextColumn::make('method.name')
@@ -217,8 +219,7 @@ class PaymentResource extends Resource
 
                 Tables\Filters\Filter::make('payed')
                     ->label('Оплачен полностью')
-                    ->query(fn (Builder $query): Builder => $query->where('payed', true))
-                    ->default(),
+                    ->query(fn (Builder $query): Builder => $query->where('payed', true)),
             ])
             ->actions([])
             ->bulkActions([
@@ -226,27 +227,9 @@ class PaymentResource extends Resource
             ]);
     }
 
-    /**
-     * @throws Exception
-     */
-//    public static function createActions(array &$data)
-//    {
-//        $data['payment_id'] = ModelHelper::generateId(Payment::class, 'payment_id');
-//
-//        if (empty($data['name'])) {
-//
-//            $data['name'] = 'Платеж #'.$data['payment_id'];
-//        }
-//    }
-
     public static function getRelations(): array
     {
         return [];
-    }
-
-    public function hasCombinedRelationManagerTabsWithForm(): bool
-    {
-        return true;
     }
 
     public static function getPages(): array

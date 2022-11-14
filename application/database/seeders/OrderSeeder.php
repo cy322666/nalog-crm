@@ -15,7 +15,7 @@ class OrderSeeder extends Seeder
      */
     public function run()
     {
-        $orders = Order::factory()->count(1000)->create();
+        $orders = Order::factory()->count(500)->create();
 
         $latest = Order::query()->latest()->first();
 

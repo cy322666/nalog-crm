@@ -31,10 +31,10 @@ abstract class NavigationMap
                 CategoryResource::getNavigationItems()[0],
                 ServiceResource::getNavigationItems()[0],
             ],
-            'Аналитика' => [
+//            'Аналитика' => [
 //                ReportResource::getNavigationItems()[0],
-                EventResource::getNavigationItems()[0],
-            ],
+//                EventResource::getNavigationItems()[0],
+//            ],
 //            'Настройки' => [
 //                NavigationItem::make('Настройки')
 //                    ->url(ShopResource::getUrl('settings', ['record' => CacheService::getAccount()->id]))

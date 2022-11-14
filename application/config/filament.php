@@ -139,7 +139,7 @@ return [
     */
 
     'layout' => [
-        'max_content_width' => 'full',
+        'max_content_width' => '9xl',
         'sidebar' => [
             'is_collapsible_on_desktop' => false,
             'width' => '180px',
@@ -147,6 +147,9 @@ return [
         'notifications' => [
             'vertical_alignment' => 'top',
             'alignment' => 'right',
+        ],
+        'footer' => [
+            'should_show_logo' => false,
         ],
         'forms' => [
             'actions' => [

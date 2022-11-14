@@ -63,9 +63,9 @@ class PaymentsRelationManager extends HasManyThroughRelationManager
                     ->label('Заказ')
                     ->url(fn ($record) => OrderResource::getUrl('edit', [$record->order])),//TODO view,
 
-                Tables\Columns\TextColumn::make('provider.name')
-                    ->label('Платежная система')
-                    ->sortable(),
+//                Tables\Columns\TextColumn::make('provider.name')
+//                    ->label('Платежная система')
+//                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('method.name')
                     ->label('Способ оплаты')

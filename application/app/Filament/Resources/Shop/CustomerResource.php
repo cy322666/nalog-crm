@@ -66,21 +66,54 @@ class CustomerResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Card::make()
-                    ->schema([
-                        Forms\Components\TextInput::make('name')
-                            ->label('Имя')
-                            ->required(),
-                        Forms\Components\TextInput::make('email')
-                            ->label('Почта')
-                            ->email()
-                            ->unique(Customer::class, 'email', fn ($record) => $record),
+                Forms\Components\Tabs::make('Heading')
+                    ->tabs([
+                        Forms\Components\Tabs\Tab::make('Основное')
+                            ->schema([
+                                Forms\Components\Card::make()
+                                    ->schema([
+                                        Forms\Components\TextInput::make('name')
+                                            ->label('Имя')
+                                            ->required(),
+                                        Forms\Components\TextInput::make('email')
+                                            ->label('Почта')
+                                            ->email()
+                                            ->unique(Customer::class, 'email', fn ($record) => $record),
 
-                        Forms\Components\TextInput::make('phone'),
-//                            ->onlyCountries(['ru']),
+                                        Forms\Components\TextInput::make('phone')
+                                            ->label('Телефон'),
+                                        Forms\Components\DatePicker::make('birthday')
+                                            ->label('Дата рождения'),
 
-                        Forms\Components\DatePicker::make('birthday')
-                            ->label('Дата рождения'),
+                                        Forms\Components\Select::make('type')
+                                            ->label('Тип')
+                                            ->required()
+                                            ->options([
+                                                1 => 'Контакт',
+                                                2 => 'Компания',
+                                            ])
+                                    ])
+                                    ->columns(['sm' => 2,])
+                                    ->columnSpan(['sm' => 2,]),
+                            ]),
+                        Forms\Components\Tabs\Tab::make('Реквизиты')
+                            ->schema([
+                                Forms\Components\Card::make()
+                                    ->schema([
+                                        Forms\Components\TextInput::make('inn')
+                                            ->label('ИНН'),
+                                        Forms\Components\TextInput::make('kpp')
+                                            ->label('КПП'),
+                                        Forms\Components\TextInput::make('rs')
+                                            ->label('Р/с'),
+                                    ])
+                                    ->columns(['sm' => 2,])
+                                    ->columnSpan(['sm' => 2,]),
+                            ]),
+                        Forms\Components\Tabs\Tab::make('Маркетинг')
+                            ->schema([
+                                //utms..
+                            ]),
                     ])
                     ->columns([
                         'sm' => 2,
@@ -111,6 +144,11 @@ class CustomerResource extends Resource
 //                            Forms\Components\SpatieTagsInput::make('tags')->type('customers'),
 //                        ])
 //                        ->columnSpan(1),
+
+                    Forms\Components\Hidden::make('shop_id')
+                        ->default(CacheService::getAccount()->id),
+                    Forms\Components\Hidden::make('creator_id')
+                        ->default(Auth::user()->id)
                 ]),
             ])
             ->columns([
@@ -163,6 +201,7 @@ class CustomerResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Создан')
                     ->dateTime()
+                    ->sortable()
                     ->toggleable(),
             ])
             ->defaultSort('created_at')
