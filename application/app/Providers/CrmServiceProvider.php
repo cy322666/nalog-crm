@@ -44,13 +44,14 @@ class CrmServiceProvider extends ServiceProvider
 
             URL::forceScheme('http');//s
 
-            Filament::registerTheme(
-                asset('css/app.css')
-            );
+//
+//            Filament::registerTheme(asset('css/app.css'));
 
-//            Filament::registerStyles([
-//                asset('css/crm.css')
-//            ]);
+            Filament::registerStyles([
+                asset('css/filament.css')
+            ]);
+
+//            Filament::registerViteTheme(asset('resources/css/filament.css'));
 
             //notification component
             Filament::registerRenderHook(
@@ -66,10 +67,10 @@ class CrmServiceProvider extends ServiceProvider
                     ->url(ShopResource::getUrl())
                     ->icon('heroicon-s-cog'),
 
-                UserMenuItem::make()
-                    ->label('Импорт')
-                    ->url(ImportResource::getUrl())
-                    ->icon('heroicon-s-cog'),
+//                UserMenuItem::make()
+//                    ->label('Импорт')
+//                    ->url(ImportResource::getUrl())
+//                    ->icon('heroicon-s-cog'),
 
 //                UserMenuItem::make()
 //                    ->label('Экспорт')

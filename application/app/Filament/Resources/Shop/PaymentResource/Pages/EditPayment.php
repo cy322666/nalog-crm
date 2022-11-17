@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Shop\PaymentResource\Pages;
 use App\Filament\Resources\Shop\PaymentResource;
 use Filament\Pages\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Support\Facades\Log;
 
 class EditPayment extends EditRecord
 {
@@ -20,5 +21,10 @@ class EditPayment extends EditRecord
         return [
             DeleteAction::make(),
         ];
+    }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        return $this->data;
     }
 }

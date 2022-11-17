@@ -17,15 +17,7 @@ class EditOrder extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        //TODO бюджет пересчитывает?
-//        $total = 0;
-//        foreach ($data['items'] as $item) {
-//            $total += $item['unit_price'] * $item['qty'];
-//        }
-//
-//        $data['total_price'] = $total;
-
-        return $data;
+        return $this->data;
     }
 
     protected function getRedirectUrl(): string

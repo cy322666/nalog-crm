@@ -88,8 +88,8 @@ class OrderResource extends Resource
 
                                         Forms\Components\Select::make('status_id')
                                             ->label('Статус')
-                                            ->options(OrderStatus::cacheAll()->pluck('name', 'id')->toArray()),
-//                                            ->relationship('statuses', 'name'),
+//                                            ->options(OrderStatus::cacheAll()->pluck('name', 'id')->toArray()),
+                                            ->relationship('statuses', 'name'),
 
                                         Forms\Components\TextInput::make('price')
                                             ->hint('Pубли')
@@ -113,7 +113,7 @@ class OrderResource extends Resource
                                             ->required(),
 
                                         //TODO обязательность при закрытии как то сделать
-                                        Forms\Components\Select::make('reason')
+                                        Forms\Components\Select::make('lost_reasons_id')
                                             ->label('Причина отказа')
                                             ->options(OrderLostReasons::cacheAll()->pluck('name', 'id')->toArray()),
 //                                            ->relationship('reason', 'name'),
@@ -187,15 +187,15 @@ class OrderResource extends Resource
                                 ->label('Клиент')
                                 ->relationship('customer', 'name')
                                 ->searchable()
-                                ->getSearchResultsUsing(function (string $query) {
-
-                                    return CacheService::getAccount()
-                                        ->customers()
-                                        ->where('name', 'like', "%{$query}%")
-                                        ->pluck('name', 'id')
-                                        ->toArray();
-                                })
-                                ->getOptionLabelUsing(fn ($value): ?string => Customer::query()->find($value)?->name)
+//                                ->getSearchResultsUsing(function (string $query) {
+//
+//                                    return CacheService::getAccount()
+//                                        ->customers()
+//                                        ->where('name', 'like', "%{$query}%")
+//                                        ->pluck('name', 'id')
+//                                        ->toArray();
+//                                })
+//                                ->getOptionLabelUsing(fn ($value): ?string => Customer::query()->find($value)?->name)
                                 ->required(),
                             //TODO краткая инфа клиента и конечно же его тип!
                         ])
@@ -208,6 +208,12 @@ class OrderResource extends Resource
 //                        ])
 //                        ->columnSpan(1),
                 ]),
+
+                Forms\Components\Hidden::make('shop_id')
+                    ->default(CacheService::getAccount()->id),
+
+                Forms\Components\Hidden::make('creator_id')
+                    ->default(Auth::user()->id),
             ])
             ->columns([
                 'sm' => 3,
@@ -374,6 +380,8 @@ class OrderResource extends Resource
 
     protected static function getGlobalSearchEloquentQuery(): Builder
     {
-        return parent::getGlobalSearchEloquentQuery()->with(['customer']);
+        return parent::getGlobalSearchEloquentQuery()
+            ->with(['customer'])
+            ->where('shop_id', CacheService::getAccount()->id);
     }
 }

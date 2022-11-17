@@ -17,6 +17,11 @@ class ListOrders extends ListRecords
         return OrderResource::getWidgets();
     }
 
+    protected function shouldPersistTableFiltersInSession(): bool
+    {
+        return true;
+    }
+
     protected function getActions(): array
     {
         return [

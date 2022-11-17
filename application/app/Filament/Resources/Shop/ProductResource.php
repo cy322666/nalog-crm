@@ -144,13 +144,12 @@ class ProductResource extends Resource
                                 ->label('Название')
                                 ->required(),
 
-                            //TODO fatal
-                            Forms\Components\MultiSelect::make('categories.name')
+                            Forms\Components\Select::make('categories')
                                 ->label('Категория')
+                                ->multiple()
                                 ->relationship('categories', 'name')
                                 ->searchable()
-                                ->options(CacheService::getAccount()->categories()->pluck('name', 'id')),
-//                                ->getOptionLabelUsing(fn ($value): ?string => Category::query()->find($value)?->name),
+                                ->options(CacheService::getAccount()->categories->pluck('name', 'id')),//TODO тут кеш
 
                             Forms\Components\MarkdownEditor::make('description')
                                 ->label('Описание')

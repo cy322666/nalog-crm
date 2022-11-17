@@ -33,14 +33,14 @@ class PaymentStatus extends Model
     {
         $shop = CacheService::getAccount();
 
-        $collections = Cache::get('payment_statuses_shop_'.$shop->id);
+//        $collections = Cache::get('payment_statuses_shop_'.$shop->id);
+//
+//        if (!$collections || $collections = []) {
+//TODO пофиксить возвращает пустоту
+            $collections = $shop->paymentStatuses;
 
-        if (!$collections) {
-
-            $collections = $shop->paymentProviders;
-
-            Cache::put('payment_statuses_shop_'.$shop->id, $collections);
-        }
+//            Cache::put('payment_statuses_shop_'.$shop->id, $collections);
+//        }
 
         return $collections;
     }

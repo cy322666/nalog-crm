@@ -34,17 +34,4 @@ class EditProduct extends EditRecord
             DeleteAction::make(),
         ];
     }
-
-    protected function mutateFormDataBeforeSave(array $data): array
-    {
-        if (count($data['categories']) > 0) {
-
-            foreach ($data['categories'] as $key => $val) {
-
-                $this->record->categories()->attach($val);
-            }
-        }
-
-        return $data;
-    }
 }

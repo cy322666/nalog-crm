@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Shop\OrderResource\Pages;
 use App\Events\Shop\EntityEvent;
 use App\Filament\Resources\Shop\OrderResource;
 use App\Services\Event\EventManager;
+use Carbon\Carbon;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -20,8 +21,9 @@ class CreateOrder extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        Log::info(__METHOD__, $data);
+        $this->data['created_at'] = Carbon::now()->format('Y-m-d H:i:s');
+        $this->data['updated_at'] = Carbon::now()->format('Y-m-d H:i:s');
 
-        return $data;
+        return $this->data;
     }
 }

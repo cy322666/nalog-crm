@@ -16,14 +16,4 @@ class CreateProduct extends CreateRecord
     {
         return ProductResource::getUrl();
     }
-
-    protected function mutateFormDataBeforeCreate(array $data): array
-    {
-        if (count($data['category']) > 0) {
-
-            $this->record->categories()->attach($data['categories']);
-        }
-
-        return $data;
-    }
 }

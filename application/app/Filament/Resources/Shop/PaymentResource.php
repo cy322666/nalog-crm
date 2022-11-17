@@ -66,11 +66,12 @@ class PaymentResource extends Resource
      */
     public static function form(Form $form): Form
     {
+        //TODO перенести кеш в релейшены
         $paymentId = ModelHelper::generateId(self::$model, 'payment_id');
 
-//        $methods   = PaymentMethod::cacheAll()->pluck('name', 'id')->toArray();
+        $methods   = PaymentMethod::cacheAll()->pluck('name', 'id')->toArray();
 //        $providers = PaymentProvider::cacheAll()->pluck('name', 'id')->toArray();
-//        $statuses  = PaymentStatus::cacheAll()->pluck('name', 'id')->toArray();
+        $statuses  = PaymentStatus::cacheAll()->pluck('name', 'id')->toArray();
 
         return $form->schema([
             Forms\Components\Card::make()
@@ -80,18 +81,18 @@ class PaymentResource extends Resource
                         ->default(
                             'Платеж #'.$paymentId
                         ),
-//                    Forms\Components\Select::make('status_id')
-//                        ->label('Статус')
-//                        ->options($statuses),
+                    Forms\Components\Select::make('status_id')
+                        ->label('Статус')
+                        ->options($statuses),
                     Forms\Components\TextInput::make('amount')
                         ->hint('Pубли')
                         ->label('Сумма')
                         ->required()
                         ->columnSpan(1),
-//                    Forms\Components\Select::make('method_id')
-//                        ->label('Способ оплаты')
-//                        ->required()
-//                        ->options($methods),
+                    Forms\Components\Select::make('method_id')
+                        ->label('Способ оплаты')
+                        ->required()
+                        ->options($methods),
 //                    Forms\Components\Select::make('provider_id')
 //                        ->label('Платежная система')
 ////                        ->required()
