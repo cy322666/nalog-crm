@@ -2,7 +2,7 @@
 
 namespace App\Models\Shop;
 
-use App\Filament\Resources\Shop\CustomerResource;
+use App\Filament\Resources\CustomerResource;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;

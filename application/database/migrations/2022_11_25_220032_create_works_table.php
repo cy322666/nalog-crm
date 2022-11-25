@@ -13,13 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('shop_order_service', function (Blueprint $table) {
+        Schema::create('works', function (Blueprint $table) {
             $table->id();
-
-//            $table->unsignedBigInteger('order_id');
-//            $table->unsignedBigInteger('service_id');
-//            $table->foreign('order_id')->references('id')->on('shop_orders');
-//            $table->foreign('service_id')->references('id')->on('shop_services');
+            $table->timestamps();
         });
     }
 
@@ -30,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('shop_order_service');
+        Schema::dropIfExists('works');
     }
 };

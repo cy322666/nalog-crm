@@ -13,13 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('shop_order_service', function (Blueprint $table) {
+        Schema::create('notification_settings', function (Blueprint $table) {
             $table->id();
+            $table->timestamps();
 
-//            $table->unsignedBigInteger('order_id');
-//            $table->unsignedBigInteger('service_id');
-//            $table->foreign('order_id')->references('id')->on('shop_orders');
-//            $table->foreign('service_id')->references('id')->on('shop_services');
+//            $table->boolean('new_order')->default(true);
         });
     }
 
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('shop_order_service');
+        Schema::dropIfExists('notification_settings');
     }
 };

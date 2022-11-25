@@ -2,24 +2,21 @@
 
 namespace App\Filament\Resources\Shop;
 
+use App\Filament\Resources\CustomerResource;
 use App\Filament\Resources\Shop\OrderResource\Pages;
 use App\Filament\Resources\Shop\OrderResource\RelationManagers;
 use App\Filament\Resources\Shop\OrderResource\Widgets\OrderStats;
-use App\Models\Shop\Customer;
 use App\Models\Shop\Order;
 use App\Models\Shop\OrderLostReasons;
 use App\Models\Shop\OrderSource;
 use App\Models\Shop\OrderStatus;
-use App\Models\Shop\Shop;
 use App\Models\User;
-use Filament\Notifications\Actions\Action;
 use App\Services\CacheService;
 use App\Services\Helpers\ModelHelper;
 use Carbon\Carbon;
 use Exception;
 use Filament\Forms;
 use Filament\Forms\Components\Tabs;
-use Filament\Notifications\Notification;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -27,7 +24,6 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class OrderResource extends Resource
 {

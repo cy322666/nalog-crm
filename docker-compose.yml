@@ -16,13 +16,13 @@ services:
     postgresql:
         image: postgres:14.1-alpine
         ports:
-            - "5430:5432"
+            - "5432:5432"
         networks:
             - cluster
         environment:
             POSTGRES_USER: root
             POSTGRES_PASSWORD: pQLkm8NOkS0gOBox
-            POSTGRES_DB: clever
+            POSTGRES_DB: crm
         volumes:
             - ./docker/images/postgres/files/postgresql.conf:/etc/postgresql.conf
         command: ["postgres", "-c", "config_file=/etc/postgresql.conf"]

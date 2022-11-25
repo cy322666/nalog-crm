@@ -34,17 +34,8 @@ class CrmServiceProvider extends ServiceProvider
                 return  $builder;
             });
 
-            //TODO crash
-//        $this->app->bind('events', 'App\Services\Event\EventService');
-
-            UserMenuItem::make()
-                ->label('Аккаунты')
-                ->url('shops')
-                ->icon('heroicon-s-cog');
-
             URL::forceScheme('http');//s
 
-//
 //            Filament::registerTheme(asset('css/app.css'));
 
             Filament::registerStyles([
@@ -62,26 +53,11 @@ class CrmServiceProvider extends ServiceProvider
             //user menu
             Filament::registerUserMenuItems([
 
-                UserMenuItem::make()
-                    ->label('Аккаунты')
-                    ->url(ShopResource::getUrl())
-                    ->icon('heroicon-s-cog'),
-
-//                UserMenuItem::make()
-//                    ->label('Импорт')
-//                    ->url(ImportResource::getUrl())
-//                    ->icon('heroicon-s-cog'),
-
 //                UserMenuItem::make()
 //                    ->label('Экспорт')
 //                    ->url(ShopResource::getUrl())
 //                    ->icon('heroicon-s-cog'),
             ]);
-
-            //TODO add in <head>
-//            Filament::pushMeta([
-//                new HtmlString('<link rel="manifest" href="/site.webmanifest" />'),
-//            ]);
         });
     }
 }

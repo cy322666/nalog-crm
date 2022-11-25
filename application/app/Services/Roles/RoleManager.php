@@ -2,19 +2,15 @@
 
 namespace App\Services\Roles;
 
+use App\Filament\Resources\CustomerResource;
+use App\Filament\Resources\EmployeeResource;
+use App\Filament\Resources\PaymentResource;
+use App\Filament\Resources\ProductResource;
 use App\Filament\Resources\Shop\CategoryResource;
-use App\Filament\Resources\Shop\CustomerResource;
-use App\Filament\Resources\Shop\EmployeeResource;
 use App\Filament\Resources\Shop\OrderResource;
-use App\Filament\Resources\Shop\PaymentResource;
-use App\Filament\Resources\Shop\ProductResource;
 use App\Filament\Resources\Shop\RoleResource;
 use App\Filament\Resources\Shop\StockResource;
-use App\Models\Shop\Customer;
-use App\Models\Shop\Order;
 use App\Models\Shop\Shop;
-use App\Models\Shop\Task;
-use App\Services\CacheService;
 use Illuminate\Support\Facades\Auth;
 
 class RoleManager

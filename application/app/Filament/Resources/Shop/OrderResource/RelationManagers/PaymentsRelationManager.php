@@ -2,16 +2,12 @@
 
 namespace App\Filament\Resources\Shop\OrderResource\RelationManagers;
 
-use Akaunting\Money\Currency;
-use App\Events\Shop\EntityEvent;
-use App\Filament\Resources\Shop\PaymentResource;
-use App\Models\Shop\OrderStatus;
+use App\Filament\Resources\PaymentResource;
 use App\Models\Shop\Payment;
 use App\Models\Shop\PaymentMethod;
 use App\Models\Shop\PaymentProvider;
 use App\Models\Shop\PaymentStatus;
 use App\Services\CacheService;
-use App\Services\Event\EventManager;
 use App\Services\Helpers\ModelHelper;
 use Exception;
 use Filament\Forms;
@@ -20,8 +16,6 @@ use Filament\Resources\RelationManagers\HasManyRelationManager;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class PaymentsRelationManager extends HasManyRelationManager
 {
