@@ -4,12 +4,12 @@ namespace App\Filament\Widgets;
 
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Card;
-use Filament\Widgets\Widget;
 
 class StatsOverviewWidget extends BaseWidget
 {
     protected static ?int $sort = 0;
 
+    //TODO example
     protected function getCards(): array
     {
         return [

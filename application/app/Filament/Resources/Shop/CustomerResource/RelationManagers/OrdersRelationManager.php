@@ -40,12 +40,6 @@ class OrdersRelationManager extends MorphToManyRelationManager
                 Tables\Columns\TextColumn::make('name')
                     ->label('Название'),
 
-                Tables\Columns\TextColumn::make('customer.name')
-                    ->label('Клиент')
-                    ->sortable()
-                    ->url(fn ($record) => CustomerResource::getUrl('edit', ['record' => $record->shop_customer_id]))
-                    ->toggleable(),
-
                 Tables\Columns\BadgeColumn::make('status.name')
                     ->label('Статус')
                     ->colors([
@@ -96,7 +90,7 @@ class OrdersRelationManager extends MorphToManyRelationManager
             ->filters([])
             ->actions([])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+//                Tables\Actions\CreateAction::make(),
                 Tables\Actions\AttachAction::make(),
             ]);
     }

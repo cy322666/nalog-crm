@@ -16,11 +16,3 @@ use Illuminate\Support\Facades\Broadcast;
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
-
-Broadcast::channel('tasks.17', function ($user, $taskId) {
-
-    \Illuminate\Support\Facades\Log::info('channels : '.$taskId);
-
-    return true;
-    //return $user->id === \App\Models\Shop\Task::query()->find($taskId)->responsible_id;
-});

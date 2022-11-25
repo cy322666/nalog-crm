@@ -5,7 +5,6 @@ namespace App\Filament\Resources\Shop\StockResource\Pages;
 use App\Filament\Resources\Shop\StockResource;
 use App\Filament\Widgets\StockList;
 use App\Filament\Widgets\StockListProducts;
-use App\Filament\Widgets\StockSecondList;
 use App\Models\Shop\Product;
 use App\Services\CacheService;
 use Filament\Forms\Components\Select;
@@ -29,10 +28,10 @@ class StockProduct extends Page
     {
         return [
             StockList::class,
-            StockSecondList::class,
         ];
     }
 
+    //форма пополнения склада
     protected function getActions(): array
     {
         return [
@@ -48,7 +47,7 @@ class StockProduct extends Page
                         ->label('Товар')
                         ->searchable()
                         ->getSearchResultsUsing(fn (string $query) => Product::query()
-                            ->where('shop_id', CacheService::getAccountId())
+                            ->where('shop_id', CacheService::getAccount()->id)
                             ->where('name', 'like', "%{$query}%")
                             ->pluck('name', 'id')
                         )

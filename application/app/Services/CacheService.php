@@ -16,7 +16,7 @@ class CacheService
         Cache::put('user_'.Auth::user()->id.'_account', $accountId);
     }
 
-    public static function deleteAccountId()
+    public static function deleteAccount()
     {
         Cache::forget('user_'.Auth::user()->id.'_account');
     }
@@ -26,40 +26,26 @@ class CacheService
         return !empty(Cache::get('user_'.Auth::user()->id.'_account'));
     }
 
-    public static function getAccountId()
+    public static function setAccount(Shop $shop)
     {
-        if (Auth::user()) {
-
-            $accountId = Cache::get('user_'.Auth::user()->id.'_account');
-
-            if (!$accountId) {
-
-                //redirect(ShopResource::getUrl());//route('filament.auth.login')
-            } else
-                return $accountId;
-        } else {
-//            redirect(env('APP_URL').'/login');
-        }
+        Cache::put('user_'.Auth::user()->id.'_account', $shop);
     }
 
     public static function getAccount()
     {
-        $accountId = Cache::get('user_'.Auth::user()->id.'_account');
+        $shop = Cache::get('user_'.Auth::user()->id.'_account');
 
-        if ($accountId == null) {
+        if ($shop !== null) {
 
-            redirect(ShopResource::getUrl());
-        } else {
-
-            return Shop::query()
-                ->find($accountId)
-                ->first();//TODO debug
+            return $shop;
         }
+
+        redirect(ShopResource::getUrl());
     }
 
     public static function reset()
     {
-        self::deleteAccountId();
+        self::deleteAccount();
 
         self::deleteRole();
     }

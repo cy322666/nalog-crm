@@ -29,15 +29,14 @@ class Payment extends Model
         'creator_id',
     ];
 
-    public function order(): BelongsTo
+    public function order()
     {
-        return $this->belongsTo(Order::class, 'order_id', 'id');
+        return $this->belongsTo(Order::class, 'order_id');
     }
 
     public function provider(): BelongsTo
     {
-        return $this
-            ->belongsTo(PaymentProvider::class);
+        return $this->belongsTo(PaymentProvider::class);
     }
 
     public function method(): BelongsTo
@@ -47,9 +46,7 @@ class Payment extends Model
 
     public function status(): BelongsTo
     {
-        return $this
-            ->belongsTo(PaymentStatus::class)
-            ->orWhere('shop_id', 0);
+        return $this->belongsTo(PaymentStatus::class);
     }
 
     public function shop()

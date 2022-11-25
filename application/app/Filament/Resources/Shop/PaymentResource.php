@@ -3,8 +3,6 @@
 namespace App\Filament\Resources\Shop;
 
 use App\Filament\Resources\Shop\PaymentResource\Pages;
-use App\Filament\Resources\Shop\PaymentResource\RelationManagers;
-use App\Models\Shop\Customer;
 use App\Models\Shop\Order;
 use App\Models\Shop\Payment;
 use App\Models\Shop\PaymentMethod;
@@ -22,6 +20,7 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class PaymentResource extends Resource
 {
@@ -41,12 +40,12 @@ class PaymentResource extends Resource
 
     protected static function getGlobalSearchEloquentQuery(): Builder
     {
-        return parent::getGlobalSearchEloquentQuery()->where('shop_id', CacheService::getAccountId());
+        return parent::getGlobalSearchEloquentQuery()->where('shop_id', CacheService::getAccount()->id);
     }
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccountId());
+        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccount()->id);
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
@@ -67,11 +66,12 @@ class PaymentResource extends Resource
      */
     public static function form(Form $form): Form
     {
+        //TODO перенести кеш в релейшены
         $paymentId = ModelHelper::generateId(self::$model, 'payment_id');
 
-        $methods   = PaymentMethod::all()->pluck('name', 'id');
-        $providers = PaymentProvider::all()->pluck('name', 'id');
-        $statuses  = PaymentStatus::all()->pluck('name', 'id');
+        $methods   = PaymentMethod::cacheAll()->pluck('name', 'id')->toArray();
+//        $providers = PaymentProvider::cacheAll()->pluck('name', 'id')->toArray();
+        $statuses  = PaymentStatus::cacheAll()->pluck('name', 'id')->toArray();
 
         return $form->schema([
             Forms\Components\Card::make()
@@ -93,26 +93,34 @@ class PaymentResource extends Resource
                         ->label('Способ оплаты')
                         ->required()
                         ->options($methods),
-                    Forms\Components\Select::make('provider_id')
-                        ->label('Платежная система')
-                        ->required()
-                        ->options($providers),
+//                    Forms\Components\Select::make('provider_id')
+//                        ->label('Платежная система')
+////                        ->required()
+//                        ->options($providers),
 
                     Forms\Components\Select::make('order_id')
                         ->label('Заказ')
                         ->relationship('order', 'name')
                         ->searchable()
-                        ->getOptionLabelUsing(fn ($value): ?string => Order::query()->find($value)?->name)
+//                        ->getSearchResultsUsing(function (string $query) {
+//
+//                            return CacheService::getAccount()
+//                                ->orders()
+//                                ->where('name', 'like', "%$query%")
+//                                ->pluck('name', 'id')
+//                                ->toArray();
+//                        })
+//                        ->getOptionLabelUsing(fn ($value): ?string => Order::query()->find($value)?->name)
                         ->required(),
 
                     Forms\Components\Hidden::make('shop_id')
-                        ->default(CacheService::getAccountId()),
+                        ->default(CacheService::getAccount()->id),
 
                     Forms\Components\Hidden::make('creator_id')
                         ->default(Auth::user()->id),
             ])->columns([
                 'sm' => 2
-                ])
+            ])
             ->columnSpan([
                 'sm' => 2
             ]),
@@ -174,9 +182,9 @@ class PaymentResource extends Resource
                     ->url(fn ($record) => OrderResource::getUrl('edit', [$record->order]))//TODO view?
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('provider.name')
-                    ->label('Платежная система')
-                    ->sortable(),
+//                Tables\Columns\TextColumn::make('provider.name')
+//                    ->label('Платежная система')
+//                    ->sortable(),
 
                 //TODO хули не воркает
                 Tables\Columns\TextColumn::make('method.name')
@@ -190,24 +198,34 @@ class PaymentResource extends Resource
                     ->toggleable(true)
                     ->sortable(),
             ])
-            ->filters([])
+            ->filters([
+                Tables\Filters\Filter::make('created_at')
+                    ->form([
+                        Forms\Components\DatePicker::make('created_from')
+                            ->placeholder(fn ($state): string => 'Dec 18, ' . now()->subYear()->format('Y')),//TODO check
+                        Forms\Components\DatePicker::make('created_until')
+                            ->placeholder(fn ($state): string => now()->format('M d, Y')),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    }),
+
+                Tables\Filters\Filter::make('payed')
+                    ->label('Оплачен полностью')
+                    ->query(fn (Builder $query): Builder => $query->where('payed', true)),
+            ])
             ->actions([])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public static function createActions(array &$data)
-    {
-        $data['payment_id'] = ModelHelper::generateId(Payment::class, 'payment_id');
-
-        if (empty($data['name'])) {
-
-            $data['name'] = 'Платеж #'.$data['payment_id'];
-        }
     }
 
     public static function getRelations(): array

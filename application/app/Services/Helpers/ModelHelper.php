@@ -7,14 +7,14 @@ use App\Filament\Resources\Shop\CustomerResource;
 use App\Filament\Resources\Shop\OrderResource;
 use App\Filament\Resources\Shop\PaymentResource;
 use App\Filament\Resources\Shop\ProductResource;
-use App\Filament\Resources\Shop\TaskResource;
+//use App\Filament\Resources\Shop\TaskResource;
 use App\Models\Shop\Category;
 use App\Models\Shop\Comment;
 use App\Models\Shop\Customer;
 use App\Models\Shop\Order;
 use App\Models\Shop\Payment;
 use App\Models\Shop\Product;
-use App\Models\Shop\Task;
+//use App\Models\Shop\Task;
 use App\Services\CacheService;
 use Exception;
 
@@ -29,17 +29,19 @@ abstract class ModelHelper
      */
     public static function generateId(string $className, string $column) : int
     {
-        $lastRecord = $className::query()
-            ->where('shop_id', CacheService::getAccountId())
-            ->oldest($column)
-            ->first();
+//        $lastRecord = $className::query()
+//            ->where('shop_id', CacheService::getAccount()->id)
+//            ->oldest($column)
+//            ->first();
+
+        $lastRecord = null;
 
         return $lastRecord ? $lastRecord->$column + 2 : random_int(200000, 999999);
     }
 
     public static function generateName(string $className, string $column) : string
     {
-
+        return $className;//TODO?
     }
 
     public static function clearPhone(?string $phone): array|string|null
@@ -61,7 +63,7 @@ abstract class ModelHelper
         return match ($type) {
             1 => Order::class,
             2 => Customer::class,
-            3 => Task::class,
+//            3 => Task::class,
             4 => Payment::class,
             5 => Product::class,
             6 => Category::class,
@@ -74,7 +76,7 @@ abstract class ModelHelper
         return match ($type) {
             1 => OrderResource::class,
             2 => CustomerResource::class,
-            3 => TaskResource::class,
+//            3 => TaskResource::class,
             4 => PaymentResource::class,
             5 => ProductResource::class,
             6 => CategoryResource::class,

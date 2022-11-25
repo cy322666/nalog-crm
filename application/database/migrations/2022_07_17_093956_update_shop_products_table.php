@@ -17,7 +17,7 @@ return new class extends Migration
             $table->dropColumn('slug');
 //            $table->dropColumn('is_visible');
 //            $table->dropColumn('backorder');
-            $table->dropColumn('shop_brand_id');
+//            $table->dropColumn('shop_brand_id');
 //            $table->dropColumn('featured');
 //            $table->dropColumn('published_at');
 //            $table->dropColumn('seo_description');

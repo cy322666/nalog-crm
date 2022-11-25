@@ -2,7 +2,7 @@
 
 namespace Database\Factories\Shop;
 
-use App\Models\Shop\OrderProduct;
+use App\Models\Shop\OrderItem;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class OrderItemFactory extends Factory
@@ -10,7 +10,7 @@ class OrderItemFactory extends Factory
     /**
      * @var string
      */
-    protected $model = OrderProduct::class;
+    protected $model = OrderItem::class;
 
     public function definition(): array
     {

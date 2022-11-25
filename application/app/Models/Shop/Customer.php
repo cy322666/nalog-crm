@@ -27,7 +27,6 @@ class Customer extends Model
         'name',
         'email',
         'photo',
-        'gender',
         'phone',
         'birthday',
         'shop_id',

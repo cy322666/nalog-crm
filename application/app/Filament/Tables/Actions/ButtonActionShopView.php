@@ -2,13 +2,20 @@
 
 namespace App\Filament\Tables\Actions;
 
-use App\Filament\Resources\Shop\TaskResource;
+use App\Filament\Resources\Shop\OrderResource;
+use App\Models\Shop\OrderLostReasons;
+use App\Models\Shop\OrderSource;
+use App\Models\Shop\OrderStatus;
+use App\Models\Shop\PaymentMethod;
+use App\Models\Shop\PaymentProvider;
+use App\Models\Shop\PaymentStatus;
+use App\Models\Shop\Shop;
+use App\Models\User;
 use App\Services\CacheService;
+use App\Services\Roles\RoleManager;
 use Filament\Forms\ComponentContainer;
 use Filament\Tables\Actions\Action;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 
 class ButtonActionShopView extends Action
 {
@@ -27,17 +34,27 @@ class ButtonActionShopView extends Action
 
         $this->icon('heroicon-s-eye');
 
-        $this->disableForm();
+        $this->mountUsing(function (ComponentContainer $form): void {
 
-        $this->mountUsing(function (ComponentContainer $form, Model $record): void {
+            $shop = $this->record;
 
-//            Session::put('shop', $record->uuid);
+            CacheService::reset();
 
-            CacheService::deleteAccountId();
+            CacheService::setRole(RoleManager::map($shop));
+            CacheService::setAccount($shop);
 
-            CacheService::setAccountId($record->id);
+            PaymentMethod::cacheAll();
+            PaymentProvider::cacheAll();
+            PaymentStatus::cacheAll();
 
-            $this->redirect(TaskResource::getUrl());
+            //TODO dont work
+//            OrderSource::cacheAll();
+//            OrderStatus::cacheAll();
+//            OrderLostReasons::cacheAll();
+//
+            User::cacheAll();
+
+            redirect(OrderResource::getUrl('index', ['record' => $shop]));
         });
 
         $this->action(static function (): void {});

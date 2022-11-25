@@ -18,6 +18,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class ProductResource extends Resource
 {
@@ -56,7 +57,29 @@ class ProductResource extends Resource
             ->columns(static::getTableColumns())
             ->actions([])
             ->filters([
-                //TODO
+                Tables\Filters\Filter::make('created_at')
+                    ->form([
+                        Forms\Components\DatePicker::make('created_from')
+                            ->placeholder(fn ($state): string => 'Dec 18, ' . now()->subYear()->format('Y')),//TODO check
+                        Forms\Components\DatePicker::make('created_until')
+                            ->placeholder(fn ($state): string => now()->format('M d, Y')),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    }),
+
+//                Tables\Filters\Filter::make('')
+//                    ->label('Оплачен полностью')
+//                    ->query(fn (Builder $query): Builder => $query->where('payed', true))
+//                    ->default(),
             ]);
     }
 
@@ -99,12 +122,12 @@ class ProductResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccountId());
+        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccount()->id);
     }
 
     protected static function getGlobalSearchEloquentQuery(): Builder
     {
-        return self::getEloquentQuery()->where('shop_id', CacheService::getAccountId());
+        return self::getEloquentQuery()->where('shop_id', CacheService::getAccount()->id);
     }
 
     /**
@@ -121,20 +144,12 @@ class ProductResource extends Resource
                                 ->label('Название')
                                 ->required(),
 
-                            //TODO fatal
-                            Forms\Components\MultiSelect::make('categories.name')
+                            Forms\Components\Select::make('categories')
                                 ->label('Категория')
+                                ->multiple()
                                 ->relationship('categories', 'name')
                                 ->searchable()
-                                ->getSearchResultsUsing(function (string $query) {
-
-                                    return Category::query()
-                                        ->where('shop_id', CacheService::getAccountId())
-                                        ->where('name', 'like', "%{$query}%")
-                                        ->pluck('name', 'id')
-                                        ->toArray();
-                                })
-                                ->getOptionLabelUsing(fn ($value): ?string => Category::query()->find($value)?->name),
+                                ->options(CacheService::getAccount()->categories->pluck('name', 'id')),//TODO тут кеш
 
                             Forms\Components\MarkdownEditor::make('description')
                                 ->label('Описание')
@@ -200,7 +215,9 @@ class ProductResource extends Resource
                                         ->required(),
 
                                     Forms\Components\Hidden::make('shop_id')
-                                        ->default(CacheService::getAccountId())
+                                        ->default(CacheService::getAccount()->id),
+                                    Forms\Components\Hidden::make('creator_id')
+                                        ->default(Auth::user()->id)
                                 ]),
                         ]),
 
@@ -240,10 +257,10 @@ class ProductResource extends Resource
                 ->toggledHiddenByDefault()
                 ->searchable()
                 ->sortable(),
-            Tables\Columns\SpatieMediaLibraryImageColumn::make('product-image')
-                ->label('Картинка')
-                ->toggleable()
-                ->collection('product-images'),
+//            Tables\Columns\SpatieMediaLibraryImageColumn::make('product-image')
+//                ->label('Картинка')
+//                ->toggleable()
+//                ->collection('product-images'),
             Tables\Columns\TextColumn::make('name')
                 ->label('Название')
                 ->searchable(),
@@ -255,7 +272,7 @@ class ProductResource extends Resource
                 ->sortable()
                 ->toggleable(),
             Tables\Columns\TextColumn::make('qty')
-                ->label('Остаток')
+                ->label('Общий остаток')
                 ->sortable()
                 ->toggleable(),
             Tables\Columns\TextColumn::make('description')
@@ -283,7 +300,7 @@ class ProductResource extends Resource
     }
 
 
-    //TODO sho
+    //TODO это выводит количество в панели меню (колво например)
 //    protected static function getNavigationBadge(): ?string
 //    {
 //        return self::$model::whereColumn('qty', '<', 'security_stock')->count();

@@ -2,42 +2,36 @@
 
 namespace Database\Factories\Shop;
 
+use Akaunting\Money\Currency;
+use App\Models\Shop\Payment;
 use App\Models\Shop\PaymentMethod;
-use App\Models\Shop\PaymentStatus;
+use App\Models\Shop\PaymentProvider;
 use App\Models\Shop\Shop;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
- */
 class PaymentFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array
-     */
-    public function definition()
+    protected $model = Payment::class;
+
+    public function definition(): array
     {
+        $shop = Shop::all()->random();
+
         return [
-            'amount' => $this->faker->randomFloat(2, 80, 400),
-
-            //TODO 'provider_id'
-
-            'method_id' => PaymentMethod::all()->random()->id,
-
-            'method' => 1,//TODO del
-
-            'order_id' => 1,
-
             'name' => $this->faker->word(),
-
-            'status_id' => PaymentStatus::all()->random()->id,
-
-            'shop_id' => Shop::all()->random()->id,
-
+            'shop_id' => $shop->id,
+            'order_id' => $shop->orders->random()->id,
+            'payed' => (bool)rand(0, 1),
+            'creator_id' => $shop->users->random()->id,
+//            'reference' => 'PAY' . $this->faker->unique()->randomNumber(6),
+//            'currency' => $this->faker->randomElement(collect(Currency::getCurrencies())->keys()),
+            'amount' => $this->faker->randomFloat(2, 100, 2000),
+//            'provider_id' => PaymentProvider::all()->random()->id ?? null,
+            'method_id'   => PaymentMethod::all()->random()->id ?? null,
             'created_at' => $this->faker->dateTimeBetween('-1 year', '-6 month'),
-            'updated_at' => $this->faker->dateTimeBetween('-5 month'),
+//            'lost_at' => $this->faker->dateTimeBetween('-1 year', '-6 month'),
+            'updated_at' => $this->faker->dateTimeBetween('-5 month', 'now'),
         ];
     }
 }

@@ -6,6 +6,7 @@ use App\Filament\Resources\Shop\OrderResource;
 use Filament\Pages\Actions\Action;
 use Filament\Pages\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Tables\Filters\Layout;
 
 class ListOrders extends ListRecords
 {
@@ -14,6 +15,11 @@ class ListOrders extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return OrderResource::getWidgets();
+    }
+
+    protected function shouldPersistTableFiltersInSession(): bool
+    {
+        return true;
     }
 
     protected function getActions(): array
@@ -37,6 +43,6 @@ class ListOrders extends ListRecords
     //фильтры над таблицей
 //    protected function getTableFiltersLayout(): ?string
 //    {
-//        return Tables\Filters\Layout::AboveContent;
+//        return Layout::AboveContent;
 //    }
 }

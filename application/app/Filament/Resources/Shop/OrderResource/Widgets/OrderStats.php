@@ -26,7 +26,7 @@ class OrderStats extends BaseWidget
             Card::make('in_work_count', $shop->orders()->where('closed', false)->count())
                 ->label('В работе'),
 
-            Card::make('in_work_sum', $shop->orders()->where('closed', false)->sum('price'), 2)
+            Card::make('in_work_sum', $shop->orders()->where('closed', false)->sum('price'))
                 ->label('В работе на сумму'),
         ];
     }

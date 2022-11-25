@@ -11,13 +11,6 @@ class CreateStock extends CreateRecord
 {
     protected static string $resource = StockResource::class;
 
-    protected function mutateFormDataBeforeCreate(array $data): array
-    {
-        $data['shop_id'] = CacheService::getAccountId();
-
-        return $data;
-    }
-
     protected function getRedirectUrl(): string
     {
         return StockResource::getUrl();

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Shop\Notification;
 use App\Models\Shop\Shop;
 use App\Models\Shop\Task;
 use App\Policies\Traits\HasRolesAndPermissions;
@@ -11,11 +10,12 @@ use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\HasDatabaseNotifications;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasPermissions;
-use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
@@ -23,8 +23,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     use HasFactory;
     use Notifiable;
     use HasRolesAndPermissions;
-//    use HasRoles;
-//    use HasPermissions;
+    use HasDatabaseNotifications;
 
     /**
      * @var array<int, string>
@@ -62,29 +61,9 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         return $this->belongsToMany(Shop::class);
     }
 
-    public function shop(): BelongsToMany
-    {
-        return $this->belongsToMany(Shop::class);
-    }
-
-    public function tasks()
+    public function tasks(): HasMany
     {
         return $this->hasMany(Task::class, 'responsible_id', 'id');
-    }
-
-    public function notifications(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this
-            ->hasMany(Notification::class, 'notifiable_id', 'id')
-            ->where('notifiable_type', __CLASS__);
-    }
-
-    public function unreadNotifications(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this
-            ->hasMany(Notification::class, 'notifiable_id', 'id')
-            ->where('notifiable_type', __CLASS__)
-            ->where('is_read', false);
     }
 
     public function roles() : belongsToMany
@@ -96,7 +75,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     {
         return $this
             ->belongsToMany(Role::class,'users_roles')
-            ->where('shop_id', CacheService::getAccountId());
+            ->where('shop_id', CacheService::getAccount()->id);
     }
 
     /**
@@ -110,5 +89,21 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     public function isAdmin(): bool
     {
         return (bool)CacheService::getRole() == ('admin' || 'root');//TODO root?
+    }
+
+    public static function cacheAll()
+    {
+        $shop = CacheService::getAccount();
+
+        $collections = Cache::get('users_shop_'.$shop->id);
+
+        if (!$collections) {
+
+            $collections = $shop->users;
+
+            Cache::put('users_shop_'.$shop->id, $collections);
+        }
+
+        return $collections;
     }
 }

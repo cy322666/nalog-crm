@@ -30,21 +30,10 @@ class StockListProducts extends BaseWidget
 
     protected function getTableQuery(): Builder
     {
-        $defaultStock = CacheService::getAccount()->stocks->first();
-
-        $stockIdQuery = Request::query('stock') ?? $defaultStock->id;
-
-        $stock = Stock::query()
-            ->where('stock_id', $stockIdQuery)
-            ->where('stock_id', CacheService::getAccountId())
-            ->first();
-
-        if ($stock) {
-
-            return $stock->products()->getQuery();
-        }
-
-        return $defaultStock->products()->getQuery();
+        return CacheService::getAccount()->stocks
+            ->first()
+            ->products()
+            ->getQuery();
     }
 
     protected function getTableActions(): array

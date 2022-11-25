@@ -17,15 +17,7 @@ class EditOrder extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        //TODO бюджет пересчитывает?
-//        $total = 0;
-//        foreach ($data['items'] as $item) {
-//            $total += $item['unit_price'] * $item['qty'];
-//        }
-//
-//        $data['total_price'] = $total;
-
-        return $data;
+        return $this->data;
     }
 
     protected function getRedirectUrl(): string
@@ -35,11 +27,11 @@ class EditOrder extends EditRecord
 
     protected function afterSave(): void
     {
-        event(new EntityEvent(
-            Auth::user(),
-            $this->getMountedActionFormModel(),
-            EventManager::orderUpdated(),
-        ));
+//        event(new EntityEvent(
+//            Auth::user(),
+//            $this->getMountedActionFormModel(),
+//            EventManager::orderUpdated(),
+//        ));
     }
 
     protected function getActions(): array
@@ -47,11 +39,11 @@ class EditOrder extends EditRecord
         return [
             DeleteAction::make()
                 ->after(function () {
-                    event(new EntityEvent(
-                        Auth::user(),
-                        $this->getMountedActionFormModel(),
-                        EventManager::orderDeleted(),
-                    ));
+//                    event(new EntityEvent(
+//                        Auth::user(),
+//                        $this->getMountedActionFormModel(),
+//                        EventManager::orderDeleted(),
+//                    ));
                 })
         ];
     }

@@ -13,6 +13,7 @@ use App\Filament\Resources\Shop\ServiceResource;
 use App\Filament\Resources\Shop\ShopResource;
 use App\Filament\Resources\Shop\StockResource;
 use App\Filament\Resources\Shop\TaskResource;
+use App\Models\Shop\Shop;
 use App\Services\CacheService;
 use Filament\Navigation\NavigationItem;
 
@@ -30,15 +31,15 @@ abstract class NavigationMap
                 CategoryResource::getNavigationItems()[0],
                 ServiceResource::getNavigationItems()[0],
             ],
-            'Аналитика' => [
+//            'Аналитика' => [
 //                ReportResource::getNavigationItems()[0],
-                EventResource::getNavigationItems()[0],
-            ],
-            'Настройки' => [
-                NavigationItem::make('Настройки')
-                    ->url(ShopResource::getUrl('settings', ['record' => CacheService::getAccountId() ?? 1]))
-                    ->icon('heroicon-o-cog'),
-            ],
+//                EventResource::getNavigationItems()[0],
+//            ],
+//            'Настройки' => [
+//                NavigationItem::make('Настройки')
+//                    ->url(ShopResource::getUrl('settings', ['record' => CacheService::getAccount()->id]))
+//                    ->icon('heroicon-o-cog'),
+//            ],
 //            'Автоматизация' => [
 //                //TODO v2 автоматизация?
 //                //TODO v1 settings page

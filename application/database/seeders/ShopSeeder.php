@@ -21,7 +21,7 @@ class ShopSeeder extends Seeder
     public function run()
     {
         $shops = Shop::factory()
-            ->count(10)
+            ->count(1)
             ->state(new Sequence(fn ($sequence) => [
                 'timezone_id' => Timezone::all()->random()->id,
                 'currency_id' => Currency::all()->random()->id,

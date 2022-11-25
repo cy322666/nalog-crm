@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Shop;
 
 use App\Filament\Resources\Shop\StockResource\Pages;
+use App\Filament\Resources\Shop\StockResource\RelationManagers\ProductsRelationManager;
 use App\Models\Shop\Stock;
 use App\Services\CacheService;
 use App\Services\Helpers\ModelHelper;
@@ -11,6 +12,8 @@ use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
+use Filament\Tables\Actions\CreateAction;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -32,7 +35,7 @@ class StockResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccountId());
+        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccount()->id);
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
@@ -66,7 +69,7 @@ class StockResource extends Resource
                             ->label('Основной склад')
                             ->options(
                                 Stock::query()
-                                    ->where('shop_id', CacheService::getAccountId())
+                                    ->where('shop_id', CacheService::getAccount()->id)
                                     ->where('parent_stock_id', null)
                                     ->pluck('name', 'id')
                                     ->toArray()
@@ -103,25 +106,49 @@ class StockResource extends Resource
     {
         return $this->getResource()::getUrl('index');
     }
-
+//TODO релейшен к остаткам
+//TODO а потом и поставщикам
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([])
+            ->columns([
+                TextColumn::make('stock_id')
+                    ->label('ID'),
+                TextColumn::make('name')
+                    ->label('Название'),
+                TextColumn::make('created_at')
+                    ->label('Дата создания')
+                    ->date()
+                    ->sortable(),
+                TextColumn::make('parent_stock_id')
+                    ->label('Тип')
+                    ->getStateUsing(fn(Stock $stock): string => $stock->parent_stock_id == null ? 'Основной' : 'Подсклад'),
+                TextColumn::make('products_count')
+                    ->counts('products')
+                    ->label('Остаток товаров')
+                    ->sortable(),
+                //TODO не показывает подсклад
+            ])->headerActions([
+//                CreateAction::make()
+            ])
             ->filters([])
-            ->actions([])
+            ->actions([
+                //TODO пополнение
+            ])
             ->bulkActions([]);
     }
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            ProductsRelationManager::class,
+        ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\StockProduct::route('/'),
+            'index'  => Pages\ListStock::route('/'),
             'create' => Pages\CreateStock::route('/create'),
             'edit'   => Pages\EditStock::route('/{record}/edit'),
         ];

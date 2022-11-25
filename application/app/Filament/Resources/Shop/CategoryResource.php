@@ -37,7 +37,7 @@ class CategoryResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return Category::query()->where('shop_id', CacheService::getAccountId());
+        return Category::query()->where('shop_id', CacheService::getAccount()->id);
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
@@ -90,7 +90,7 @@ class CategoryResource extends Resource
                     ->columnSpan(1),
 
                 Forms\Components\Hidden::make('shop_id')
-                    ->default(CacheService::getAccountId()),
+                    ->default(CacheService::getAccount()->id),
 
                 Forms\Components\Hidden::make('creator_id')
                     ->default(Auth::user()->id),

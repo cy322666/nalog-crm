@@ -10,7 +10,6 @@ use App\Filament\Resources\Shop\PaymentResource;
 use App\Filament\Resources\Shop\ProductResource;
 use App\Filament\Resources\Shop\RoleResource;
 use App\Filament\Resources\Shop\StockResource;
-use App\Filament\Resources\Shop\TaskResource;
 use App\Models\Shop\Customer;
 use App\Models\Shop\Order;
 use App\Models\Shop\Shop;
@@ -132,7 +131,7 @@ class RoleManager
             ->roles()
             ->where('shop_id', $shop->id)
             ->first()
-            ->name ?? null;
+            ->name ?? 'root';//TODO
 
         return match ($roleName) {
             'root' => 'root',

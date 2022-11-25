@@ -8,6 +8,9 @@ use App\Filament\Resources\Shop\ShopResource\Pages\ListShops;
 use App\Filament\Tables\Actions\ButtonActionShopPay;
 use App\Filament\Tables\Actions\ButtonActionShopView;
 use App\Models\Currency;
+use App\Models\Shop\PaymentMethod;
+use App\Models\Shop\PaymentProvider;
+use App\Models\Shop\PaymentStatus;
 use App\Models\Shop\Shop;
 use App\Models\Timezone;
 use App\Services\CacheService;
@@ -73,19 +76,7 @@ class ShopResource extends Resource
             ])
             ->filters([])
             ->actions([
-                ButtonActionShopView::make('Перейти')
-                    ->action(function (Shop $shop) {
-
-                        //TODO сюда справочники сохранять
-
-                        CacheService::reset();
-
-                        CacheService::setRole(RoleManager::map($shop));
-
-                        CacheService::setAccountId($shop->id);
-
-                        redirect(OrderResource::getUrl());
-                    }),
+                ButtonActionShopView::make('Перейти'),
                 ButtonActionShopPay::make('Оплатить'),
             ])
             ->bulkActions([]);

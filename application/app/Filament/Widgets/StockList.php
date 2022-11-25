@@ -16,32 +16,30 @@ class StockList extends BaseWidget
 {
     protected function getTableHeading(): string|Closure|null
     {
-        return 'Основные склады';
+        return 'Склады';
     }
 
     protected static ?int $sort = 2;
 
 
-    public function getDefaultTableRecordsPerPageSelectOption(): int
-    {
-        return 5;
-    }
+//    public function getDefaultTableRecordsPerPageSelectOption(): int
+//    {
+//        return 5;
+//    }
 
     protected function isTablePaginationEnabled(): bool
     {
         return false;
     }
-
-    public function isTableSearchable(): bool
-    {
-        return false;
-    }
+//
+//    public function isTableSearchable(): bool
+//    {
+//        return false;
+//    }
 
     protected function getTableQuery(): Builder
     {
-        return Stock::query()
-            ->where('shop_id', CacheService::getAccountId())
-            ->where('parent_stock_id', null);
+        return Stock::query()->where('shop_id', CacheService::getAccount()->id);
     }
 
     public function mountTableAction(string $name, ?string $record = null)
@@ -55,7 +53,7 @@ class StockList extends BaseWidget
     protected function getTableActions(): array
     {
         return [
-            Tables\Actions\EditAction::make(),
+//            Tables\Actions\EditAction::make(),
         ];
     }
 
@@ -67,7 +65,7 @@ class StockList extends BaseWidget
                 ->searchable(),
             Tables\Columns\TextColumn::make('name')
                 ->label('Название')
-                ->url(fn ($record) => StockResource::getUrl('index',['stock' => $record->stock_id]))
+                ->url(fn ($record) => StockResource::getUrl('edit', ['record' => $record->stock_id]))
                 ->searchable(),
             Tables\Columns\TextColumn::make('created_at')
                 ->label('Дата создания')

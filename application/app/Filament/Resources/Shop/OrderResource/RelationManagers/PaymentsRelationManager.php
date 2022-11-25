@@ -69,13 +69,13 @@ class PaymentsRelationManager extends HasManyRelationManager
                           ->label('Способ оплаты')
                           ->required()
                           ->options($methods),
-                      Forms\Components\Select::make('provider_id')
-                          ->label('Платежная система')
-                          ->required()
-                          ->options($providers),
+//                      Forms\Components\Select::make('provider_id')
+//                          ->label('Платежная система')
+//                          ->required()
+//                          ->options($providers),
 
                       Forms\Components\Hidden::make('shop_id')
-                            ->default(CacheService::getAccountId()),
+                            ->default(CacheService::getAccount()->id),
 
                       Forms\Components\Hidden::make('creator_id')
                           ->default(Auth::user()->id),
@@ -126,9 +126,9 @@ class PaymentsRelationManager extends HasManyRelationManager
                     ])
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('provider.name')
-                    ->label('Платежная система')
-                    ->sortable(),
+//                Tables\Columns\TextColumn::make('provider.name')
+//                    ->label('Платежная система')
+//                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('method.name')
                     ->label('Способ оплаты')

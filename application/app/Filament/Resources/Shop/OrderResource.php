@@ -7,6 +7,7 @@ use App\Filament\Resources\Shop\OrderResource\RelationManagers;
 use App\Filament\Resources\Shop\OrderResource\Widgets\OrderStats;
 use App\Models\Shop\Customer;
 use App\Models\Shop\Order;
+use App\Models\Shop\OrderLostReasons;
 use App\Models\Shop\OrderSource;
 use App\Models\Shop\OrderStatus;
 use App\Models\Shop\Shop;
@@ -26,6 +27,7 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class OrderResource extends Resource
 {
@@ -49,7 +51,7 @@ class OrderResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccountId());
+        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccount()->id);
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
@@ -59,6 +61,11 @@ class OrderResource extends Resource
             'Статус' => optional($record->status)->name,
         ];
     }
+
+//    public static function getNavigationLabel(): string
+//    {
+//        return '';
+//    }
 
     /**
      * @throws Exception
@@ -81,6 +88,7 @@ class OrderResource extends Resource
 
                                         Forms\Components\Select::make('status_id')
                                             ->label('Статус')
+//                                            ->options(OrderStatus::cacheAll()->pluck('name', 'id')->toArray()),
                                             ->relationship('statuses', 'name'),
 
                                         Forms\Components\TextInput::make('price')
@@ -89,41 +97,53 @@ class OrderResource extends Resource
 
                                         Forms\Components\Select::make('source_id')
                                             ->label('Источник')
-                                            ->relationship('source', 'name')
-                                            ->searchable()
-                                            ->getSearchResultsUsing(function (string $query) {
-
-                                                return OrderSource::query()
-                                                    ->where('shop_id', CacheService::getAccountId())
-                                                    ->orWhere('shop_id', 0)
-                                                    ->where('name', 'like', "%{$query}%")
-                                                    ->pluck('name', 'id')
-                                                    ->toArray();
-                                            })
-                                            ->getOptionLabelUsing(fn ($value): ?string => OrderSource::query()->find($value)?->name)
+                                            ->options(OrderSource::cacheAll()->pluck('name', 'id')->toArray())
+//                                            ->relationship('source', 'name')
+//                                            ->searchable()
+//                                            ->getSearchResultsUsing(function (string $query) {
+//
+//                                                return CacheService::getAccount()
+//                                                    ->sources()
+//                                                    ->orWhere('shop_id', 0)
+//                                                    ->where('name', 'like', "%$query%")
+//                                                    ->pluck('name', 'id')
+//                                                    ->toArray();
+//                                            })
+//                                            ->getOptionLabelUsing(fn ($value): ?string => OrderSource::query()->find($value)?->name)
                                             ->required(),
 
                                         //TODO обязательность при закрытии как то сделать
-                                        Forms\Components\Select::make('reason')
+                                        Forms\Components\Select::make('lost_reasons_id')
                                             ->label('Причина отказа')
-                                            ->relationship('reason', 'name'),
+                                            ->options(OrderLostReasons::cacheAll()->pluck('name', 'id')->toArray()),
+//                                            ->relationship('reason', 'name'),
 
-                                        Forms\Components\Select::make('responsible')
+                                        Forms\Components\Select::make('responsible_id')
                                             ->label('Ответственный')
                                             ->required()
-                                            ->relationship('responsible', 'name'),
+                                            ->options(User::cacheAll()->pluck('name', 'id')->toArray()),
+//                                            ->relationship('responsible', 'name'),
 
-                                        Forms\Components\Select::make('pay_parts')
-                                            ->label('Платежей')
-                                            ->options([
-                                                1 => 1,
-                                                2 => 2,
-                                                3 => 3,
-                                                4 => 4,
-                                                5 => 5,
-                                            ])
-                                        ->default(1)
-                                        ->required(),
+                                        Forms\Components\Hidden::make('pay_parts')
+                                            ->default(1),
+
+                                        Forms\Components\Hidden::make('creator_id')
+                                            ->default(Auth::user()->id),
+
+                                           Forms\Components\Hidden::make('shop_id')
+                                               ->default(CacheService::getAccount()->id)
+
+//                                        Forms\Components\Select::make('pay_parts')
+//                                            ->label('Платежей')
+//                                            ->options([
+//                                                1 => 1,
+//                                                2 => 2,
+//                                                3 => 3,
+//                                                4 => 4,
+//                                                5 => 5,
+//                                            ])
+//                                        ->default(1)
+//                                        ->required(),
 
                                         //нижняя часть основной
                                         //TODO сделать тут custom поля
@@ -167,15 +187,15 @@ class OrderResource extends Resource
                                 ->label('Клиент')
                                 ->relationship('customer', 'name')
                                 ->searchable()
-                                ->getSearchResultsUsing(function (string $query) {
-
-                                    return Customer::query()
-                                        ->where('shop_id', CacheService::getAccountId())
-                                        ->where('name', 'like', "%{$query}%")
-                                        ->pluck('name', 'id')
-                                        ->toArray();
-                                })
-                                ->getOptionLabelUsing(fn ($value): ?string => Customer::query()->find($value)?->name)
+//                                ->getSearchResultsUsing(function (string $query) {
+//
+//                                    return CacheService::getAccount()
+//                                        ->customers()
+//                                        ->where('name', 'like', "%{$query}%")
+//                                        ->pluck('name', 'id')
+//                                        ->toArray();
+//                                })
+//                                ->getOptionLabelUsing(fn ($value): ?string => Customer::query()->find($value)?->name)
                                 ->required(),
                             //TODO краткая инфа клиента и конечно же его тип!
                         ])
@@ -188,6 +208,12 @@ class OrderResource extends Resource
 //                        ])
 //                        ->columnSpan(1),
                 ]),
+
+                Forms\Components\Hidden::make('shop_id')
+                    ->default(CacheService::getAccount()->id),
+
+                Forms\Components\Hidden::make('creator_id')
+                    ->default(Auth::user()->id),
             ])
             ->columns([
                 'sm' => 3,
@@ -203,7 +229,7 @@ class OrderResource extends Resource
                     ->label('ID')
                     ->searchable()
                     ->toggleable()
-                    ->toggledHiddenByDefault(true)
+//                    ->toggledHiddenByDefault(true)
                     ->searchable()
                     ->sortable(),
 
@@ -238,11 +264,11 @@ class OrderResource extends Resource
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('pay_parts')
-                    ->label('Платежей')
-                    ->toggleable()
-                    ->sortable()
-                    ->toggledHiddenByDefault(true),
+//                Tables\Columns\TextColumn::make('pay_parts')
+//                    ->label('Платежей')
+//                    ->toggleable()
+//                    ->sortable()
+//                    ->toggledHiddenByDefault(true),
 
                 Tables\Columns\TextColumn::make('responsible.name')
                     ->label('Ответственный')
@@ -252,8 +278,7 @@ class OrderResource extends Resource
                     ->label('Создан')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable()
-                    ->toggledHiddenByDefault(true),
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('Обновлен')
@@ -355,6 +380,8 @@ class OrderResource extends Resource
 
     protected static function getGlobalSearchEloquentQuery(): Builder
     {
-        return parent::getGlobalSearchEloquentQuery()->with(['customer']);
+        return parent::getGlobalSearchEloquentQuery()
+            ->with(['customer'])
+            ->where('shop_id', CacheService::getAccount()->id);
     }
 }

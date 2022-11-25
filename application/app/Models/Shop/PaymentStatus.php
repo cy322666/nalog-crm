@@ -2,8 +2,10 @@
 
 namespace App\Models\Shop;
 
+use App\Services\CacheService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class PaymentStatus extends Model
 {
@@ -26,4 +28,20 @@ class PaymentStatus extends Model
         'is_system',
         'shop_id',
     ];
+
+    public static function cacheAll()
+    {
+        $shop = CacheService::getAccount();
+
+//        $collections = Cache::get('payment_statuses_shop_'.$shop->id);
+//
+//        if (!$collections || $collections = []) {
+//TODO пофиксить возвращает пустоту
+            $collections = $shop->paymentStatuses;
+
+//            Cache::put('payment_statuses_shop_'.$shop->id, $collections);
+//        }
+
+        return $collections;
+    }
 }

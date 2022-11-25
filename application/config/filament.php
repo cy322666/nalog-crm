@@ -1,8 +1,5 @@
 <?php
 
-use App\Modules\Analytics\Widgets\ActiveUsersOneDayWidget;
-use App\Modules\Analytics\Widgets\PageViewsWidget;
-use App\Modules\Analytics\Widgets\SessionsByDeviceWidget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Http\Middleware\MirrorConfigToSubpackages;
@@ -16,6 +13,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use JeffGreco13\FilamentBreezy\Http\Livewire\Auth\Login;
 
 return [
 
@@ -56,7 +54,7 @@ return [
     'auth' => [
         'guard' => env('FILAMENT_AUTH_GUARD', 'web'),
         'pages' => [
-            'login' => \App\Filament\Pages\Auth\Login::class,
+            'login' =>  Login::class,
         ],
     ],
 
@@ -110,9 +108,9 @@ return [
         'namespace' => 'App\\Filament\\Widgets',
         'path' => app_path('Filament/Widgets'),
         'register' => [
-            PageViewsWidget::class,
-            ActiveUsersOneDayWidget::class,
-            SessionsByDeviceWidget::class,
+//            PageViewsWidget::class,
+//            ActiveUsersOneDayWidget::class,
+//            SessionsByDeviceWidget::class,
         ],
     ],
 
@@ -141,14 +139,17 @@ return [
     */
 
     'layout' => [
-        'max_content_width' => null,
+        'max_content_width' => '9xl',
         'sidebar' => [
-            'is_collapsible_on_desktop' => true,
-//            'width' => '13px',
+            'is_collapsible_on_desktop' => false,
+            'width' => '180px',
         ],
         'notifications' => [
             'vertical_alignment' => 'top',
             'alignment' => 'right',
+        ],
+        'footer' => [
+            'should_show_logo' => false,
         ],
         'forms' => [
             'actions' => [
@@ -209,5 +210,4 @@ return [
             MirrorConfigToSubpackages::class,
         ],
     ],
-
 ];

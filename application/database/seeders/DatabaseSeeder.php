@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
         // Clear images
         Storage::deleteDirectory('public');
 
+        //php artisan db:seed --class=DatabaseSeeder
+
         $this->call([
 
             //справочники:
@@ -32,7 +34,6 @@ class DatabaseSeeder extends Seeder
             OrderLostReasonsSeeder::class, //причины отказа
             PaymentStatusSeeder::class, //статусы платежей
             PaymentMethodsSeeder::class, //способы оплаты
-            //-методы оплаты
 
             //юзеры права и шопы
 
@@ -53,7 +54,7 @@ class DatabaseSeeder extends Seeder
             ServiceSeeder::class, // услуги + связи с заказами
             CategorySeeder::class, // категории + связи с продуктами
 
-            TaskSeeder::class, // задачи
+//            TaskSeeder::class, // задачи
 
 
         //уведомления

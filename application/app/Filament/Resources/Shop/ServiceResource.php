@@ -13,6 +13,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class ServiceResource extends Resource
 {
@@ -30,12 +31,12 @@ class ServiceResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccountId());
+        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccount()->id);
     }
 
     protected static function getGlobalSearchEloquentQuery(): Builder
     {
-        return parent::getGlobalSearchEloquentQuery()->where('shop_id', CacheService::getAccountId());
+        return parent::getGlobalSearchEloquentQuery()->where('shop_id', CacheService::getAccount()->id);
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
@@ -61,6 +62,12 @@ class ServiceResource extends Resource
                                     ->label('Стоимость')
                                     ->required()//TODO check validate
                             ]),
+
+                        Forms\Components\Hidden::make('shop_id')
+                            ->default(CacheService::getAccount()->id),
+
+                        Forms\Components\Hidden::make('creator_id')
+                            ->default(Auth::user()->id),
                     ])
                     ->columnSpan([
                         'sm' => 2,

@@ -26,10 +26,11 @@ class OrderRelationManager extends MorphManyRelationManager
 
     protected static ?string $recordTitleAttribute = 'title';
 
-    protected function getTableQuery(): Builder|Relation
-    {
-        return parent::getTableQuery()->where('closed', false);
-    }
+    //TODO
+//    protected function getTableQuery(): Builder|Relation
+//    {
+//        return parent::getTableQuery()->where('closed', false);
+//    }
 
     public static function form(Form $form): Form
     {
@@ -40,6 +41,7 @@ class OrderRelationManager extends MorphManyRelationManager
     {
         return $table
             ->columns(OrderResource::table(new Table())->getColumns())
+            ->headerActions([])
             ->filters([])
             ->actions([]);
     }

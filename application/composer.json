@@ -2,42 +2,46 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
         "ext-mbstring": "*",
         "doctrine/dbal": "^3.4",
         "ernysans/laraworld": "^1.0",
-        "filament/filament": "^v2.14.1",
-        "filament/notifications": "^2.0",
-        "filament/spatie-laravel-media-library-plugin": "^2.13",
-        "filament/spatie-laravel-tags-plugin": "^2.10",
+        "filament/filament": "^v2.16.40",
+        "filament/notifications": "^v2.16.40",
+        "filament/spatie-laravel-media-library-plugin": "^2.15",
+        "filament/spatie-laravel-settings-plugin": "^2.15",
+        "filament/spatie-laravel-tags-plugin": "^2.15",
+        "filament/spatie-laravel-translatable-plugin": "^2.15",
         "flowframe/laravel-trend": "^0.1.1",
         "fruitcake/laravel-cors": "^2.0.5",
         "guzzlehttp/guzzle": "^7.2",
-        "icetalker/filament-stepper": "^1.0",
-        "invaders-xx/filament-kanban-board": "0.2.6",
         "jeffgreco13/filament-breezy": "v1.3.12",
-        "jonquihote/filament-static-chart-widgets": "^1.0",
-        "laravel/framework": "v9.0.0",
-        "laravel/octane": "^1.2",
-        "laravel/sanctum": "^2.14",
+        "laravel/framework": "^9.19",
+        "laravel/horizon": "^5.10",
+        "laravel/octane": "^1.3",
+        "laravel/sanctum": "^2.14.1",
         "laravel/tinker": "^2.7",
-        "maatwebsite/excel": "^3.1",
         "predis/predis": "^2.0",
-        "psr/simple-cache": "^2.0",
-        "ysfkaya/filament-phone-input": "^1.1"
+        "squirephp/countries-en": "^3.3",
+        "squirephp/currencies-en": "^3.3"
     },
     "require-dev": {
         "laravel/telescope": "^4.9",
         "barryvdh/laravel-debugbar": "^3.6",
-        "spatie/laravel-ignition": "^1.0",
         "fakerphp/faker": "^1.9.1",
+        "laravel/pint": "^1.1",
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^6.1",
-        "phpunit/phpunit": "^9.5.10"
+        "nunomaduro/larastan": "^2.1",
+        "phpunit/phpunit": "^9.5.10",
+        "spatie/laravel-ignition": "^1.0"
     },
     "autoload": {
         "psr-4": {
@@ -78,10 +82,8 @@
         "sort-packages": true,
         "allow-plugins": {
             "composer/package-versions-deprecated": true
-        },
-        "platform": {
-            "ext-pcntl": "8.0",
-            "ext-posix": "8.0"
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
