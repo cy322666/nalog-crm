@@ -73,9 +73,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 
     public function role()
     {
-        return $this
-            ->belongsToMany(Role::class,'users_roles')
-            ->where('shop_id', CacheService::getAccount()->id);
+        return $this->belongsToMany(Role::class,'users_roles');
     }
 
     /**
@@ -93,7 +91,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 
     public static function cacheAll()
     {
-        $shop = CacheService::getAccount();
+        $shop = null;
 
         $collections = Cache::get('users_shop_'.$shop->id);
 

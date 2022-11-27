@@ -68,9 +68,6 @@ class PaymentsRelationManager extends HasManyRelationManager
 //                          ->required()
 //                          ->options($providers),
 
-                      Forms\Components\Hidden::make('shop_id')
-                            ->default(CacheService::getAccount()->id),
-
                       Forms\Components\Hidden::make('creator_id')
                           ->default(Auth::user()->id),
                   ])

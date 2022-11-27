@@ -47,9 +47,6 @@ class RoleResource extends Resource
                                     ->label('Название')
                                     ->required()
                                     ->maxLength(255),
-
-                                Forms\Components\Hidden::make('shop_id')
-                                    ->default(CacheService::getAccount()->id),
                             ])
                             ->columns([
                                 'sm' => 2,
@@ -121,7 +118,7 @@ class RoleResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccount()->id);
+        return parent::getEloquentQuery();
     }
 
     protected function getActions(): array

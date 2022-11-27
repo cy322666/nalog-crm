@@ -3,12 +3,18 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CustomerResource\Pages;
+use App\Filament\Resources\CustomerResource\Pages\CreateCustomer;
+use App\Filament\Resources\CustomerResource\Pages\EditCustomer;
+use App\Filament\Resources\CustomerResource\Pages\ListCustomers;
 use App\Filament\Resources\CustomerResource\RelationManagers;
-use App\Models\Shop\Customer;
+use App\Filament\Resources\CustomerResource\RelationManagers\ContractsRelationManager;
+use App\Filament\Resources\CustomerResource\RelationManagers\PaymentsRelationManager;
+use App\Models\Customer;
 use App\Models\User;
 use App\Services\CacheService;
 use App\Services\Helpers\ModelHelper;
 use Filament\Forms;
+use Filament\Pages\Actions\EditAction;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -56,6 +62,17 @@ class CustomerResource extends Resource
     }
 
     /**
+
+    • Документы
+    • Закупки
+    • Работы
+    • Документация
+    • Техническая поддержка
+    • Отправки
+
+    • Тип оплаты
+    • Дата проведения повторного обследования
+    • Дата продления
      * @throws \Exception
      */
     public static function form(Form $form): Form
@@ -71,23 +88,29 @@ class CustomerResource extends Resource
                                         Forms\Components\TextInput::make('name')
                                             ->label('Имя')
                                             ->required(),
+
+                                        Forms\Components\Select::make('responsible_id')
+                                            ->label('Ответственный')
+//                                            ->default(Auth::user()->toArray())
+                                            ->options(User::all()->pluck( 'name', 'id'))
+                                            ->searchable()
+                                            ->required(),
+
+                                        Forms\Components\TextInput::make('phone')
+                                            ->label('Телефон'),
+
                                         Forms\Components\TextInput::make('email')
                                             ->label('Почта')
                                             ->email()
                                             ->unique(Customer::class, 'email', fn ($record) => $record),
 
-                                        Forms\Components\TextInput::make('phone')
-                                            ->label('Телефон'),
-                                        Forms\Components\DatePicker::make('birthday')
-                                            ->label('Дата рождения'),
+                                        Forms\Components\Checkbox::make('unscrupulous')
+                                            ->label('Недобросовестный')
+                                            ->default(false),
 
-                                        Forms\Components\Select::make('type')
-                                            ->label('Тип')
-                                            ->required()
-                                            ->options([
-                                                1 => 'Контакт',
-                                                2 => 'Компания',
-                                            ])
+                                        Forms\Components\Checkbox::make('debtor')
+                                            ->label('Должник')
+                                            ->default(false),
                                     ])
                                     ->columns(['sm' => 2,])
                                     ->columnSpan(['sm' => 2,]),
@@ -100,15 +123,20 @@ class CustomerResource extends Resource
                                             ->label('ИНН'),
                                         Forms\Components\TextInput::make('kpp')
                                             ->label('КПП'),
-                                        Forms\Components\TextInput::make('rs')
-                                            ->label('Р/с'),
+                                        Forms\Components\TextInput::make('ogrn')
+                                            ->label('ОГРН'),
+
+                                        Forms\Components\TextInput::make('region_id')//TODO
+                                            ->label('Регион'),
+
+                                        Forms\Components\TextInput::make('address_legal')
+                                            ->label('Адрес юридический'),
+
+                                        Forms\Components\TextInput::make('address_real')
+                                            ->label('Адрес фактический'),
                                     ])
                                     ->columns(['sm' => 2,])
                                     ->columnSpan(['sm' => 2,]),
-                            ]),
-                        Forms\Components\Tabs\Tab::make('Маркетинг')
-                            ->schema([
-                                //utms..
                             ]),
                     ])
                     ->columns([
@@ -120,12 +148,6 @@ class CustomerResource extends Resource
                 Forms\Components\Group::make([
                     Forms\Components\Card::make()
                         ->schema([
-                            Forms\Components\TextInput::make('customer_id')
-                                ->label('ID')
-                                ->default(
-                                    ModelHelper::generateId(self::$model, 'customer_id')
-                                )
-                                ->disabled(),
                             Forms\Components\Placeholder::make('created_at')
                                 ->label('Создан')
                                 ->content(fn (?Customer $record): string => $record ? $record->created_at->diffForHumans() : '-'),
@@ -140,11 +162,6 @@ class CustomerResource extends Resource
 //                            Forms\Components\SpatieTagsInput::make('tags')->type('customers'),
 //                        ])
 //                        ->columnSpan(1),
-
-                    Forms\Components\Hidden::make('shop_id')
-                        ->default(CacheService::getAccount()->id),
-                    Forms\Components\Hidden::make('creator_id')
-                        ->default(Auth::user()->id)
                 ]),
             ])
             ->columns([
@@ -157,20 +174,14 @@ class CustomerResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('customer_id')
+                Tables\Columns\TextColumn::make('id')
                     ->label('ID')
                     ->toggleable()
                     ->toggledHiddenByDefault()
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('creator_id')
-                    ->label('Создатель')
-                    ->toggleable()
-                    ->toggledHiddenByDefault()
-                    ->searchable()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Имя')
+                    ->label('Наименование')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('email')
@@ -178,20 +189,38 @@ class CustomerResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('type')
-                    ->label('Тип')
-                    ->enum([
-                        1 => 'Контакт',
-                        2 => 'Компания',
-                    ])
-                    ->searchable()
-                    ->sortable()
-                    ->toggleable(),
-//                Tables\Columns\SpatieTagsColumn::make('tags')
-//                    ->label('Теги')
-//                    ->type('customers'),
                 Tables\Columns\TextColumn::make('phone')
                     ->label('Телефон')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('inn')
+                    ->label('ИНН')
+                    ->searchable()
+                    ->toggleable()
+                    ->toggledHiddenByDefault()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('kpp')
+                    ->label('КПП')
+                    ->searchable()
+                    ->toggleable()
+                    ->toggledHiddenByDefault()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('ogrn')
+                    ->label('ОГРН')
+                    ->searchable()
+                    ->toggleable()
+                    ->toggledHiddenByDefault()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('responsible.name')
+                    ->label('Ответственный')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\BadgeColumn::make('debtor')
+                    ->label('Должник')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\BadgeColumn::make('unscrupulous')
+                    ->label('Недобросовестный')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -220,23 +249,20 @@ class CustomerResource extends Resource
                                 fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
                             );
                     }),
-                Tables\Filters\SelectFilter::make('creator_id')
-                    ->label('Создатель')
-                    ->options(User::cacheAll()->pluck('name', 'id')->toArray())
-                    ->multiple()
-                    ->attribute('creator_id'),
 
-                Tables\Filters\TernaryFilter::make('type')
-                    ->placeholder('Клиенты и компании')
-                    ->trueLabel('Только контакты')
-                    ->falseLabel('Только компании')
-                    ->queries(
-                        true:  fn (Builder $query) => $query->where('type', 1),
-                        false: fn (Builder $query) => $query->where('type', 2),
-                        blank: fn (Builder $query) => $query,
-                    )
+//                Tables\Filters\TernaryFilter::make('type')
+//                    ->placeholder('Клиенты и компании')
+//                    ->trueLabel('Только контакты')
+//                    ->falseLabel('Только компании')
+//                    ->queries(
+//                        true:  fn (Builder $query) => $query->where('type', 1),
+//                        false: fn (Builder $query) => $query->where('type', 2),
+//                        blank: fn (Builder $query) => $query,
+//                    )
             ])
-            ->actions([])
+            ->actions([
+                EditAction::make('asd'),
+            ])
             ->bulkActions([
 
                 //TODO mass actions
@@ -250,29 +276,28 @@ class CustomerResource extends Resource
 
     protected static function getGlobalSearchEloquentQuery(): Builder
     {
-        return parent::getGlobalSearchEloquentQuery()->where('shop_id', CacheService::getAccount()->id);
+        return parent::getGlobalSearchEloquentQuery();
     }
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccount()->id);
+        return parent::getEloquentQuery();
     }
 
     public static function getRelations(): array
     {
         return [
-            \App\Filament\Resources\CustomerResource\RelationManagers\OrdersRelationManager::class,
-            \App\Filament\Resources\CustomerResource\RelationManagers\PaymentsRelationManager::class,
+            ContractsRelationManager::class,
+            PaymentsRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index'  => \App\Filament\Resources\CustomerResource\Pages\ListCustomers::route('/'),
-//            'view'   => Pages\ViewCustomer::route('/{record}'),
-            'create' => \App\Filament\Resources\CustomerResource\Pages\CreateCustomer::route('/create'),
-            'edit'   => \App\Filament\Resources\CustomerResource\Pages\EditCustomer::route('/{record}/edit'),
+            'index'  => ListCustomers::route('/'),
+            'create' => CreateCustomer::route('/create'),
+            'edit'   => EditCustomer::route('/{record}/edit'),
         ];
     }
 }

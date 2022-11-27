@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8ad40d13641e435c436ee5ead5ccefcd",
+    "content-hash": "3f830df3aa41a61e35215a620aa86562",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -2468,6 +2468,80 @@
             "time": "2022-05-21T17:30:32+00:00"
         },
         {
+            "name": "invaders-xx/filament-kanban-board",
+            "version": "0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/invaders-xx/filament-kanban-board.git",
+                "reference": "e624cbb50ab377b5bba1cf7f59f6ec64fc38521b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/invaders-xx/filament-kanban-board/zipball/e624cbb50ab377b5bba1cf7f59f6ec64fc38521b",
+                "reference": "e624cbb50ab377b5bba1cf7f59f6ec64fc38521b",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^2.0",
+                "illuminate/contracts": "^8.74|^9.0",
+                "php": "^8.0",
+                "spatie/laravel-package-tools": "^1.9.2"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.8",
+                "nunomaduro/collision": "^6.0",
+                "nunomaduro/larastan": "^2.0.1",
+                "orchestra/testbench": "^7.0",
+                "pestphp/pest": "^1.21",
+                "pestphp/pest-plugin-laravel": "^1.1",
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan-deprecation-rules": "^1.0",
+                "phpstan/phpstan-phpunit": "^1.0",
+                "phpunit/phpunit": "^9.5",
+                "spatie/laravel-ray": "^1.26"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "InvadersXX\\FilamentKanbanBoard\\FilamentKanbanBoardServiceProvider"
+                    ],
+                    "aliases": {
+                        "FilamentKanbanBoard": "InvadersXX\\FilamentKanbanBoard\\Facades\\FilamentKanbanBoard"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "InvadersXX\\FilamentKanbanBoard\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "David Vincent",
+                    "email": "envahisseur@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Add a Kanban page to filament",
+            "homepage": "https://github.com/invaders-xx/filament-kanban-board",
+            "keywords": [
+                "filament",
+                "filament-kanban-board",
+                "invaders-xx",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/invaders-xx/filament-kanban-board/issues",
+                "source": "https://github.com/invaders-xx/filament-kanban-board/tree/0.3"
+            },
+            "time": "2022-10-26T10:55:33+00:00"
+        },
+        {
             "name": "jeffgreco13/filament-breezy",
             "version": "v1.3.12",
             "source": {
@@ -3367,16 +3441,16 @@
         },
         {
             "name": "league/flysystem",
-            "version": "3.10.3",
+            "version": "3.10.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "8013fb046c6a244b2b1b75cc95d732ed6bcdeb8a"
+                "reference": "a7790f3dd1b27af81d380e6b2afa77c16ab7e181"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/8013fb046c6a244b2b1b75cc95d732ed6bcdeb8a",
-                "reference": "8013fb046c6a244b2b1b75cc95d732ed6bcdeb8a",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/a7790f3dd1b27af81d380e6b2afa77c16ab7e181",
+                "reference": "a7790f3dd1b27af81d380e6b2afa77c16ab7e181",
                 "shasum": ""
             },
             "require": {
@@ -3438,7 +3512,7 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/flysystem/issues",
-                "source": "https://github.com/thephpleague/flysystem/tree/3.10.3"
+                "source": "https://github.com/thephpleague/flysystem/tree/3.10.4"
             },
             "funding": [
                 {
@@ -3454,7 +3528,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-11-14T10:42:43+00:00"
+            "time": "2022-11-26T19:48:01+00:00"
         },
         {
             "name": "league/glide",

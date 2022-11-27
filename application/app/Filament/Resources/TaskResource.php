@@ -5,7 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\Shop;
 use App\Filament\Resources\TaskResource\Pages\KanbanTask;
 use App\Filament\Resources\TaskResource\Pages\ListTasks;
-use App\Models\Shop\Task;
+use App\Models\Task;
 use App\Services\CacheService;
 use App\Services\Helpers\ModelHelper;
 use Exception;
@@ -45,7 +45,7 @@ class TaskResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return Task::query()->where('shop_id', CacheService::getAccountId());
+        return Task::query();
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
@@ -60,7 +60,7 @@ class TaskResource extends Resource
 
     protected static function getGlobalSearchEloquentQuery(): Builder
     {
-        return parent::getGlobalSearchEloquentQuery()->where('shop_id', CacheService::getAccountId());
+        return parent::getGlobalSearchEloquentQuery();
     }
 
     public static function getGloballySearchableAttributes(): array
@@ -178,11 +178,11 @@ class TaskResource extends Resource
                 Tables\Columns\TextColumn::make('responsible.name')
                     ->label('Исполнитель')
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('author.name')
-                    ->label('Автор')
-                    ->sortable()
-                    ->toggleable(true)
-                    ->toggledHiddenByDefault(),
+//                Tables\Columns\TextColumn::make('author.name')
+//                    ->label('Автор')
+//                    ->sortable()
+//                    ->toggleable(true)
+//                    ->toggledHiddenByDefault(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Создана')
                     ->sortable()
@@ -198,26 +198,26 @@ class TaskResource extends Resource
             ])
             ->filters([
 
-                Tables\Filters\TernaryFilter::make('date_execute')
-                    ->label('Период выполнения')
-                    ->placeholder('Все время')
-                    ->trueLabel('Завтра')
-                    ->falseLabel('В течении недели')
-                    ->queries(
-                        true:  fn (Builder $query) => $query->where('execute_to', now()->addDay()),
-                        false: fn (Builder $query) => $query->where('execute_to', now()->addDays(7)),
-                        blank: fn (Builder $query) => $query->where('execute_to', '!=', null),
-                    ),
+//                Tables\Filters\TernaryFilter::make('date_execute')
+//                    ->label('Период выполнения')
+//                    ->placeholder('Все время')
+//                    ->trueLabel('Завтра')
+//                    ->falseLabel('В течении недели')
+//                    ->queries(
+//                        true:  fn (Builder $query) => $query->where('execute_to', now()->addDay()),
+//                        false: fn (Builder $query) => $query->where('execute_to', now()->addDays(7)),
+//                        blank: fn (Builder $query) => $query->where('execute_to', '!=', null),
+//                    ),
 
                 Tables\Filters\SelectFilter::make('responsible_id')
                     ->label('Исполнитель')
-                    ->options(CacheService::getAccount()->users->pluck('name', 'id'))
+                    ->options([])
                     //->relationship('responsible', 'name')
                     ->default(Auth::user()->id),
 
-                Tables\Filters\SelectFilter::make('author')
-                    ->label('Автор')
-                    ->relationship('author', 'name'),
+//                Tables\Filters\SelectFilter::make('author')
+//                    ->label('Автор')
+//                    ->relationship('author', 'name'),
 
                 Tables\Filters\TernaryFilter::make('status')
                     ->label('Статус')

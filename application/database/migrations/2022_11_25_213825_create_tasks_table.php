@@ -19,7 +19,7 @@ return new class extends Migration
 
             $table->string('title')->nullable();
             $table->string('text')->nullable();
-            $table->bigInteger('response_id')->nullable();
+            $table->bigInteger('responsible_id')->nullable();
             $table->bigInteger('creator_id')->nullable();
             $table->dateTime('execute_at')->nullable();
             $table->dateTime('failed_at')->nullable();

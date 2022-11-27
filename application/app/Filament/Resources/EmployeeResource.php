@@ -44,7 +44,7 @@ class EmployeeResource extends Resource
                                     ->password(),
                                   Forms\Components\Select::make('password')
                                       ->label('Роль')
-                                      ->options(CacheService::getAccount()->roles->pluck('name', 'id'))
+                                      ->options([])
 //                                      ->default('')
                                       ->required()
                             ]),
@@ -74,14 +74,14 @@ class EmployeeResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         //TODO какаааака
-        return parent::getEloquentQuery();//->whereBelongsTo(CacheService::getAccount(), 'shop');//->where('shop_id', CacheService::getAccountId());//CacheService::getAccount();//->users()->getQuery();
+        return parent::getEloquentQuery();//->whereBelongsTo(CacheService::getAccount(), 'shop');//->where('shop_id', CacheService::getAccountId());//null;//->users()->getQuery();
     }
 
     protected static function getGlobalSearchEloquentQuery(): Builder
     {
-        return CacheService::getAccount()->users()->getQuery();
+//        return CacheService::getAccount()->users()->getQuery();
 
-//            parent::getEloquentQuery()
+            return parent::getEloquentQuery();
 //            ->join('shop_user', 'users.id', '=', 'shop_user.user_id')
 //            ->where('shop_user.shop_id', CacheService::getAccountId());
     }

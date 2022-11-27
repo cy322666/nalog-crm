@@ -2,17 +2,16 @@
 
 namespace App\Filament\Resources\TaskResource\Pages;
 
-use App\Filament\Resources\Shop\TaskResource;
-use App\Models\Shop\Task;
+use App\Filament\Resources\TaskResource;
+use App\Models\Task;
 use Carbon\Carbon;
-use Filament\Resources\Pages\Page;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use phpDocumentor\Reflection\Types\Self_;
+use InvadersXX\FilamentKanbanBoard\FilamentKanbanBoard;
 
-class KanbanTask //TODO extends FilamentKanbanBoard
+class KanbanTask extends FilamentKanbanBoard
 {
-    protected static string $resource = \App\Filament\Resources\TaskResource::class;
+    protected static string $resource = TaskResource::class;
 
     public bool $sortable = false;
     public bool $sortableBetweenStatuses = true;

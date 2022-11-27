@@ -17,7 +17,7 @@ class OrderStats extends BaseWidget
 {
     protected function getCards(): array
     {
-        $shop = CacheService::getAccount();
+        $shop = null;
 
         return [
             Card::make('without_tasks', $shop->orders()->whereDate('created_at', date('Y-m-d'))->count())

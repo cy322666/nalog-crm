@@ -27,9 +27,10 @@ class ListTasks extends ListRecords
     protected function getActions(): array
     {
         return [
-            Action::make('kanban')
-                ->label('Канбан')
-                ->url(\App\Filament\Resources\TaskResource::getUrl('kanban')),
+            Actions\CreateAction::make('create'),
+//            Action::make('kanban')
+//                ->label('Канбан')
+//                ->url(\App\Filament\Resources\TaskResource::getUrl('kanban')),
         ];
     }
 

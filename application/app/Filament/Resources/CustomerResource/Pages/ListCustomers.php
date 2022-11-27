@@ -26,9 +26,22 @@ class ListCustomers extends ListRecords
         return 'Клиенты';
     }
 
+    protected function getTableActions(): array
+    {
+        //TODO
+        return [
+            Tables\Actions\ActionGroup::make([
+                Tables\Actions\Action::make('email'),
+                Tables\Actions\Action::make('inn'),
+                Tables\Actions\Action::make('address'),
+                Tables\Actions\Action::make('name'),
+            ]),
+        ];
+    }
+
     protected function getTableRecordsPerPageSelectOptions(): array
     {
-        return [25, 50, 100];
+        return [50, 100];
     }
 
 //    protected function getActions(): array

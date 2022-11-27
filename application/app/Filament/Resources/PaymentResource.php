@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\Shop\OrderResource;
 use App\Filament\Resources\PaymentResource\Pages;
-use App\Models\Shop\Payment;
+use App\Models\Payment;
 use App\Services\CacheService;
 use App\Services\Helpers\ModelHelper;
 use Carbon\Carbon;
@@ -39,12 +39,12 @@ class PaymentResource extends Resource
 
     protected static function getGlobalSearchEloquentQuery(): Builder
     {
-        return parent::getGlobalSearchEloquentQuery()->where('shop_id', CacheService::getAccount()->id);
+        return parent::getGlobalSearchEloquentQuery();
     }
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccount()->id);
+        return parent::getEloquentQuery();
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
@@ -68,10 +68,6 @@ class PaymentResource extends Resource
         //TODO перенести кеш в релейшены
         $paymentId = ModelHelper::generateId(self::$model, 'payment_id');
 
-        $methods   = PaymentMethod::cacheAll()->pluck('name', 'id')->toArray();
-//        $providers = PaymentProvider::cacheAll()->pluck('name', 'id')->toArray();
-        $statuses  = PaymentStatus::cacheAll()->pluck('name', 'id')->toArray();
-
         return $form->schema([
             Forms\Components\Card::make()
                 ->schema([
@@ -80,18 +76,18 @@ class PaymentResource extends Resource
                         ->default(
                             'Платеж #'.$paymentId
                         ),
-                    Forms\Components\Select::make('status_id')
-                        ->label('Статус')
-                        ->options($statuses),
+//                    Forms\Components\Select::make('status_id')
+//                        ->label('Статус')
+//                        ->options($statuses),
                     Forms\Components\TextInput::make('amount')
                         ->hint('Pубли')
                         ->label('Сумма')
                         ->required()
                         ->columnSpan(1),
-                    Forms\Components\Select::make('method_id')
-                        ->label('Способ оплаты')
-                        ->required()
-                        ->options($methods),
+//                    Forms\Components\Select::make('method_id')
+//                        ->label('Способ оплаты')
+//                        ->required()
+//                        ->options($methods),
 //                    Forms\Components\Select::make('provider_id')
 //                        ->label('Платежная система')
 ////                        ->required()
@@ -111,9 +107,6 @@ class PaymentResource extends Resource
 //                        })
 //                        ->getOptionLabelUsing(fn ($value): ?string => Order::query()->find($value)?->name)
                         ->required(),
-
-                    Forms\Components\Hidden::make('shop_id')
-                        ->default(CacheService::getAccount()->id),
 
                     Forms\Components\Hidden::make('creator_id')
                         ->default(Auth::user()->id),

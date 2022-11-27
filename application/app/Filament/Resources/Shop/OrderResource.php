@@ -47,7 +47,7 @@ class OrderResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccount()->id);
+        return parent::getEloquentQuery();
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
@@ -91,9 +91,6 @@ class OrderResource extends Resource
                                             ->hint('Pубли')
                                             ->label('Бюджет'),
 
-                                        Forms\Components\Select::make('source_id')
-                                            ->label('Источник')
-                                            ->options(OrderSource::cacheAll()->pluck('name', 'id')->toArray())
 //                                            ->relationship('source', 'name')
 //                                            ->searchable()
 //                                            ->getSearchResultsUsing(function (string $query) {
@@ -106,18 +103,11 @@ class OrderResource extends Resource
 //                                                    ->toArray();
 //                                            })
 //                                            ->getOptionLabelUsing(fn ($value): ?string => OrderSource::query()->find($value)?->name)
-                                            ->required(),
-
-                                        //TODO обязательность при закрытии как то сделать
-                                        Forms\Components\Select::make('lost_reasons_id')
-                                            ->label('Причина отказа')
-                                            ->options(OrderLostReasons::cacheAll()->pluck('name', 'id')->toArray()),
-//                                            ->relationship('reason', 'name'),
 
                                         Forms\Components\Select::make('responsible_id')
                                             ->label('Ответственный')
                                             ->required()
-                                            ->options(User::cacheAll()->pluck('name', 'id')->toArray()),
+                                            ->options([]),
 //                                            ->relationship('responsible', 'name'),
 
                                         Forms\Components\Hidden::make('pay_parts')
@@ -125,9 +115,6 @@ class OrderResource extends Resource
 
                                         Forms\Components\Hidden::make('creator_id')
                                             ->default(Auth::user()->id),
-
-                                           Forms\Components\Hidden::make('shop_id')
-                                               ->default(CacheService::getAccount()->id)
 
 //                                        Forms\Components\Select::make('pay_parts')
 //                                            ->label('Платежей')
@@ -204,9 +191,6 @@ class OrderResource extends Resource
 //                        ])
 //                        ->columnSpan(1),
                 ]),
-
-                Forms\Components\Hidden::make('shop_id')
-                    ->default(CacheService::getAccount()->id),
 
                 Forms\Components\Hidden::make('creator_id')
                     ->default(Auth::user()->id),
@@ -376,8 +360,6 @@ class OrderResource extends Resource
 
     protected static function getGlobalSearchEloquentQuery(): Builder
     {
-        return parent::getGlobalSearchEloquentQuery()
-            ->with(['customer'])
-            ->where('shop_id', CacheService::getAccount()->id);
+        return parent::getGlobalSearchEloquentQuery()->with(['customer']);
     }
 }

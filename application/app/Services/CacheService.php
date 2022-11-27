@@ -2,52 +2,17 @@
 
 namespace App\Services;
 
-use App\Filament\Pages\Auth\Login;
-use App\Filament\Resources\Shop\ShopResource;
-use App\Models\Shop\Shop;
 use App\Services\Roles\RoleManager;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
 class CacheService
 {
-    public static function setAccountId(int $accountId)
-    {
-        Cache::put('user_'.Auth::user()->id.'_account', $accountId);
-    }
-
-    public static function deleteAccount()
-    {
-        Cache::forget('user_'.Auth::user()->id.'_account');
-    }
-
-    public static function existAccount(): bool
-    {
-        return !empty(Cache::get('user_'.Auth::user()->id.'_account'));
-    }
-
-    public static function setAccount(Shop $shop)
-    {
-        Cache::put('user_'.Auth::user()->id.'_account', $shop);
-    }
-
-    public static function getAccount()
-    {
-        $shop = Cache::get('user_'.Auth::user()->id.'_account');
-
-        if ($shop !== null) {
-
-            return $shop;
-        }
-
-        redirect(ShopResource::getUrl());
-    }
-
     public static function reset()
     {
-        self::deleteAccount();
+//        self::deleteAccount();
 
-        self::deleteRole();
+//        self::deleteRole();
     }
 
     public static function deleteRole()
@@ -66,7 +31,7 @@ class CacheService
 
         if (!$role) {
 
-            $role = RoleManager::map(CacheService::getAccount());
+            $role = RoleManager::map();
 
             self::setRole($role);
         }

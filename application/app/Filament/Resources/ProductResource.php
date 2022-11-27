@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\ProductResource\Pages\CreateProduct;
+use App\Filament\Resources\ProductResource\Pages\EditProduct;
+use App\Filament\Resources\ProductResource\Pages\ListProducts;
 use App\Filament\Resources\ProductResource\Widgets\ProductStats;
-use App\Models\Shop\Product;
-use App\Services\CacheService;
+use App\Models\Product;
 use App\Services\Helpers\ModelHelper;
 use Exception;
 use Filament\Forms;
@@ -98,9 +100,9 @@ class ProductResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => \App\Filament\Resources\ProductResource\Pages\ListProducts::route('/'),
-            'create' => \App\Filament\Resources\ProductResource\Pages\CreateProduct::route('/create'),
-            'edit'   => \App\Filament\Resources\ProductResource\Pages\EditProduct::route('/{record}/edit'),
+            'index'  => ListProducts::route('/'),
+            'create' => CreateProduct::route('/create'),
+            'edit'   => EditProduct::route('/{record}/edit'),
         ];
     }
 
@@ -120,12 +122,12 @@ class ProductResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('shop_id', CacheService::getAccount()->id);
+        return parent::getEloquentQuery();
     }
 
     protected static function getGlobalSearchEloquentQuery(): Builder
     {
-        return self::getEloquentQuery()->where('shop_id', CacheService::getAccount()->id);
+        return self::getEloquentQuery();
     }
 
     /**
@@ -141,13 +143,6 @@ class ProductResource extends Resource
                             Forms\Components\TextInput::make('name')
                                 ->label('Название')
                                 ->required(),
-
-                            Forms\Components\Select::make('categories')
-                                ->label('Категория')
-                                ->multiple()
-                                ->relationship('categories', 'name')
-                                ->searchable()
-                                ->options(CacheService::getAccount()->categories->pluck('name', 'id')),//TODO тут кеш
 
                             Forms\Components\MarkdownEditor::make('description')
                                 ->label('Описание')
@@ -179,46 +174,6 @@ class ProductResource extends Resource
                                         ->disabled(),
                                 ]),
                         ]),
-                    $layout::make()
-                        ->schema([
-                            Forms\Components\Placeholder::make('Учет'),
-                            Forms\Components\Grid::make()
-                                ->schema([
-                                    Forms\Components\TextInput::make('sku')
-                                        ->label('Артикул')
-                                        ->unique(Product::class, 'sku', fn ($record) => $record)
-                                        ->required(),
-                                    Forms\Components\TextInput::make('barcode')
-                                        ->label('Штрихкод')
-                                        ->unique(Product::class, 'barcode', fn ($record) => $record)
-                                        ->required(),
-                                    Forms\Components\TextInput::make('qty')
-                                        ->label('Количество')
-                                        ->numeric()
-                                        ->rules(['integer', 'min:0'])
-                                        ->required(),
-                                    Forms\Components\Select::make('weight_unit')//TODO справочник
-                                        ->label('Единица измерения')
-                                        ->options([
-                                            'кг' => 'кг',
-                                            'шт' => 'шт',
-                                        ])
-                                        ->required(),
-                                    Forms\Components\TextInput::make('security_stock')
-                                        ->label('Неснижаемый остаток')
-                                        ->helperText('Количество товара, при котором вы будете оповещены')
-                                        ->numeric()
-                                        ->rules(['integer', 'min:0'])
-                                        ->reactive()
-                                        ->required(),
-
-                                    Forms\Components\Hidden::make('shop_id')
-                                        ->default(CacheService::getAccount()->id),
-                                    Forms\Components\Hidden::make('creator_id')
-                                        ->default(Auth::user()->id)
-                                ]),
-                        ]),
-
                 ])->columnSpan([
                     'sm' => 2,
                 ]),
@@ -269,19 +224,10 @@ class ProductResource extends Resource
                 ->searchable()
                 ->sortable()
                 ->toggleable(),
-            Tables\Columns\TextColumn::make('qty')
-                ->label('Общий остаток')
-                ->sortable()
-                ->toggleable(),
             Tables\Columns\TextColumn::make('description')
                 ->label('Описание')
                 ->toggleable()
                 ->getStateUsing(fn ($record): ?string => mb_strimwidth($record->description, 0, 50, "...")),
-            Tables\Columns\TextColumn::make('security_stock')
-                ->label('Защищенный остаток')
-                ->sortable()
-                ->toggleable()
-                ->toggledHiddenByDefault(true),
             Tables\Columns\TextColumn::make('created_at')
                 ->label('Создано')
                 ->dateTime()

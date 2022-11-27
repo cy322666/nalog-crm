@@ -196,7 +196,7 @@ return [
     'middleware' => [
         'auth' => [
             Authenticate::class,//TODO need?
-            'verified:filament.verification.notice'
+//            'verified:filament.verification.notice'
         ],
         'base' => [
             EncryptCookies::class,

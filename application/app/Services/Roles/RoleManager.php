@@ -6,11 +6,8 @@ use App\Filament\Resources\CustomerResource;
 use App\Filament\Resources\EmployeeResource;
 use App\Filament\Resources\PaymentResource;
 use App\Filament\Resources\ProductResource;
-use App\Filament\Resources\Shop\CategoryResource;
 use App\Filament\Resources\Shop\OrderResource;
 use App\Filament\Resources\Shop\RoleResource;
-use App\Filament\Resources\Shop\StockResource;
-use App\Models\Shop\Shop;
 use Illuminate\Support\Facades\Auth;
 
 class RoleManager
@@ -59,17 +56,6 @@ class RoleManager
                 'delete_categories' => 'Удаление',
                 'update_categories' => 'Обновление'
             ],
-        ], [
-            'model'    => 'stocks',
-            'resource' => StockResource::class,
-            'label'    => 'Склады',
-            'permissions' => ['view_stocks', 'create_stocks', 'delete_stocks', 'update_stocks'],
-            'titles' => [
-                'view_stocks'   => 'Просмотр',
-                'create_stocks' => 'Создание',
-                'delete_stocks' => 'Удаление',
-                'update_stocks' => 'Обновление'
-            ],
         ],
         [
             'model'    => 'clients',
@@ -83,16 +69,16 @@ class RoleManager
                 'update_clients' => 'Обновление'
             ],
         ], [
-            'model'    => 'tasks',
-            'resource' => TaskResource::class,
-            'label'    => 'Задачи',
-            'permissions' => ['view_tasks', 'create_tasks', 'delete_tasks', 'update_tasks'],
-            'titles' => [
-                'view_tasks'   => 'Просмотр',
-                'create_tasks'  => 'Создание',
-                'delete_tasks' => 'Удаление',
-                'update_tasks' => 'Обновление'
-            ],
+//            'model'    => 'tasks',
+//            'resource' => TaskResource::class,
+//            'label'    => 'Задачи',
+//            'permissions' => ['view_tasks', 'create_tasks', 'delete_tasks', 'update_tasks'],
+//            'titles' => [
+//                'view_tasks'   => 'Просмотр',
+//                'create_tasks'  => 'Создание',
+//                'delete_tasks' => 'Удаление',
+//                'update_tasks' => 'Обновление'
+//            ],
         ], [
             'model'    => 'users',
             'resource' => EmployeeResource::class,
@@ -121,15 +107,15 @@ class RoleManager
 
     private static array $actions = [];
 
-    public static function map(Shop $shop): string
+    public static function map(): string
     {
-        $roleName = Auth::user()
-            ->roles()
-            ->where('shop_id', $shop->id)
-            ->first()
-            ->name ?? 'root';//TODO
+//        $roleName = Auth::user()
+//            ->roles()
+//            ->where('shop_id', $shop->id)
+//            ->first()
+//            ->name ?? 'root';//TODO
 
-        return match ($roleName) {
+        return match ('root') {
             'root' => 'root',
             'Администратор', 'Админ' => 'admin',
             default => 'manager',

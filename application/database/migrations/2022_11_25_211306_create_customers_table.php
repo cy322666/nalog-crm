@@ -26,7 +26,7 @@ return new class extends Migration
             $table->integer('region_id')->nullable();
             $table->string('address_real')->nullable();
             $table->string('address_legal')->nullable();
-            $table->integer('response_id')->nullable();
+            $table->integer('responsible_id')->nullable();
             $table->boolean('unscrupulous')->default(false);
             $table->boolean('debtor')->default(false);
         });

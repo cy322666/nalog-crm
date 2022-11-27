@@ -31,7 +31,108 @@ class ContractResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('id')
+                    ->label('ID')
+                    ->toggleable()
+                    ->toggledHiddenByDefault()
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Дата создания')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('conclusion_at')
+                    ->label('Дата заключения')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('execution_at')
+                    ->label('Дата исполнения')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('region_id')
+                    ->label('Регион')
+                    ->searchable()
+                    ->toggleable()
+                    ->toggledHiddenByDefault()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('number')
+                    ->label('Номер')
+                    ->searchable()
+                    ->toggleable()
+                    ->toggledHiddenByDefault()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('contract_type_id')
+                    ->label('Тип договора')
+                    ->searchable()
+                    ->toggleable()
+                    ->toggledHiddenByDefault()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('work_type')
+                    ->label('Тип работ')
+                    ->searchable()
+                    ->toggleable()
+                    ->toggledHiddenByDefault()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('contract_form')
+                    ->label('Форма договора')
+                    ->searchable()
+                    ->toggleable()
+                    ->toggledHiddenByDefault()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('contragent')
+                    ->label('Контрагент')
+                    ->searchable()
+                    ->toggleable()
+                    ->toggledHiddenByDefault()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('partner')
+                    ->label('Партнер')
+                    ->searchable()
+                    ->toggleable()
+                    ->toggledHiddenByDefault()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('manager.name')
+                    ->label('Менеджер')
+                    ->searchable()
+                    ->toggleable()
+                    ->toggledHiddenByDefault()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('responsible.name')
+                    ->label('Ответственный')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('presale.name')
+                    ->label('Пресейл')
+                    ->toggleable()
+                    ->toggledHiddenByDefault()
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('price')
+                    ->label('Сумма')
+                    ->searchable()
+                    ->toggleable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('payed')
+                    ->label('Оплачено')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('payment_type_id')
+                    ->label('Тип оплаты')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('payment_type_id')
+                    ->label('Дата проведения повторного обследования')
+                    ->searchable()
+                    ->toggleable()
+                    ->toggledHiddenByDefault()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('payment_renewal')
+                    ->label('Дата продления')
+                    ->searchable()
+                    ->toggledHiddenByDefault()
+                    ->sortable(),
             ])
             ->filters([
                 //
